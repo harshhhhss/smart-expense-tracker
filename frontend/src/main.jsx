@@ -2,6 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import "./styles/design-system.css";
 
 // Global reset styles
 const globalStyle = document.createElement("style");

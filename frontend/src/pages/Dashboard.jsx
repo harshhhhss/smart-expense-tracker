@@ -27,7 +27,7 @@ const Dashboard = () => {
     try {
       const [expRes, dashRes] = await Promise.all([
         API.get("/expenses"),
-        API.get("/expenses/dashboard"),
+        API.get("/advanced/dashboard"),
       ]);
       setExpenses(expRes.data.expenses || []);
       setSummary(dashRes.data.dashboard?.summary || null);
@@ -41,9 +41,9 @@ const Dashboard = () => {
   const fetchInsights = useCallback(async () => {
     setInsightLoad(true);
     try {
-      const { data } = await API.get("/insights");
-      setInsights(data.insights || []);
-      setChartData(data.chartData || { categoryData: [], monthlyData: [] });
+      const { data } = await API.get("/advanced/dashboard");
+      setInsights(data.dashboard?.insights || []);
+      setChartData(data.dashboard?.chartData || { categoryData: [], monthlyData: [] });
     } catch (err) {
       console.error(err);
     } finally {

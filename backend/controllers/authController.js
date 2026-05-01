@@ -1,59 +1,82 @@
-﻿const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+import User from "../models/User.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
+const generateToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN || "7d"
+  });
 
-const signup = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    res.status(400);
-    throw new Error("Please provide name, email, and password");
-  }
-  const existingUser = await User.findOne({ email });
-  if (existingUser) {
-    res.status(409);
-    throw new Error("Email already exists");
-  }
-  const user = await User.create({ name, email, password });
-  const token = generateToken(user._id);
-  res.status(201).json({ success: true, token, user: { _id: user._id, name: user.name, email: user.email } });
-};
+const publicUser = (user) => ({
+  _id: user._id,
+  name: user.name,
+  email: user.email
+});
 
-const login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    res.status(400);
-    throw new Error("Please provide email and password");
-  }
-  const user = await User.findOne({ email }).select("+password");
-  if (!user || !(await user.matchPassword(password))) {
-    res.status(401);
-    throw new Error("Invalid email or password");
-  }
-  const token = generateToken(user._id);
-  res.status(200).json({ success: true, token, user: { _id: user._id, name: user.name, email: user.email } });
-};
+export const signup = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
 
-const getMe = async (req, res) => {
-  const user = req.user;
-  res.json({ success: true, user: { _id: user._id, name: user.name, email: user.email } });
-};
-
-const updateProfile = async (req, res) => {
-  const { name, password } = req.body;
-  const user = await User.findById(req.user._id);
-  if (name) user.name = name;
-  if (password) {
-    if (password.length < 6) {
-      res.status(400);
-      throw new Error("Password must be at least 6 characters");
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-    user.password = password;
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name: name.trim(),
+      email: normalizedEmail,
+      password: hashedPassword
+    });
+
+    res.status(201).json({
+      token: generateToken(user._id),
+      user: publicUser(user)
+    });
+  } catch (error) {
+    next(error);
   }
-  const updated = await user.save();
-  res.json({ success: true, user: { _id: updated._id, name: updated.name, email: updated.email } });
 };
 
-module.exports = { signup, login, getMe, updateProfile };
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    const user = await User.findOne({ email: email.trim().toLowerCase() });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    res.json({
+      token: generateToken(user._id),
+      user: publicUser(user)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMe = async (req, res) => {
+  res.json({ user: publicUser(req.user) });
+};

@@ -1,70 +1,52 @@
-// ─────────────────────────────────────────────
-//  models/Expense.js — Expense Schema & Model
-// ─────────────────────────────────────────────
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-// ── Predefined expense categories ──
-const CATEGORIES = [
+const categories = [
   "Food",
-  "Travel",
+  "Transport",
   "Shopping",
   "Entertainment",
+  "Bills",
   "Health",
-  "Utilities",
   "Education",
+  "Travel",
+  "Utilities",
   "Personal Care",
-  "Other",
+  "Other"
 ];
 
 const expenseSchema = new mongoose.Schema(
   {
-    // Reference to the user who owns this expense
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true, // Index for faster queries by user
+      index: true
     },
     amount: {
       type: Number,
       required: [true, "Amount is required"],
-      min: [0.01, "Amount must be greater than 0"],
-      // Store as float with 2 decimal precision
-      get: (v) => Math.round(v * 100) / 100,
+      min: [0.01, "Amount must be greater than 0"]
     },
     category: {
       type: String,
-      enum: {
-        values: CATEGORIES,
-        message: "{VALUE} is not a valid category",
-      },
-      required: [true, "Category is required"],
+      enum: categories,
+      default: "Other"
     },
     description: {
       type: String,
       trim: true,
-      default: "",
-      maxlength: [300, "Description cannot exceed 300 characters"],
+      default: ""
     },
     date: {
       type: Date,
-      required: [true, "Date is required"],
-      default: Date.now,
+      default: Date.now
     },
+    autoTagged: {
+      type: Boolean,
+      default: false
+    }
   },
-  {
-    timestamps: true,
-    // Enable getters (for the amount rounding above)
-    toJSON: { getters: true },
-    toObject: { getters: true },
-  }
+  { timestamps: true }
 );
 
-// ── Compound index: user + date for efficient dashboard queries ──
-expenseSchema.index({ user: 1, date: -1 });
-expenseSchema.index({ user: 1, category: 1 });
-
-// ── Static: expose categories list ──
-expenseSchema.statics.CATEGORIES = CATEGORIES;
-
-module.exports = mongoose.model("Expense", expenseSchema);
+export default mongoose.model("Expense", expenseSchema);

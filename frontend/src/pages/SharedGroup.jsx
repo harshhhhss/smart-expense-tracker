@@ -223,10 +223,10 @@ const GroupDetail = ({ groupId, currentUserId, onBack }) => {
                 </div>
                 <div style={s.expRight}>
                   <div style={s.expTotal}>₹{Number(exp.amount).toFixed(0)}</div>
-                  {myplit && (
-                    <div style={{ fontSize: "0.72rem", color: myplit.settled ? "#43e97b" : "#f59e0b" }}>
-                      Your share: ₹{Number(myplit.amount).toFixed(0)}
-                      {!myplit.settled && (
+                  {mysplit && (
+                    <div style={{ fontSize: "0.72rem", color: mysplit.settled ? "#43e97b" : "#f59e0b" }}>
+                      Your share: ₹{Number(mysplit.amount).toFixed(0)}
+                      {!mysplit.settled && (
                         <button style={s.settleBtn} onClick={() => handleSettle(group._id, exp._id)}>
                           Settle
                         </button>
@@ -250,9 +250,6 @@ const GroupDetail = ({ groupId, currentUserId, onBack }) => {
       )}
     </div>
   );
-
-  // Fix: capture myplit correctly
-  function myplit() {}
 };
 
 // ─── Main SharedGroups Page ───────────────────────────────────────────────────
