@@ -5,30 +5,51 @@ import Navbar from "../components/Navbar";
 import ExpenseChart from "../components/ExpenseChart";
 import ExpenseForm from "../components/ExpenseForm";
 import ExpenseList from "../components/ExpenseList";
+import FilterPanel from "../components/FilterPanel";
+import ExportPanel from "../components/ExportPanel";
+import useToast from "../hooks/useToast";
+import useBudgetAlert from "../hooks/useBudgetAlert";
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
   const [chartData, setChartData] = useState({ categoryData: [], monthlyData: [] });
   const [summary, setSummary] = useState(null);
+  const [budgets, setBudgets] = useState(null);
   const [editingExp, setEditingExp] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "All",
+    startDate: "",
+    endDate: ""
+  });
+  const toast = useToast();
+  const { checkBudgetStatus } = useBudgetAlert(expenses, budgets);
 
   const fetchExpenses = useCallback(async () => {
     try {
-      const [expRes, dashRes] = await Promise.all([
-        API.get("/expenses"),
+      const [expRes, dashRes, budgetRes] = await Promise.all([
+        API.get("/expenses", { params: filters }),
         API.get("/advanced/dashboard"),
+        API.get("/advanced/budget"),
       ]);
-      setExpenses(expRes.data.expenses || []);
+      const fetchedExpenses = expRes.data.expenses || [];
+      setExpenses(fetchedExpenses);
       setSummary(dashRes.data.dashboard?.summary || null);
       setChartData(dashRes.data.dashboard?.chartData || { categoryData: [], monthlyData: [] });
+      setBudgets(budgetRes.data.budget || null);
+      
+      // Check budget status after fetching
+      setTimeout(() => checkBudgetStatus(), 500);
     } catch (err) {
       console.error(err);
+      toast.showError("Failed to load data");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [filters, toast, checkBudgetStatus]);
 
   useEffect(() => {
     fetchExpenses();
@@ -91,6 +112,16 @@ const Dashboard = () => {
             loading={loading}
           />
         </div>
+
+        {/* Filter Panel */}
+        <FilterPanel
+          onFiltersChange={setFilters}
+          isOpen={filterOpen}
+          onToggle={() => setFilterOpen(!filterOpen)}
+        />
+
+        {/* Export Panel */}
+        <ExportPanel expenses={expenses} summary={summary} />
 
         {/* Add Expense Form */}
         {showForm && (
