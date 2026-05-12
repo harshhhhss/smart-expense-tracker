@@ -18,5 +18,5 @@ export const detectCategory = (description = "") => {
     }
   }
 
-  return "Other";
+  return "Miscellaneous";
 };

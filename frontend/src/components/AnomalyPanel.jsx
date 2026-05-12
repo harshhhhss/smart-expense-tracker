@@ -101,14 +101,14 @@ const AnomalyPanel = () => {
 
 const s = {
   card: {
-    background: "#1a1d27", border: "1px solid #2a2d3e",
+    background: "var(--surface)", border: "1px solid var(--border)",
     borderRadius: "14px", padding: "1.25rem 1.5rem",
   },
   header: {
     display: "flex", alignItems: "center",
     justifyContent: "space-between", marginBottom: "1rem"
   },
-  title: { fontSize: "0.92rem", fontWeight: 600, color: "#e8e8f0" },
+  title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
   badge: {
     fontSize: "0.72rem", fontWeight: 600,
     padding: "2px 8px", borderRadius: "20px", border: "1px solid"
@@ -121,15 +121,15 @@ const s = {
   itemLeft: { display: "flex", alignItems: "flex-start", gap: "0.6rem", flex: 1 },
   itemIcon: { fontSize: "0.9rem", marginTop: "1px", flexShrink: 0 },
   itemLabel: { fontSize: "0.8rem", fontWeight: 700, marginBottom: "0.2rem" },
-  itemMsg: { fontSize: "0.78rem", color: "#9999bb", lineHeight: 1.4 },
+  itemMsg: { fontSize: "0.78rem", color: "var(--muted)", lineHeight: 1.4 },
   amount: { fontFamily: "monospace", fontWeight: 700, fontSize: "0.9rem", flexShrink: 0, marginLeft: "0.5rem" },
   expandBtn: {
     marginTop: "0.75rem", width: "100%", background: "transparent",
-    border: "none", color: "#6c63ff", fontSize: "0.82rem",
+    border: "none", color: "var(--accent)", fontSize: "0.82rem",
     cursor: "pointer", padding: "0.4rem", fontFamily: "inherit"
   },
-  shimmer: { height: 120, borderRadius: 10, background: "rgba(255,255,255,0.04)" },
-  emptyMsg: { fontSize: "0.85rem", color: "#666688", margin: 0 }
+  shimmer: { height: 120, borderRadius: 10, background: "var(--surface-2)" },
+  emptyMsg: { fontSize: "0.85rem", color: "var(--muted)", margin: 0 }
 };
 
 export default AnomalyPanel;

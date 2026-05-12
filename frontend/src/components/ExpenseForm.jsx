@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import API from "../api/axios";
 
-const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Other"];
+const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Miscellaneous"];
 
 const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
   const isEditing = !!editingExpense;
@@ -51,7 +51,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
     detectTimer.current = setTimeout(async () => {
       try {
         const { data } = await API.post("/expenses/detect-category", { description: desc });
-        if (data.category && data.category !== "Other") {
+        if (data.category) {
           setForm(prev => ({ ...prev, category: data.category }));
           setAutoTagged(true);
         }
@@ -95,7 +95,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
 
   return (
     <div style={styles.card}>
-      <h3 style={styles.cardTitle}>{isEditing ? "✏️ Edit Expense" : "➕ Add Expense"}</h3>
+      <h3 style={styles.cardTitle}>{isEditing ? "Edit Expense" : "Add Expense"}</h3>
 
       {error && <div style={styles.error}>{error}</div>}
 
@@ -180,21 +180,21 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
 
 const styles = {
   card: {
-    background: "#1a1d27",
-    border: "1px solid #2a2d3e",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
     padding: "1.5rem",
   },
-  cardTitle: { fontSize: "1rem", fontWeight: 600, color: "#e8e8f0", marginBottom: "1.2rem", marginTop: 0 },
+  cardTitle: { fontSize: "1rem", fontWeight: 600, color: "var(--text)", marginBottom: "1.2rem", marginTop: 0 },
   group: { marginBottom: "1rem" },
   label: {
     display: "flex", alignItems: "center", gap: "0.5rem",
-    fontSize: "0.82rem", color: "#8888aa", fontWeight: 500, marginBottom: "0.4rem"
+    fontSize: "0.82rem", color: "var(--muted)", fontWeight: 500, marginBottom: "0.4rem"
   },
   input: {
     width: "100%", padding: "0.7rem 0.9rem",
-    background: "#222536", border: "1px solid #2a2d3e",
-    borderRadius: "10px", color: "#e8e8f0",
+    background: "var(--surface-2)", border: "1px solid var(--border)",
+    borderRadius: "10px", color: "var(--text)",
     fontFamily: "inherit", fontSize: "0.92rem", outline: "none",
     boxSizing: "border-box",
     transition: "border-color 0.2s",
@@ -222,9 +222,9 @@ const styles = {
     fontWeight: 600, cursor: "pointer", transition: "opacity 0.2s",
   },
   cancelBtn: {
-    padding: "0.8rem 1.2rem", border: "1px solid #2a2d3e",
+    padding: "0.8rem 1.2rem", border: "1px solid var(--border)",
     borderRadius: "10px", background: "transparent",
-    color: "#8888aa", fontFamily: "inherit", fontSize: "0.9rem",
+    color: "var(--muted)", fontFamily: "inherit", fontSize: "0.9rem",
     cursor: "pointer",
   },
 };

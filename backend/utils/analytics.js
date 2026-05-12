@@ -3,7 +3,7 @@ export const getTotal = (expenses = []) =>
 
 export const getCategoryBreakdown = (expenses = []) =>
   expenses.reduce((breakdown, expense) => {
-    const category = expense.category || "Other";
+    const category = expense.category || "Miscellaneous";
     breakdown[category] = (breakdown[category] || 0) + Number(expense.amount || 0);
     return breakdown;
   }, {});

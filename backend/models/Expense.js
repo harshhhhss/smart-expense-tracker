@@ -11,7 +11,7 @@ const categories = [
   "Travel",
   "Utilities",
   "Personal Care",
-  "Other"
+  "Miscellaneous"
 ];
 
 const expenseSchema = new mongoose.Schema(
@@ -30,7 +30,7 @@ const expenseSchema = new mongoose.Schema(
     category: {
       type: String,
       enum: categories,
-      default: "Other"
+      default: "Miscellaneous"
     },
     description: {
       type: String,

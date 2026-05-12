@@ -18,9 +18,9 @@ const InsightCard = ({ insights = [], loading = false }) => {
         <h3 style={styles.heading}>💡 Smart Insights</h3>
         <div style={styles.grid}>
           {[1,2,3].map(i => (
-            <div key={i} style={{ ...styles.card, background: "rgba(255,255,255,0.03)", animation: "pulse 1.5s infinite" }}>
-              <div style={{ height: 12, width: "60%", background: "rgba(255,255,255,0.06)", borderRadius: 6, marginBottom: 8 }} />
-              <div style={{ height: 10, width: "90%", background: "rgba(255,255,255,0.04)", borderRadius: 6 }} />
+            <div key={i} style={{ ...styles.card, background: "var(--surface-2)", animation: "pulse 1.5s infinite" }}>
+              <div style={{ height: 12, width: "60%", background: "var(--surface)", borderRadius: 6, marginBottom: 8 }} />
+              <div style={{ height: 10, width: "90%", background: "var(--surface)", borderRadius: 6 }} />
             </div>
           ))}
         </div>
@@ -71,10 +71,10 @@ const InsightCard = ({ insights = [], loading = false }) => {
 const styles = {
   section: { marginBottom: "2rem" },
   headingRow: { display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" },
-  heading: { fontSize: "1rem", fontWeight: 600, color: "#e8e8f0", margin: 0 },
+  heading: { fontSize: "1rem", fontWeight: 600, color: "var(--text)", margin: 0 },
   badge: {
     fontSize: "0.72rem", fontWeight: 600,
-    background: "rgba(108,99,255,0.15)", color: "#6c63ff",
+    background: "rgba(108,99,255,0.15)", color: "var(--accent)",
     padding: "2px 8px", borderRadius: "20px", border: "1px solid rgba(108,99,255,0.3)"
   },
   grid: {
@@ -83,7 +83,8 @@ const styles = {
     gap: "0.75rem",
   },
   card: {
-    border: "1px solid",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
     borderRadius: "12px",
     padding: "1rem 1.25rem",
     transition: "transform 0.2s, box-shadow 0.2s",
@@ -92,7 +93,7 @@ const styles = {
   cardHeader: { display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" },
   icon: { fontSize: "1.1rem" },
   title: { fontSize: "0.82rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" },
-  message: { fontSize: "0.86rem", color: "#c8c8d8", lineHeight: 1.6, margin: 0 },
+  message: { fontSize: "0.86rem", color: "var(--muted)", lineHeight: 1.6, margin: 0 },
 };
 
 export default InsightCard;

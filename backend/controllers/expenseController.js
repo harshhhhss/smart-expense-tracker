@@ -85,5 +85,8 @@ export const deleteExpense = async (req, res, next) => {
 };
 
 export const detectExpenseCategory = async (req, res) => {
-  res.json({ category: detectCategory(req.body.description || "") });
+  const detected = detectCategory(req.body.description || "");
+  const allowedCategories = ["Food", "Travel", "Shopping", "Entertainment", "Health", "Utilities", "Education", "Personal Care", "Miscellaneous"];
+  const category = allowedCategories.includes(detected) ? detected : "Miscellaneous";
+  res.json({ category });
 };

@@ -28,7 +28,7 @@ const Login = () => {
     <div style={styles.page}>
       <div style={styles.box}>
         <div style={styles.logo}>
-          <div style={styles.logoIcon}>💰</div>
+          <div style={styles.logoIcon}>ET</div>
           <h1 style={styles.logoTitle}>ExpenseIQ</h1>
           <p style={styles.logoSub}>Smart expense tracking</p>
         </div>
@@ -59,32 +59,46 @@ const Login = () => {
 const styles = {
   page: {
     minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-    background: "radial-gradient(ellipse at 60% 20%, #1a1560 0%, #0f1117 60%)",
+    background: "radial-gradient(circle at 60% 20%, rgba(108,99,255,0.12), transparent 35%), var(--bg)",
   },
   box: {
-    background: "#1a1d27", border: "1px solid #2a2d3e", borderRadius: "20px",
+    background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "20px",
     padding: "2.5rem", width: "100%", maxWidth: "420px",
-    boxShadow: "0 25px 60px rgba(0,0,0,0.4)",
+    boxShadow: "var(--card-shadow)",
   },
   logo: { textAlign: "center", marginBottom: "2rem" },
-  logoIcon: { fontSize: "2.5rem", marginBottom: "0.5rem" },
+  logoIcon: {
+    fontSize: "2.5rem",
+    fontWeight: 700,
+    color: "var(--accent)",
+    background: "var(--surface)",
+    border: "2px solid var(--accent)",
+    borderRadius: "50%",
+    width: "4rem",
+    height: "4rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "0.5rem",
+    boxShadow: "0 4px 12px rgba(108, 99, 255, 0.3)"
+  },
   logoTitle: {
     fontSize: "1.6rem", fontWeight: 700, margin: 0,
     background: "linear-gradient(135deg, #6c63ff, #ff6584)",
     WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
   },
-  logoSub: { color: "#8888aa", fontSize: "0.88rem", marginTop: "0.3rem" },
+  logoSub: { color: "var(--muted)", fontSize: "0.88rem", marginTop: "0.3rem" },
   error: {
-    background: "rgba(255,101,132,0.1)", border: "1px solid rgba(255,101,132,0.3)",
-    color: "#ff6584", padding: "0.7rem 1rem", borderRadius: "8px",
+    background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)",
+    color: "var(--danger)", padding: "0.7rem 1rem", borderRadius: "8px",
     marginBottom: "1rem", fontSize: "0.88rem",
   },
   group: { marginBottom: "1.1rem" },
-  label: { display: "block", fontSize: "0.82rem", color: "#8888aa", fontWeight: 500, marginBottom: "0.4rem" },
+  label: { display: "block", fontSize: "0.82rem", color: "var(--muted)", fontWeight: 500, marginBottom: "0.4rem" },
   input: {
     width: "100%", padding: "0.75rem 1rem",
-    background: "#222536", border: "1px solid #2a2d3e",
-    borderRadius: "10px", color: "#e8e8f0",
+    background: "var(--surface-2)", border: "1px solid var(--border)",
+    borderRadius: "10px", color: "var(--text)",
     fontFamily: "inherit", fontSize: "0.95rem", outline: "none", boxSizing: "border-box",
   },
   btn: {
@@ -93,8 +107,8 @@ const styles = {
     color: "white", fontFamily: "inherit", fontSize: "1rem",
     fontWeight: 600, cursor: "pointer", marginTop: "0.5rem",
   },
-  switch: { textAlign: "center", marginTop: "1.5rem", color: "#8888aa", fontSize: "0.88rem" },
-  link: { color: "#6c63ff", textDecoration: "none", fontWeight: 500 },
+  switch: { textAlign: "center", marginTop: "1.5rem", color: "var(--muted)", fontSize: "0.88rem" },
+  link: { color: "var(--accent)", textDecoration: "none", fontWeight: 500 },
 };
 
 export default Login;

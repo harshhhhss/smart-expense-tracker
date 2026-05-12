@@ -9,15 +9,15 @@ const TREND_CONFIG = {
   increasing:        { color: "#ef4444", icon: "📈", label: "Trending Up" },
   decreasing:        { color: "#43e97b", icon: "📉", label: "Trending Down" },
   stable:            { color: "#6c63ff", icon: "➡️", label: "Stable" },
-  insufficient_data: { color: "#8888aa", icon: "❓", label: "Need more data" },
+  insufficient_data: { color: "var(--muted)", icon: "❓", label: "Need more data" },
 };
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   const d = payload[0];
   return (
-    <div style={{ background: "#1a1d27", border: "1px solid #2a2d3e", borderRadius: 8, padding: "8px 12px" }}>
-      <div style={{ color: "#8888aa", fontSize: "0.75rem", marginBottom: 2 }}>{label}</div>
+    <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 8, padding: "8px 12px" }}>
+      <div style={{ color: "var(--muted)", fontSize: "0.75rem", marginBottom: 2 }}>{label}</div>
       <div style={{ color: d.color, fontWeight: 700, fontFamily: "monospace" }}>
         ₹{Number(d.value).toFixed(0)}
       </div>
@@ -108,7 +108,7 @@ const PredictionPanel = () => {
               <stop offset="100%" stopColor="#f59e0b" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="month" tick={{ fill: "#666688", fontSize: 10 }} axisLine={false} tickLine={false} />
+          <XAxis dataKey="month" tick={{ fill: "var(--muted)", fontSize: 10 }} axisLine={false} tickLine={false} />
           <YAxis hide />
           <Tooltip content={<CustomTooltip />} />
           <Area type="monotone" dataKey="actual"    stroke="#6c63ff" fill="url(#actualGrad)"  strokeWidth={2} dot={false} connectNulls={false} />
@@ -125,26 +125,26 @@ const PredictionPanel = () => {
 };
 
 const s = {
-  card: { background: "#1a1d27", border: "1px solid #2a2d3e", borderRadius: "14px", padding: "1.25rem 1.5rem" },
+  card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "1.25rem 1.5rem" },
   header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" },
-  title: { fontSize: "0.92rem", fontWeight: 600, color: "#e8e8f0" },
+  title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
   trendBadge: { fontSize: "0.72rem", fontWeight: 600, padding: "2px 8px", borderRadius: "20px", border: "1px solid" },
   predictionBox: { marginBottom: "1rem" },
-  predLabel: { fontSize: "0.75rem", color: "#8888aa", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.3rem" },
-  predAmount: { fontSize: "2rem", fontWeight: 700, fontFamily: "monospace", color: "#e8e8f0", lineHeight: 1.2 },
-  predRange: { fontSize: "0.78rem", color: "#666688", marginTop: "0.2rem", marginBottom: "0.5rem" },
+  predLabel: { fontSize: "0.75rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.3rem" },
+  predAmount: { fontSize: "2rem", fontWeight: 700, fontFamily: "monospace", color: "var(--text)", lineHeight: 1.2 },
+  predRange: { fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.2rem", marginBottom: "0.5rem" },
   confidence: { display: "flex", alignItems: "center", gap: "0.5rem" },
   confBar: {
     height: 4, borderRadius: 2,
     background: "linear-gradient(90deg, #6c63ff, #f59e0b)",
     transition: "width 0.5s ease"
   },
-  confLabel: { fontSize: "0.72rem", color: "#8888aa" },
+  confLabel: { fontSize: "0.72rem", color: "var(--muted)" },
   legend: { display: "flex", gap: "1rem", marginTop: "0.5rem" },
-  legendItem: { display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", color: "#8888aa" },
+  legendItem: { display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", color: "var(--muted)" },
   dot: { width: 8, height: 8, borderRadius: "50%", display: "inline-block" },
-  shimmer: { height: 220, borderRadius: 10, background: "rgba(255,255,255,0.04)" },
-  empty: { fontSize: "0.85rem", color: "#666688", margin: 0 }
+  shimmer: { height: 220, borderRadius: 10, background: "var(--surface-2)" },
+  empty: { fontSize: "0.85rem", color: "var(--muted)", margin: 0 }
 };
 
 export default PredictionPanel;

@@ -13,7 +13,7 @@ const groupExpenseSchema = new mongoose.Schema(
   {
     description: { type: String, required: true, trim: true },
     amount: { type: Number, required: true, min: 0.01 },
-    category: { type: String, default: "Other" },
+    category: { type: String, default: "Miscellaneous" },
     date: { type: Date, default: Date.now },
     paidBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     splits: [splitSchema]

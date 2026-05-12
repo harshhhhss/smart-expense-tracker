@@ -15,7 +15,7 @@ const PieTooltipContent = ({ active, payload }) => {
   return (
     <div style={styles.tooltip}>
       <p style={{ color: payload[0].payload.fill, fontWeight: 600, marginBottom: 2 }}>{payload[0].name}</p>
-      <p style={{ color: "#e8e8f0" }}>₹{payload[0].value.toFixed(2)}</p>
+      <p style={{ color: "var(--text)" }}>₹{payload[0].value.toFixed(2)}</p>
     </div>
   );
 };
@@ -25,8 +25,8 @@ const BarTooltipContent = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={styles.tooltip}>
-      <p style={{ color: "#8888aa", marginBottom: 2, fontSize: "0.8rem" }}>{label}</p>
-      <p style={{ color: "#6c63ff", fontWeight: 600 }}>₹{payload[0]?.value?.toFixed(2)}</p>
+      <p style={{ color: "var(--muted)", marginBottom: 2, fontSize: "0.8rem" }}>{label}</p>
+      <p style={{ color: "var(--accent)", fontWeight: 600 }}>₹{payload[0]?.value?.toFixed(2)}</p>
     </div>
   );
 };
@@ -52,8 +52,8 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
       <div style={styles.chartsRow}>
         {[1, 2].map(i => (
           <div key={i} style={styles.chartCard}>
-            <div style={{ height: 14, width: "40%", background: "rgba(255,255,255,0.06)", borderRadius: 6, marginBottom: 16 }} />
-            <div style={{ height: 220, background: "rgba(255,255,255,0.03)", borderRadius: 10 }} />
+            <div style={{ height: 14, width: "40%", background: "var(--surface-2)", borderRadius: 6, marginBottom: 16 }} />
+            <div style={{ height: 220, background: "var(--surface-2)", borderRadius: 10 }} />
           </div>
         ))}
       </div>
@@ -101,15 +101,15 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
         {hasMonthlyData ? (
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={monthlyData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2d3e" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis
                 dataKey="month"
-                tick={{ fill: "#8888aa", fontSize: 11 }}
+                tick={{ fill: "var(--muted)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fill: "#8888aa", fontSize: 11 }}
+                tick={{ fill: "var(--muted)", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={v => `₹${v >= 1000 ? (v/1000).toFixed(1)+"k" : v}`}
@@ -135,21 +135,21 @@ const styles = {
     marginBottom: "2rem",
   },
   chartCard: {
-    background: "#1a1d27",
-    border: "1px solid #2a2d3e",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
     borderRadius: "14px",
     padding: "1.5rem",
   },
   chartTitle: {
     fontSize: "0.9rem",
     fontWeight: 600,
-    color: "#8888aa",
+    color: "var(--muted)",
     marginBottom: "1rem",
     marginTop: 0,
   },
   tooltip: {
-    background: "#1a1d27",
-    border: "1px solid #2a2d3e",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
     borderRadius: "8px",
     padding: "8px 12px",
     fontSize: "0.85rem",
@@ -163,13 +163,13 @@ const styles = {
   },
   legendItem: { display: "flex", alignItems: "center", gap: "0.3rem" },
   legendDot: { width: 8, height: 8, borderRadius: "50%", flexShrink: 0 },
-  legendLabel: { fontSize: "0.75rem", color: "#8888aa" },
+  legendLabel: { fontSize: "0.75rem", color: "var(--muted)" },
   empty: {
     height: 200,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#555577",
+    color: "var(--muted)",
     fontSize: "0.9rem",
   },
 };

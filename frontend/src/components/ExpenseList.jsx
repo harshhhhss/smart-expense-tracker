@@ -5,7 +5,7 @@ import API from "../api/axios";
 const CATEGORY_COLORS = {
   Food: "#f7971e", Travel: "#38bdf8", Shopping: "#ff6584",
   Entertainment: "#a78bfa", Health: "#43e97b", Utilities: "#6c63ff",
-  Education: "#fbbf24", "Personal Care": "#fb7185", Other: "#8888aa",
+  Education: "#fbbf24", "Personal Care": "#fb7185", Miscellaneous: "var(--muted)",
 };
 
 const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
@@ -40,7 +40,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
       ) : (
         <div style={styles.list}>
           {expenses.map((expense) => {
-            const color = CATEGORY_COLORS[expense.category] || "#8888aa";
+            const color = CATEGORY_COLORS[expense.category] || "var(--muted)";
             return (
               <div key={expense._id} style={styles.item}>
                 {/* Left: category badge + info */}
@@ -87,14 +87,14 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
 
 const styles = {
   card: {
-    background: "#1a1d27", border: "1px solid #2a2d3e",
+    background: "var(--surface)", border: "1px solid var(--border)",
     borderRadius: "14px", padding: "1.5rem",
   },
-  cardTitle: { fontSize: "1rem", fontWeight: 600, color: "#e8e8f0", marginBottom: "1rem", marginTop: 0 },
+  cardTitle: { fontSize: "1rem", fontWeight: 600, color: "var(--text)", marginBottom: "1rem", marginTop: 0 },
   list: { display: "flex", flexDirection: "column", gap: 0 },
   item: {
     display: "flex", alignItems: "center", justifyContent: "space-between",
-    padding: "0.85rem 0", borderBottom: "1px solid #2a2d3e",
+    padding: "0.85rem 0", borderBottom: "1px solid var(--border)",
   },
   itemLeft: { display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 },
   catDot: { width: 8, height: 8, borderRadius: "50%", flexShrink: 0 },
@@ -108,8 +108,8 @@ const styles = {
     background: "rgba(67,233,123,0.1)", padding: "1px 6px",
     borderRadius: "10px", border: "1px solid rgba(67,233,123,0.2)",
   },
-  desc: { fontSize: "0.82rem", color: "#8888aa", marginBottom: "0.15rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 },
-  date: { fontSize: "0.72rem", color: "#555577" },
+  desc: { fontSize: "0.82rem", color: "var(--muted)", marginBottom: "0.15rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 },
+  date: { fontSize: "0.72rem", color: "var(--muted)" },
   itemRight: { display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0 },
   amount: { fontFamily: "monospace", fontWeight: 700, color: "#ff6584", fontSize: "0.95rem" },
   actions: { display: "flex", gap: "0.4rem" },
@@ -123,7 +123,7 @@ const styles = {
     background: "rgba(255,101,132,0.1)", color: "#ff6584",
     fontSize: "0.75rem", cursor: "pointer", fontFamily: "inherit",
   },
-  empty: { textAlign: "center", color: "#555577", padding: "2.5rem 1rem", fontSize: "0.9rem" },
+  empty: { textAlign: "center", color: "var(--muted)", padding: "2.5rem 1rem", fontSize: "0.9rem" },
 };
 
 export default ExpenseList;

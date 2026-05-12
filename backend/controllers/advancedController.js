@@ -12,7 +12,7 @@ import {
 } from "../utils/analytics.js";
 import { generateInsights } from "../utils/insights.js";
 
-const categories = ["Food", "Transport", "Shopping", "Entertainment", "Bills", "Health", "Education", "Travel", "Utilities", "Personal Care", "Other"];
+const categories = ["Food", "Transport", "Shopping", "Entertainment", "Bills", "Health", "Education", "Travel", "Utilities", "Personal Care", "Miscellaneous"];
 
 const getUserExpenses = (userId) => Expense.find({ user: userId }).sort({ date: -1 });
 
@@ -270,7 +270,7 @@ export const addGroupExpense = async (req, res, next) => {
     group.expenses.push({
       description: req.body.description,
       amount,
-      category: req.body.category || "Other",
+      category: req.body.category || "Miscellaneous",
       date: req.body.date ? new Date(req.body.date) : new Date(),
       paidBy: req.user._id,
       splits: group.members.map((member) => ({

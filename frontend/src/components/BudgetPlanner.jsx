@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import API from "../api/axios";
 
-const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Other"];
+const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Miscellaneous"];
 
 const STATUS_CONFIG = {
   overspending:   { color: "#ef4444", bg: "rgba(239,68,68,0.1)",  icon: "⚠️" },
@@ -18,7 +18,7 @@ const HealthScoreRing = ({ score }) => {
   return (
     <div style={{ position: "relative", width: 80, height: 80 }}>
       <svg width="80" height="80" style={{ transform: "rotate(-90deg)" }}>
-        <circle cx="40" cy="40" r="32" fill="none" stroke="#2a2d3e" strokeWidth="7" />
+        <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" strokeWidth="7" />
         <circle cx="40" cy="40" r="32" fill="none" stroke={color} strokeWidth="7"
           strokeDasharray={`${2 * Math.PI * 32}`}
           strokeDashoffset={`${2 * Math.PI * 32 * (1 - score / 100)}`}
@@ -28,7 +28,7 @@ const HealthScoreRing = ({ score }) => {
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         <span style={{ fontWeight: 700, fontSize: "1.1rem", color }}>{score}</span>
-        <span style={{ fontSize: "0.6rem", color: "#8888aa" }}>/ 100</span>
+        <span style={{ fontSize: "0.6rem", color: "var(--muted)" }}>/ 100</span>
       </div>
     </div>
   );
@@ -144,11 +144,11 @@ const BudgetPlanner = () => {
                 { label: "Savings (20%)", data: recs.allocation.savings, color: "#43e97b" },
               ].map(({ label, data, color }) => (
                 <div key={label} style={{ ...s.allocCard, borderColor: color + "30" }}>
-                  <div style={{ fontSize: "0.72rem", color: "#8888aa", marginBottom: "0.3rem" }}>{label}</div>
+                  <div style={{ fontSize: "0.72rem", color: "var(--muted)", marginBottom: "0.3rem" }}>{label}</div>
                   <div style={{ fontFamily: "monospace", fontWeight: 700, color, fontSize: "1rem" }}>
                     ₹{(data.actual || 0).toLocaleString()}
                   </div>
-                  <div style={{ fontSize: "0.7rem", color: "#555577" }}>Budget: ₹{(data.budget || 0).toLocaleString()}</div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--muted)" }}>Budget: ₹{(data.budget || 0).toLocaleString()}</div>
                   {/* Progress bar */}
                   <div style={s.progBg}>
                     <div style={{ ...s.progFill, width: `${Math.min(100, data.budget > 0 ? (data.actual / data.budget) * 100 : 0)}%`, background: color }} />
@@ -195,7 +195,7 @@ const BudgetPlanner = () => {
                       </div>
                     )}
                     {limit > 0 && (
-                      <span style={{ fontSize: "0.7rem", color: over ? "#ef4444" : "#8888aa" }}>
+                      <span style={{ fontSize: "0.7rem", color: over ? "var(--danger)" : "var(--muted)" }}>
                         ₹{current.toFixed(0)} / ₹{limit}
                       </span>
                     )}
@@ -272,37 +272,37 @@ const BudgetPlanner = () => {
 };
 
 const s = {
-  card: { background: "#1a1d27", border: "1px solid #2a2d3e", borderRadius: "14px", padding: "1.25rem 1.5rem" },
+  card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "1.25rem 1.5rem" },
   header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.2rem", flexWrap: "wrap", gap: "0.5rem" },
-  title: { fontSize: "0.92rem", fontWeight: 600, color: "#e8e8f0" },
-  tabs: { display: "flex", gap: "0.25rem", background: "#0f1117", borderRadius: "8px", padding: "3px" },
-  tab: { padding: "0.3rem 0.75rem", borderRadius: "6px", border: "none", background: "transparent", color: "#8888aa", fontSize: "0.78rem", cursor: "pointer", fontFamily: "inherit" },
-  tabActive: { background: "#2a2d3e", color: "#e8e8f0" },
+  title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
+  tabs: { display: "flex", gap: "0.25rem", background: "var(--surface-2)", borderRadius: "8px", padding: "3px" },
+  tab: { padding: "0.3rem 0.75rem", borderRadius: "6px", border: "none", background: "transparent", color: "var(--muted)", fontSize: "0.78rem", cursor: "pointer", fontFamily: "inherit" },
+  tabActive: { background: "var(--surface)", color: "var(--text)" },
   overviewRow: { display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1.2rem" },
   overviewStats: { flex: 1 },
   statRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" },
-  statLabel: { fontSize: "0.78rem", color: "#8888aa" },
-  statVal: { fontFamily: "monospace", fontWeight: 600, fontSize: "0.88rem", color: "#e8e8f0" },
+  statLabel: { fontSize: "0.78rem", color: "var(--muted)" },
+  statVal: { fontFamily: "monospace", fontWeight: 600, fontSize: "0.88rem", color: "var(--text)" },
   allocationGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", marginBottom: "1rem" },
-  allocCard: { background: "#222536", borderRadius: "10px", padding: "0.75rem", border: "1px solid" },
-  progBg: { height: 3, background: "#2a2d3e", borderRadius: 2, marginTop: "0.4rem" },
+  allocCard: { background: "var(--surface-2)", borderRadius: "10px", padding: "0.75rem", border: "1px solid var(--border)" },
+  progBg: { height: 3, background: "var(--surface)", borderRadius: 2, marginTop: "0.4rem" },
   progFill: { height: "100%", borderRadius: 2, transition: "width 0.5s ease" },
-  applyBtn: { width: "100%", padding: "0.7rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", color: "#6c63ff", borderRadius: "10px", cursor: "pointer", fontSize: "0.85rem", fontFamily: "inherit", fontWeight: 600 },
+  applyBtn: { width: "100%", padding: "0.7rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", color: "var(--accent)", borderRadius: "10px", cursor: "pointer", fontSize: "0.85rem", fontFamily: "inherit", fontWeight: 600 },
   incomeRow: { marginBottom: "1rem" },
-  fieldLabel: { fontSize: "0.78rem", color: "#8888aa", fontWeight: 500 },
-  incomeInput: { padding: "0.6rem 0.9rem", background: "#222536", border: "1px solid #2a2d3e", borderRadius: "8px", color: "#e8e8f0", fontFamily: "inherit", fontSize: "0.88rem", outline: "none", width: "100%" },
-  refreshBtn: { padding: "0.6rem 1rem", background: "#222536", border: "1px solid #2a2d3e", color: "#8888aa", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.82rem", whiteSpace: "nowrap" },
+  fieldLabel: { fontSize: "0.78rem", color: "var(--muted)", fontWeight: 500 },
+  incomeInput: { padding: "0.6rem 0.9rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--text)", fontFamily: "inherit", fontSize: "0.88rem", outline: "none", width: "100%" },
+  refreshBtn: { padding: "0.6rem 1rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.82rem", whiteSpace: "nowrap" },
   limitsGrid: { display: "flex", flexDirection: "column", gap: "0.6rem", marginBottom: "1rem" },
   limitRow: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" },
   limitLeft: { flex: 1 },
-  limitCat: { fontSize: "0.82rem", color: "#c8c8d8", fontWeight: 500 },
-  limitProg: { height: 3, background: "#2a2d3e", borderRadius: 2, margin: "3px 0" },
+  limitCat: { fontSize: "0.82rem", color: "var(--text)", fontWeight: 500 },
+  limitProg: { height: 3, background: "var(--surface)", borderRadius: 2, margin: "3px 0" },
   limitFill: { height: "100%", borderRadius: 2 },
-  limitInput: { width: 90, padding: "0.4rem 0.6rem", background: "#222536", border: "1px solid #2a2d3e", borderRadius: "7px", color: "#e8e8f0", fontFamily: "monospace", fontSize: "0.82rem", outline: "none" },
+  limitInput: { width: 90, padding: "0.4rem 0.6rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "7px", color: "var(--text)", fontFamily: "monospace", fontSize: "0.82rem", outline: "none" },
   planActions: { display: "flex", gap: "0.5rem" },
   saveBtn: { flex: 1, padding: "0.7rem", background: "linear-gradient(135deg, #6c63ff, #8b5cf6)", border: "none", color: "white", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
-  cancelBtn: { padding: "0.7rem 1rem", background: "transparent", border: "1px solid #2a2d3e", color: "#8888aa", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
-  editBtn: { flex: 1, padding: "0.7rem", background: "#222536", border: "1px solid #2a2d3e", color: "#e8e8f0", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
+  cancelBtn: { padding: "0.7rem 1rem", background: "transparent", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
+  editBtn: { flex: 1, padding: "0.7rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
   recList: { display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" },
   recItem: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", borderRadius: "10px" },
   recLeft: { display: "flex", alignItems: "flex-start", gap: "0.5rem", flex: 1 },
@@ -310,10 +310,10 @@ const s = {
   recCat: { fontSize: "0.82rem", fontWeight: 700, display: "block", marginBottom: "0.15rem" },
   recAdvice: { fontSize: "0.75rem", color: "#9999bb", margin: 0, lineHeight: 1.4 },
   recNumbers: { display: "flex", alignItems: "center", gap: "0.4rem", flexShrink: 0 },
-  recCurrent: { fontFamily: "monospace", fontSize: "0.82rem", color: "#8888aa" },
-  recArrow: { color: "#555577", fontSize: "0.8rem" },
+  recCurrent: { fontFamily: "monospace", fontSize: "0.82rem", color: "var(--muted)" },
+  recArrow: { color: "var(--muted)", fontSize: "0.8rem" },
   recTarget: { fontFamily: "monospace", fontSize: "0.82rem", fontWeight: 700 },
-  shimmer: { height: 280, borderRadius: 10, background: "rgba(255,255,255,0.04)" }
+  shimmer: { height: 280, borderRadius: 10, background: "var(--surface-2)" }
 };
 
 export default BudgetPlanner;

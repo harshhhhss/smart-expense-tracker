@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import API from "../api/axios";
 import Navbar from "../components/Navbar";
 
-const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Other"];
+const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Miscellaneous"];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -14,7 +14,7 @@ const CreateGroupModal = ({ onClose, onCreated }) => {
   const [emoji,   setEmoji]   = useState("👥");
   const [loading, setLoading] = useState(false);
 
-  const EMOJIS = ["👥","🏠","✈️","🍕","🏋️","🎉","💼","🎮","🏕️","💑"];
+  const ICONS = ["G","H","T","F","S","E","B","M","C","P"];
 
   const submit = async () => {
     if (!name.trim()) return;
@@ -33,9 +33,9 @@ const CreateGroupModal = ({ onClose, onCreated }) => {
     <div style={s.overlay} onClick={onClose}>
       <div style={s.modal} onClick={e => e.stopPropagation()}>
         <h3 style={s.modalTitle}>Create Group</h3>
-        <div style={s.emojiRow}>
-          {EMOJIS.map(e => (
-            <button key={e} style={{ ...s.emojiBtn, ...(emoji === e ? s.emojiBtnActive : {}) }}
+        <div style={s.iconRow}>
+          {ICONS.map(e => (
+            <button key={e} style={{ ...s.iconBtn, ...(emoji === e ? s.iconBtnActive : {}) }}
               onClick={() => setEmoji(e)}>{e}</button>
           ))}
         </div>
@@ -188,12 +188,12 @@ const GroupDetail = ({ groupId, currentUserId, onBack }) => {
         <h4 style={s.sectionTitle}>Balances</h4>
         <div style={s.balanceGrid}>
           {balances?.map((b, i) => (
-            <div key={i} style={{ ...s.balanceCard, borderColor: b.balance > 0 ? "rgba(67,233,123,0.2)" : b.balance < 0 ? "rgba(239,68,68,0.2)" : "#2a2d3e" }}>
+            <div key={i} style={{ ...s.balanceCard, borderColor: b.balance > 0 ? "rgba(67,233,123,0.2)" : b.balance < 0 ? "rgba(239,68,68,0.2)" : "var(--border)" }}>
               <div style={s.balanceName}>{b.user.name}</div>
-              <div style={{ ...s.balanceAmt, color: b.balance > 0 ? "#43e97b" : b.balance < 0 ? "#ef4444" : "#8888aa" }}>
+              <div style={{ ...s.balanceAmt, color: b.balance > 0 ? "#43e97b" : b.balance < 0 ? "#ef4444" : "var(--muted)" }}>
                 {b.balance > 0 ? "Gets back" : b.balance < 0 ? "Owes" : "Settled"}
               </div>
-              <div style={{ fontFamily: "monospace", fontWeight: 700, color: b.balance > 0 ? "#43e97b" : b.balance < 0 ? "#ef4444" : "#8888aa" }}>
+              <div style={{ fontFamily: "monospace", fontWeight: 700, color: b.balance > 0 ? "#43e97b" : b.balance < 0 ? "#ef4444" : "var(--muted)" }}>
                 {b.balance !== 0 ? `₹${Math.abs(b.balance).toFixed(0)}` : "—"}
               </div>
             </div>
@@ -311,8 +311,8 @@ const SharedGroups = () => {
         ) : groups.length === 0 ? (
           <div style={s.emptyPage}>
             <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>👥</div>
-            <h3 style={{ color: "#e8e8f0", marginBottom: "0.5rem" }}>No groups yet</h3>
-            <p style={{ color: "#8888aa", marginBottom: "1.5rem" }}>Create a group to start splitting expenses with friends</p>
+            <h3 style={{ color: "var(--text)", marginBottom: "0.5rem" }}>No groups yet</h3>
+            <p style={{ color: "var(--muted)", marginBottom: "1.5rem" }}>Create a group to start splitting expenses with friends</p>
             <button style={s.primaryBtn} onClick={() => setShowCreate(true)}>Create Your First Group</button>
           </div>
         ) : (
@@ -349,57 +349,75 @@ const SharedGroups = () => {
 const s = {
   page: { maxWidth: 900, margin: "0 auto", padding: "2rem 1.5rem" },
   pageHeader: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" },
-  pageTitle: { fontSize: "1.5rem", fontWeight: 700, color: "#e8e8f0", margin: 0 },
-  pageSubtitle: { color: "#8888aa", fontSize: "0.88rem", marginTop: "0.2rem" },
+  pageTitle: { fontSize: "1.5rem", fontWeight: 700, color: "var(--text)", margin: 0 },
+  pageSubtitle: { color: "var(--muted)", fontSize: "0.88rem", marginTop: "0.2rem" },
   groupsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" },
-  groupCard: { background: "#1a1d27", border: "1px solid #2a2d3e", borderRadius: "14px", padding: "1.25rem", cursor: "pointer", transition: "border-color 0.2s", },
+  groupCard: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "1.25rem", cursor: "pointer", transition: "border-color 0.2s", },
   groupCardTop: { display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" },
   cardEmoji: { fontSize: "1.8rem", flexShrink: 0 },
   groupCardInfo: { flex: 1 },
-  groupCardName: { fontWeight: 600, color: "#e8e8f0", fontSize: "0.95rem" },
-  groupCardMeta: { fontSize: "0.75rem", color: "#8888aa" },
-  groupCardAmount: { fontFamily: "monospace", fontWeight: 700, color: "#6c63ff", fontSize: "1.1rem" },
+  groupCardName: { fontWeight: 600, color: "var(--text)", fontSize: "0.95rem" },
+  groupCardMeta: { fontSize: "0.75rem", color: "var(--muted)" },
+  groupCardAmount: { fontFamily: "monospace", fontWeight: 700, color: "var(--accent)", fontSize: "1.1rem" },
   groupCardFooter: { display: "flex", justifyContent: "space-between", alignItems: "center" },
-  groupCardCode: { fontSize: "0.72rem", color: "#555577", fontFamily: "monospace" },
-  groupCardExpCount: { fontSize: "0.72rem", color: "#8888aa" },
+  groupCardCode: { fontSize: "0.72rem", color: "var(--muted)", fontFamily: "monospace" },
+  groupCardExpCount: { fontSize: "0.72rem", color: "var(--muted)" },
   overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.65)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, backdropFilter: "blur(4px)" },
-  modal: { background: "#1a1d27", border: "1px solid #2a2d3e", borderRadius: "18px", padding: "1.75rem", width: "100%", maxWidth: 400 },
-  modalTitle: { fontSize: "1.1rem", fontWeight: 700, color: "#e8e8f0", marginBottom: "0.5rem", marginTop: 0 },
-  modalSub: { fontSize: "0.82rem", color: "#8888aa", marginBottom: "1rem" },
-  modalInput: { display: "block", width: "100%", padding: "0.7rem 0.9rem", background: "#222536", border: "1px solid #2a2d3e", borderRadius: "10px", color: "#e8e8f0", fontFamily: "inherit", fontSize: "0.9rem", outline: "none", marginBottom: "0.75rem", boxSizing: "border-box" },
+  modal: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "18px", padding: "1.75rem", width: "100%", maxWidth: 400 },
+  modalTitle: { fontSize: "1.1rem", fontWeight: 700, color: "var(--text)", marginBottom: "0.5rem", marginTop: 0 },
+  modalSub: { fontSize: "0.82rem", color: "var(--muted)", marginBottom: "1rem" },
+  modalInput: { display: "block", width: "100%", padding: "0.7rem 0.9rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "10px", color: "var(--text)", fontFamily: "inherit", fontSize: "0.9rem", outline: "none", marginBottom: "0.75rem", boxSizing: "border-box" },
   modalActions: { display: "flex", gap: "0.5rem", marginTop: "0.25rem" },
-  emojiRow: { display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "0.75rem" },
-  emojiBtn: { width: 36, height: 36, borderRadius: "8px", border: "1px solid #2a2d3e", background: "#222536", cursor: "pointer", fontSize: "1.1rem" },
-  emojiBtnActive: { borderColor: "#6c63ff", background: "rgba(108,99,255,0.15)" },
+  iconRow: { display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem" },
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: "var(--radius)",
+    border: "1px solid var(--border)",
+    background: "var(--surface)",
+    cursor: "pointer",
+    fontSize: "1.1rem",
+    fontWeight: 600,
+    color: "var(--text)",
+    transition: "all 0.2s ease",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  iconBtnActive: {
+    borderColor: "var(--accent)",
+    background: "rgba(108,99,255,0.1)",
+    color: "var(--accent)"
+  },
   errorBox: { background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#ef4444", padding: "0.6rem 0.9rem", borderRadius: "8px", marginBottom: "0.75rem", fontSize: "0.85rem" },
   primaryBtn: { flex: 1, padding: "0.7rem 1.2rem", background: "linear-gradient(135deg, #6c63ff, #8b5cf6)", border: "none", color: "white", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 600, fontSize: "0.88rem" },
-  cancelBtn: { flex: 1, padding: "0.7rem", background: "transparent", border: "1px solid #2a2d3e", color: "#8888aa", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
-  outlineBtn: { padding: "0.7rem 1.2rem", background: "transparent", border: "1px solid #2a2d3e", color: "#e8e8f0", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.88rem" },
+  cancelBtn: { flex: 1, padding: "0.7rem", background: "transparent", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
+  outlineBtn: { padding: "0.7rem 1.2rem", background: "transparent", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.88rem" },
   backBtn: { background: "transparent", border: "none", color: "#6c63ff", cursor: "pointer", fontFamily: "inherit", fontSize: "0.88rem", marginBottom: "1.5rem", padding: 0 },
   groupHeader: { display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap" },
   groupEmoji: { fontSize: "2.5rem", flexShrink: 0 },
-  groupName: { fontSize: "1.4rem", fontWeight: 700, color: "#e8e8f0", margin: 0 },
-  groupMeta: { color: "#8888aa", fontSize: "0.85rem", marginTop: "0.2rem" },
-  inviteChip: { marginLeft: "auto", background: "#222536", border: "1px solid #2a2d3e", borderRadius: "10px", padding: "0.5rem 0.9rem", textAlign: "center" },
-  inviteLabel: { display: "block", fontSize: "0.68rem", color: "#555577", marginBottom: "0.2rem" },
+  groupName: { fontSize: "1.4rem", fontWeight: 700, color: "var(--text)", margin: 0 },
+  groupMeta: { color: "var(--muted)", fontSize: "0.85rem", marginTop: "0.2rem" },
+  inviteChip: { marginLeft: "auto", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "10px", padding: "0.5rem 0.9rem", textAlign: "center" },
+  inviteLabel: { display: "block", fontSize: "0.68rem", color: "var(--muted)", marginBottom: "0.2rem" },
   inviteCode: { fontFamily: "monospace", fontWeight: 700, color: "#6c63ff", fontSize: "0.95rem", letterSpacing: "0.1em" },
   section: { marginBottom: "1.5rem" },
-  sectionTitle: { fontSize: "0.85rem", fontWeight: 600, color: "#8888aa", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem", marginTop: 0 },
+  sectionTitle: { fontSize: "0.85rem", fontWeight: 600, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.75rem", marginTop: 0 },
   balanceGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "0.6rem" },
-  balanceCard: { background: "#222536", border: "1px solid", borderRadius: "10px", padding: "0.75rem", textAlign: "center" },
-  balanceName: { fontSize: "0.82rem", color: "#c8c8d8", fontWeight: 500, marginBottom: "0.3rem" },
+  balanceCard: { background: "var(--surface-2)", border: "1px solid", borderRadius: "10px", padding: "0.75rem", textAlign: "center" },
+  balanceName: { fontSize: "0.82rem", color: "var(--muted)", fontWeight: 500, marginBottom: "0.3rem" },
   balanceAmt: { fontSize: "0.7rem", marginBottom: "0.2rem" },
-  expRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.8rem 0", borderBottom: "1px solid #2a2d3e" },
+  expRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.8rem 0", borderBottom: "1px solid var(--border)" },
   expLeft: { flex: 1 },
-  expDesc: { fontSize: "0.88rem", color: "#e8e8f0", fontWeight: 500, marginBottom: "0.2rem" },
-  expMeta: { fontSize: "0.72rem", color: "#8888aa" },
+  expDesc: { fontSize: "0.88rem", color: "var(--text)", fontWeight: 500, marginBottom: "0.2rem" },
+  expMeta: { fontSize: "0.72rem", color: "var(--muted)" },
   expRight: { textAlign: "right", flexShrink: 0 },
-  expTotal: { fontFamily: "monospace", fontWeight: 700, color: "#e8e8f0", fontSize: "0.95rem" },
+  expTotal: { fontFamily: "monospace", fontWeight: 700, color: "var(--text)", fontSize: "0.95rem" },
   settleBtn: { display: "inline-block", marginLeft: "0.4rem", padding: "1px 6px", background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)", color: "#f59e0b", borderRadius: "5px", cursor: "pointer", fontSize: "0.65rem", fontFamily: "inherit" },
   addExpBtn: { padding: "0.4rem 0.9rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", color: "#6c63ff", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.8rem" },
-  loading: { color: "#8888aa", padding: "3rem", textAlign: "center" },
+  loading: { color: "var(--muted)", padding: "3rem", textAlign: "center" },
   emptyPage: { textAlign: "center", padding: "4rem 2rem" },
-  emptyState: { color: "#555577", fontSize: "0.85rem", textAlign: "center", padding: "1.5rem" },
+  emptyState: { color: "var(--muted)", fontSize: "0.85rem", textAlign: "center", padding: "1.5rem" },
 };
 
 export default SharedGroups;

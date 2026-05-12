@@ -8,17 +8,22 @@ import "./styles/design-system.css";
 const globalStyle = document.createElement("style");
 globalStyle.textContent = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html,
+  body {
+    min-height: 100%;
+  }
   body {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #0f1117;
-    color: #e8e8f0;
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
   input, select, textarea, button { font-family: inherit; }
   ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #1a1d27; }
-  ::-webkit-scrollbar-thumb { background: #2a2d3e; border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   @media (max-width: 768px) {
     .charts-row { grid-template-columns: 1fr !important; }
     .bottom-row { grid-template-columns: 1fr !important; }
