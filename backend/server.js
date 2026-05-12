@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import advancedRoutes from "./routes/advancedRoutes.js";
+import recurringRoutes from "./routes/recurringRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
@@ -58,6 +59,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
+app.use("/api/recurring", recurringRoutes);
 app.use("/api/advanced", advancedRoutes);
 
 app.use(notFound);
