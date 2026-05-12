@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
+import ToastContainer from "./components/ToastContainer";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
@@ -20,22 +22,25 @@ const ProtectedRoute = ({ children }) => {
 const App = () => (
   <ThemeProvider>
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login"  element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={
-            <ProtectedRoute><Dashboard /></ProtectedRoute>
-          } />
-          <Route path="/groups" element={
-            <ProtectedRoute><SharedGroup /></ProtectedRoute>
-          } />
-          <Route path="/analytics" element={
-            <ProtectedRoute><Analytics /></ProtectedRoute>
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+      <ToastProvider>
+        <ToastContainer />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login"  element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/" element={
+              <ProtectedRoute><Dashboard /></ProtectedRoute>
+            } />
+            <Route path="/groups" element={
+              <ProtectedRoute><SharedGroup /></ProtectedRoute>
+            } />
+            <Route path="/analytics" element={
+              <ProtectedRoute><Analytics /></ProtectedRoute>
+            } />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   </ThemeProvider>
 );
