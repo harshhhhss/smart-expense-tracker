@@ -3,11 +3,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import API from "../api/axios";
+import useToast from "../hooks/useToast";
 
 const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Miscellaneous"];
 
 const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
   const isEditing = !!editingExpense;
+  const toast = useToast();
 
   const [form, setForm] = useState({
     amount: "",
@@ -78,8 +80,10 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
     try {
       if (isEditing) {
         await API.put(`/expenses/${editingExpense._id}`, { ...form, amount: Number(form.amount) });
+        toast.showSuccess("Expense updated successfully!");
       } else {
         await API.post("/expenses", { ...form, amount: Number(form.amount) });
+        toast.showSuccess(`Expense added: ₹${form.amount} - ${form.category}`);
       }
       // Reset form
       setForm({ amount: "", category: "Food", description: "", date: new Date().toISOString().split("T")[0] });
@@ -87,7 +91,9 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
       onExpenseAdded();
       if (onCancelEdit) onCancelEdit();
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to save expense");
+      const errMsg = err.response?.data?.message || "Failed to save expense";
+      setError(errMsg);
+      toast.showError(errMsg);
     } finally {
       setLoading(false);
     }
