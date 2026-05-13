@@ -117,7 +117,7 @@ const styles = {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "8px",
-    marginBottom: "1.5rem",
+    marginBottom: 0,
     padding: "0.5rem"
   },
   toggleBtn: {
