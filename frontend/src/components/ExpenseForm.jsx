@@ -83,7 +83,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
         toast.showSuccess("Expense updated successfully!");
       } else {
         await API.post("/expenses", { ...form, amount: Number(form.amount) });
-        toast.showSuccess(`Expense added: ₹${form.amount} - ${form.category}`);
+        toast.showSuccess(`Expense added: Rs ${form.amount} - ${form.category}`);
       }
       // Reset form
       setForm({ amount: "", category: "Food", description: "", date: new Date().toISOString().split("T")[0] });
@@ -108,7 +108,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
       <form onSubmit={handleSubmit}>
         {/* Amount */}
         <div style={styles.group}>
-          <label style={styles.label}>Amount (₹)</label>
+          <label style={styles.label}>Amount (Rs)</label>
           <input
             style={styles.input}
             type="number"
@@ -138,7 +138,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
           />
           {autoTagged && (
             <div style={styles.autoTagHint}>
-              ✨ Category auto-detected as <strong>{form.category}</strong>
+              Category auto-detected as <strong>{form.category}</strong>
             </div>
           )}
         </div>
@@ -188,8 +188,8 @@ const styles = {
   card: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "14px",
-    padding: "1.5rem",
+    borderRadius: "8px",
+    padding: "1.25rem",
   },
   cardTitle: { fontSize: "1rem", fontWeight: 600, color: "var(--text)", marginBottom: "1.2rem", marginTop: 0 },
   group: { marginBottom: "1rem" },
@@ -200,36 +200,36 @@ const styles = {
   input: {
     width: "100%", padding: "0.7rem 0.9rem",
     background: "var(--surface-2)", border: "1px solid var(--border)",
-    borderRadius: "10px", color: "var(--text)",
+    borderRadius: "8px", color: "var(--text)",
     fontFamily: "inherit", fontSize: "0.92rem", outline: "none",
     boxSizing: "border-box",
     transition: "border-color 0.2s",
   },
   autoTagHint: {
     marginTop: "0.4rem", fontSize: "0.78rem",
-    color: "#43e97b", background: "rgba(67,233,123,0.08)",
-    border: "1px solid rgba(67,233,123,0.2)",
+    color: "var(--success)", background: "rgba(49,196,141,0.08)",
+    border: "1px solid rgba(49,196,141,0.22)",
     borderRadius: "6px", padding: "0.3rem 0.6rem",
   },
   detectingBadge: {
-    fontSize: "0.7rem", color: "#6c63ff",
-    background: "rgba(108,99,255,0.1)", padding: "1px 6px",
-    borderRadius: "10px", fontWeight: 500,
+    fontSize: "0.7rem", color: "var(--accent)",
+    background: "rgba(124,140,255,0.08)", padding: "1px 6px",
+    borderRadius: "999px", fontWeight: 500,
   },
   error: {
-    background: "rgba(255,101,132,0.1)", border: "1px solid rgba(255,101,132,0.3)",
-    color: "#ff6584", padding: "0.6rem 0.9rem", borderRadius: "8px",
+    background: "rgba(224,82,82,0.08)", border: "1px solid rgba(224,82,82,0.24)",
+    color: "var(--danger)", padding: "0.6rem 0.9rem", borderRadius: "8px",
     marginBottom: "1rem", fontSize: "0.85rem",
   },
   btn: {
-    flex: 1, padding: "0.8rem", border: "none", borderRadius: "10px",
-    background: "linear-gradient(135deg, #6c63ff, #8b5cf6)",
+    flex: 1, padding: "0.8rem", border: "none", borderRadius: "8px",
+    background: "var(--accent)",
     color: "white", fontFamily: "inherit", fontSize: "0.95rem",
     fontWeight: 600, cursor: "pointer", transition: "opacity 0.2s",
   },
   cancelBtn: {
     padding: "0.8rem 1.2rem", border: "1px solid var(--border)",
-    borderRadius: "10px", background: "transparent",
+    borderRadius: "8px", background: "transparent",
     color: "var(--muted)", fontFamily: "inherit", fontSize: "0.9rem",
     cursor: "pointer",
   },
