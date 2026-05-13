@@ -7,14 +7,14 @@ import API from "../api/axios";
 const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Miscellaneous"];
 
 const STATUS_CONFIG = {
-  overspending:   { color: "#ef4444", bg: "rgba(239,68,68,0.1)",  icon: "⚠️" },
-  slightly_over:  { color: "#f59e0b", bg: "rgba(245,158,11,0.1)", icon: "📊" },
-  on_track:       { color: "#43e97b", bg: "rgba(67,233,123,0.1)", icon: "✅" },
-  underspending:  { color: "#6c63ff", bg: "rgba(108,99,255,0.1)", icon: "💰" },
+  overspending:   { color: "var(--danger)", bg: "rgba(224,82,82,0.08)" },
+  slightly_over:  { color: "var(--warning)", bg: "rgba(216,154,43,0.08)" },
+  on_track:       { color: "var(--success)", bg: "rgba(49,196,141,0.08)" },
+  underspending:  { color: "var(--accent)", bg: "rgba(124,140,255,0.08)" },
 };
 
 const HealthScoreRing = ({ score }) => {
-  const color = score >= 70 ? "#43e97b" : score >= 40 ? "#f59e0b" : "#ef4444";
+  const color = score >= 70 ? "var(--success)" : score >= 40 ? "var(--warning)" : "var(--danger)";
   return (
     <div style={{ position: "relative", width: 80, height: 80 }}>
       <svg width="80" height="80" style={{ transform: "rotate(-90deg)" }}>
@@ -102,7 +102,7 @@ const BudgetPlanner = () => {
   return (
     <div style={s.card}>
       <div style={s.header}>
-        <span style={s.title}>💼 Budget Planner</span>
+        <span style={s.title}>Budget Planner</span>
         <div style={s.tabs}>
           {["overview", "plan", "recommend"].map(t => (
             <button key={t} style={{ ...s.tab, ...(tab === t ? s.tabActive : {}) }} onClick={() => setTab(t)}>
@@ -128,7 +128,7 @@ const BudgetPlanner = () => {
               </div>
               <div style={s.statRow}>
                 <span style={s.statLabel}>Savings Rate</span>
-                <span style={{ ...s.statVal, color: (recs.savingsRate || 0) >= 20 ? "#43e97b" : "#ef4444" }}>
+                <span style={{ ...s.statVal, color: (recs.savingsRate || 0) >= 20 ? "var(--success)" : "var(--danger)" }}>
                   {recs.savingsRate || 0}%
                 </span>
               </div>
@@ -139,9 +139,9 @@ const BudgetPlanner = () => {
           {recs.allocation && (
             <div style={s.allocationGrid}>
               {[
-                { label: "Needs (50%)",   data: recs.allocation.needs,   color: "#6c63ff" },
-                { label: "Wants (30%)",   data: recs.allocation.wants,   color: "#f59e0b" },
-                { label: "Savings (20%)", data: recs.allocation.savings, color: "#43e97b" },
+                { label: "Needs (50%)",   data: recs.allocation.needs,   color: "var(--accent)" },
+                { label: "Wants (30%)",   data: recs.allocation.wants,   color: "var(--warning)" },
+                { label: "Savings (20%)", data: recs.allocation.savings, color: "var(--success)" },
               ].map(({ label, data, color }) => (
                 <div key={label} style={{ ...s.allocCard, borderColor: color + "30" }}>
                   <div style={{ fontSize: "0.72rem", color: "var(--muted)", marginBottom: "0.3rem" }}>{label}</div>
@@ -159,7 +159,7 @@ const BudgetPlanner = () => {
           )}
 
           <button style={s.applyBtn} onClick={applyRecommended}>
-            Apply AI Recommendations →
+            Apply Recommendations
           </button>
         </div>
       )}
@@ -191,7 +191,7 @@ const BudgetPlanner = () => {
                     <span style={s.limitCat}>{cat}</span>
                     {limit > 0 && (
                       <div style={s.limitProg}>
-                        <div style={{ ...s.limitFill, width: `${pct}%`, background: over ? "#ef4444" : "#6c63ff" }} />
+                        <div style={{ ...s.limitFill, width: `${pct}%`, background: over ? "var(--danger)" : "var(--accent)" }} />
                       </div>
                     )}
                     {limit > 0 && (
@@ -246,7 +246,7 @@ const BudgetPlanner = () => {
               return (
                 <div key={i} style={{ ...s.recItem, background: cfg.bg }}>
                   <div style={s.recLeft}>
-                    <span style={s.recIcon}>{cfg.icon}</span>
+                    <span style={{ ...s.recIcon, background: cfg.color }} />
                     <div>
                       <span style={{ ...s.recCat, color: cfg.color }}>{r.category}</span>
                       <p style={s.recAdvice}>{r.advice}</p>
@@ -263,7 +263,7 @@ const BudgetPlanner = () => {
           </div>
 
           <button style={s.applyBtn} onClick={applyRecommended}>
-            Apply These Limits →
+            Apply These Limits
           </button>
         </div>
       )}
@@ -272,7 +272,7 @@ const BudgetPlanner = () => {
 };
 
 const s = {
-  card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "14px", padding: "1.25rem 1.5rem" },
+  card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "8px", padding: "1.15rem 1.25rem" },
   header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.2rem", flexWrap: "wrap", gap: "0.5rem" },
   title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
   tabs: { display: "flex", gap: "0.25rem", background: "var(--surface-2)", borderRadius: "8px", padding: "3px" },
@@ -284,10 +284,10 @@ const s = {
   statLabel: { fontSize: "0.78rem", color: "var(--muted)" },
   statVal: { fontFamily: "monospace", fontWeight: 600, fontSize: "0.88rem", color: "var(--text)" },
   allocationGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", marginBottom: "1rem" },
-  allocCard: { background: "var(--surface-2)", borderRadius: "10px", padding: "0.75rem", border: "1px solid var(--border)" },
+  allocCard: { background: "var(--surface-2)", borderRadius: "8px", padding: "0.75rem", border: "1px solid var(--border)" },
   progBg: { height: 3, background: "var(--surface)", borderRadius: 2, marginTop: "0.4rem" },
   progFill: { height: "100%", borderRadius: 2, transition: "width 0.5s ease" },
-  applyBtn: { width: "100%", padding: "0.7rem", background: "rgba(108,99,255,0.15)", border: "1px solid rgba(108,99,255,0.3)", color: "var(--accent)", borderRadius: "10px", cursor: "pointer", fontSize: "0.85rem", fontFamily: "inherit", fontWeight: 600 },
+  applyBtn: { width: "100%", padding: "0.7rem", background: "rgba(124,140,255,0.1)", border: "1px solid rgba(124,140,255,0.24)", color: "var(--accent)", borderRadius: "8px", cursor: "pointer", fontSize: "0.85rem", fontFamily: "inherit", fontWeight: 600 },
   incomeRow: { marginBottom: "1rem" },
   fieldLabel: { fontSize: "0.78rem", color: "var(--muted)", fontWeight: 500 },
   incomeInput: { padding: "0.6rem 0.9rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--text)", fontFamily: "inherit", fontSize: "0.88rem", outline: "none", width: "100%" },
@@ -300,15 +300,15 @@ const s = {
   limitFill: { height: "100%", borderRadius: 2 },
   limitInput: { width: 90, padding: "0.4rem 0.6rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "7px", color: "var(--text)", fontFamily: "monospace", fontSize: "0.82rem", outline: "none" },
   planActions: { display: "flex", gap: "0.5rem" },
-  saveBtn: { flex: 1, padding: "0.7rem", background: "linear-gradient(135deg, #6c63ff, #8b5cf6)", border: "none", color: "white", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
+  saveBtn: { flex: 1, padding: "0.7rem", background: "var(--accent)", border: "none", color: "white", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
   cancelBtn: { padding: "0.7rem 1rem", background: "transparent", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
   editBtn: { flex: 1, padding: "0.7rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
   recList: { display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" },
   recItem: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", borderRadius: "10px" },
   recLeft: { display: "flex", alignItems: "flex-start", gap: "0.5rem", flex: 1 },
-  recIcon: { fontSize: "0.9rem", marginTop: "1px" },
+  recIcon: { width: 7, height: 7, borderRadius: "50%", marginTop: "0.35rem", flexShrink: 0 },
   recCat: { fontSize: "0.82rem", fontWeight: 700, display: "block", marginBottom: "0.15rem" },
-  recAdvice: { fontSize: "0.75rem", color: "#9999bb", margin: 0, lineHeight: 1.4 },
+  recAdvice: { fontSize: "0.75rem", color: "var(--muted)", margin: 0, lineHeight: 1.4 },
   recNumbers: { display: "flex", alignItems: "center", gap: "0.4rem", flexShrink: 0 },
   recCurrent: { fontFamily: "monospace", fontSize: "0.82rem", color: "var(--muted)" },
   recArrow: { color: "var(--muted)", fontSize: "0.8rem" },
