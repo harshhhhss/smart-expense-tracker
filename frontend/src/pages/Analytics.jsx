@@ -31,7 +31,7 @@ const Analytics = () => {
       <div style={styles.page}>
         <div style={styles.header}>
           <h1 style={styles.title}>Analytics</h1>
-          <p style={styles.subtitle}>Advanced insights and planning tools</p>
+          <p style={styles.subtitle}>Insights and planning tools</p>
         </div>
 
         <div style={styles.grid}>
@@ -63,8 +63,8 @@ const styles = {
     marginBottom: '2rem',
   },
   title: {
-    fontSize: '2rem',
-    fontWeight: 700,
+    fontSize: '1.75rem',
+    fontWeight: 650,
     color: 'var(--text)',
     margin: 0,
   },
@@ -75,14 +75,11 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-    gap: '2rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: '1rem',
   },
   section: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)',
-    padding: '1.5rem',
+    minWidth: 0,
   },
 };
 
