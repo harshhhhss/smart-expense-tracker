@@ -79,7 +79,7 @@ const Dashboard = () => {
             style={styles.addButton}
             onClick={() => setShowForm(!showForm)}
           >
-            {showForm ? 'Cancel' : '+ Add Expense'}
+            {showForm ? "Cancel" : "Add Expense"}
           </button>
         </div>
 
@@ -177,34 +177,34 @@ const styles = {
   page: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '2rem 1.5rem',
+    padding: '2rem 1.5rem 3rem',
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '2rem',
+    marginBottom: '1.5rem',
     flexWrap: 'wrap',
     gap: '1rem',
   },
   title: {
-    fontSize: '2rem',
-    fontWeight: 700,
+    fontSize: '1.75rem',
+    fontWeight: 650,
     color: 'var(--text)',
     margin: 0,
   },
   subtitle: {
     color: 'var(--muted)',
-    fontSize: '1rem',
-    margin: '0.5rem 0 0 0',
+    fontSize: '0.95rem',
+    margin: '0.35rem 0 0 0',
   },
   addButton: {
     background: 'var(--accent)',
-    color: 'var(--text)',
-    border: 'none',
-    padding: '0.75rem 1.5rem',
+    color: '#fff',
+    border: '1px solid transparent',
+    padding: '0.68rem 1rem',
     borderRadius: 'var(--radius)',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
@@ -212,30 +212,30 @@ const styles = {
   summaryGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '1.5rem',
-    marginBottom: '3rem',
+    gap: '1rem',
+    marginBottom: '1.5rem',
   },
   card: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius)',
-    padding: '1.5rem',
+    padding: '1.15rem',
   },
   cardLabel: {
-    fontSize: '0.875rem',
+    fontSize: '0.72rem',
     color: 'var(--muted)',
     textTransform: 'uppercase',
-    letterSpacing: '0.05em',
+    letterSpacing: '0.04em',
     marginBottom: '0.5rem',
     fontWeight: 600,
   },
   cardValue: {
-    fontSize: '2rem',
-    fontWeight: 700,
+    fontSize: '1.55rem',
+    fontWeight: 650,
     marginBottom: '0.25rem',
   },
   cardSub: {
-    fontSize: '0.875rem',
+    fontSize: '0.8rem',
     color: 'var(--muted)',
   },
   loadingSkeleton: {
@@ -246,16 +246,16 @@ const styles = {
     margin: '0.25rem 0',
   },
   formSection: {
-    marginBottom: '3rem',
+    marginBottom: '1.5rem',
   },
   chartSection: {
-    marginBottom: '3rem',
+    marginBottom: '1.5rem',
   },
   expensesSection: {
     marginBottom: '2rem',
   },
   sectionTitle: {
-    fontSize: '1.5rem',
+    fontSize: '1.1rem',
     fontWeight: 600,
     color: 'var(--text)',
     marginBottom: '1rem',
