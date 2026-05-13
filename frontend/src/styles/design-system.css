@@ -1,17 +1,18 @@
 :root {
   /* Dark mode (default) */
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface-2: #222536;
-  --border: #2a2d3e;
-  --text: #e8e8f0;
-  --muted: #8888aa;
-  --accent: #6c63ff;
-  --accent-2: #ff6584;
-  --success: #43e97b;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --bg: #0b0d12;
+  --surface: #12151c;
+  --surface-2: #191d26;
+  --border: #262b36;
+  --text: #edf0f5;
+  --muted: #8c95a5;
+  --accent: #7c8cff;
+  --accent-2: #aeb8ff;
+  --success: #31c48d;
+  --warning: #d89a2b;
+  --danger: #e05252;
   --radius: 8px;
+  --card-shadow: none;
 }
 
 /* Light mode - Premium SaaS styling */
@@ -22,8 +23,8 @@
   --border: #e5e7eb;
   --text: #1f2937;
   --muted: #9ca3af;
-  --accent: #6c63ff;
-  --accent-2: #ff6584;
+  --accent: #4f5fd5;
+  --accent-2: #7b86e8;
   --success: #059669;
   --warning: #d97706;
   --danger: #dc2626;
