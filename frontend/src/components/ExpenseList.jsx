@@ -3,9 +3,9 @@ import { useState } from "react";
 import API from "../api/axios";
 
 const CATEGORY_COLORS = {
-  Food: "#f7971e", Travel: "#38bdf8", Shopping: "#ff6584",
-  Entertainment: "#a78bfa", Health: "#43e97b", Utilities: "#6c63ff",
-  Education: "#fbbf24", "Personal Care": "#fb7185", Miscellaneous: "var(--muted)",
+  Food: "#d89a2b", Travel: "#60a5fa", Shopping: "#94a3b8",
+  Entertainment: "#aeb8ff", Health: "#31c48d", Utilities: "#7c8cff",
+  Education: "#cbd5e1", "Personal Care": "#94a3b8", Miscellaneous: "var(--muted)",
 };
 
 const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
@@ -30,12 +30,11 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
 
   return (
     <div style={styles.card}>
-      <h3 style={styles.cardTitle}>📋 Expenses</h3>
+      <h3 style={styles.cardTitle}>Expenses</h3>
 
       {expenses.length === 0 ? (
         <div style={styles.empty}>
-          <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>💸</div>
-          <p>No expenses yet. Add your first one!</p>
+          <p>No expenses yet. Add your first one.</p>
         </div>
       ) : (
         <div style={styles.list}>
@@ -52,7 +51,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
                         {expense.category}
                       </span>
                       {expense.autoTagged && (
-                        <span style={styles.autoTag}>✨ auto</span>
+                        <span style={styles.autoTag}>Auto</span>
                       )}
                     </div>
                     {expense.description && (
@@ -64,7 +63,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
 
                 {/* Right: amount + actions */}
                 <div style={styles.itemRight}>
-                  <span style={styles.amount}>₹{Number(expense.amount).toFixed(2)}</span>
+                  <span style={styles.amount}>Rs {Number(expense.amount).toFixed(2)}</span>
                   <div style={styles.actions}>
                     <button style={styles.editBtn} onClick={() => onEdit(expense)}>Edit</button>
                     <button
@@ -88,7 +87,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
 const styles = {
   card: {
     background: "var(--surface)", border: "1px solid var(--border)",
-    borderRadius: "14px", padding: "1.5rem",
+    borderRadius: "8px", padding: "1.25rem",
   },
   cardTitle: { fontSize: "1rem", fontWeight: 600, color: "var(--text)", marginBottom: "1rem", marginTop: 0 },
   list: { display: "flex", flexDirection: "column", gap: 0 },
@@ -104,23 +103,23 @@ const styles = {
     padding: "2px 8px", borderRadius: "6px", border: "1px solid",
   },
   autoTag: {
-    fontSize: "0.68rem", color: "#43e97b",
-    background: "rgba(67,233,123,0.1)", padding: "1px 6px",
-    borderRadius: "10px", border: "1px solid rgba(67,233,123,0.2)",
+    fontSize: "0.68rem", color: "var(--success)",
+    background: "rgba(49,196,141,0.08)", padding: "1px 6px",
+    borderRadius: "999px", border: "1px solid rgba(49,196,141,0.22)",
   },
   desc: { fontSize: "0.82rem", color: "var(--muted)", marginBottom: "0.15rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 },
   date: { fontSize: "0.72rem", color: "var(--muted)" },
   itemRight: { display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0 },
-  amount: { fontFamily: "monospace", fontWeight: 700, color: "#ff6584", fontSize: "0.95rem" },
+  amount: { fontFamily: "monospace", fontWeight: 700, color: "var(--text)", fontSize: "0.95rem" },
   actions: { display: "flex", gap: "0.4rem" },
   editBtn: {
-    padding: "0.3rem 0.7rem", borderRadius: "6px", border: "1px solid rgba(108,99,255,0.3)",
-    background: "rgba(108,99,255,0.1)", color: "#6c63ff",
+    padding: "0.3rem 0.7rem", borderRadius: "6px", border: "1px solid rgba(124,140,255,0.24)",
+    background: "rgba(124,140,255,0.08)", color: "var(--accent)",
     fontSize: "0.75rem", cursor: "pointer", fontFamily: "inherit",
   },
   delBtn: {
-    padding: "0.3rem 0.7rem", borderRadius: "6px", border: "1px solid rgba(255,101,132,0.3)",
-    background: "rgba(255,101,132,0.1)", color: "#ff6584",
+    padding: "0.3rem 0.7rem", borderRadius: "6px", border: "1px solid rgba(224,82,82,0.24)",
+    background: "rgba(224,82,82,0.08)", color: "var(--danger)",
     fontSize: "0.75rem", cursor: "pointer", fontFamily: "inherit",
   },
   empty: { textAlign: "center", color: "var(--muted)", padding: "2.5rem 1rem", fontSize: "0.9rem" },
