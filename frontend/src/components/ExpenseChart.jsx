@@ -64,7 +64,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
       <div style={styles.chartCard}>
         <h3 style={styles.chartTitle}>Category Breakdown</h3>
         {hasCategoryData ? (
-          <ResponsiveContainer width="100%" height={260}>
+          <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
                 data={categoryData}
@@ -92,7 +92,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
       <div style={styles.chartCard}>
         <h3 style={styles.chartTitle}>Monthly Trend</h3>
         {hasMonthlyData ? (
-          <ResponsiveContainer width="100%" height={260}>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={monthlyData} margin={{ top: 8, right: 10, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis
@@ -108,7 +108,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
                 tickFormatter={v => `Rs ${v >= 1000 ? (v / 1000).toFixed(1) + "k" : v}`}
               />
               <BarTooltip content={<BarTooltipContent />} cursor={{ fill: "rgba(124,140,255,0.08)" }} />
-              <Bar dataKey="total" fill="#7c8cff" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              <Bar dataKey="total" fill="#7c8cff" radius={[4, 4, 0, 0]} maxBarSize={56} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -122,7 +122,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
 const styles = {
   chartsRow: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))",
     gap: "1rem",
     marginBottom: "1.5rem",
   },
@@ -130,7 +130,7 @@ const styles = {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "8px",
-    padding: "1.25rem",
+    padding: "1.35rem",
   },
   chartTitle: {
     fontSize: "0.88rem",
