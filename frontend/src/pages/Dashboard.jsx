@@ -87,20 +87,20 @@ const Dashboard = () => {
         <div style={styles.summaryGrid}>
           <SummaryCard
             label="This Month"
-            value={`₹${(summary?.thisMonth || 0).toFixed(2)}`}
+            value={`Rs ${(summary?.thisMonth || 0).toFixed(2)}`}
             sub={`${summary?.totalExpensesThisMonth || 0} transactions`}
             color="var(--accent)"
             loading={loading}
           />
           <SummaryCard
             label="Last Month"
-            value={`₹${(summary?.lastMonth || 0).toFixed(2)}`}
+            value={`Rs ${(summary?.lastMonth || 0).toFixed(2)}`}
             color="var(--muted)"
             loading={loading}
           />
           <SummaryCard
             label="Change"
-            value={pctChange !== null && pctChange !== undefined ? `${pctChange > 0 ? "+" : ""}${pctChange}%` : "—"}
+            value={pctChange !== null && pctChange !== undefined ? `${pctChange > 0 ? "+" : ""}${pctChange}%` : "-"}
             color={pctChange > 0 ? "var(--danger)" : "var(--success)"}
             loading={loading}
           />
@@ -113,15 +113,14 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Filter Panel */}
-        <FilterPanel
-          onFiltersChange={setFilters}
-          isOpen={filterOpen}
-          onToggle={() => setFilterOpen(!filterOpen)}
-        />
-
-        {/* Export Panel */}
-        <ExportPanel expenses={expenses} summary={summary} />
+        <div style={styles.controlsGrid}>
+          <FilterPanel
+            onFiltersChange={setFilters}
+            isOpen={filterOpen}
+            onToggle={() => setFilterOpen(!filterOpen)}
+          />
+          <ExportPanel expenses={expenses} summary={summary} />
+        </div>
 
         {/* Add Expense Form */}
         {showForm && (
@@ -145,7 +144,6 @@ const Dashboard = () => {
 
         {/* Recent Expenses */}
         <div style={styles.expensesSection}>
-          <h2 style={styles.sectionTitle}>Recent Expenses</h2>
           <ExpenseList
             expenses={expenses.slice(0, 10)} // Show only recent 10
             onRefresh={handleRefresh}
@@ -175,20 +173,21 @@ const SummaryCard = ({ label, value, sub, color, loading }) => (
 
 const styles = {
   page: {
-    maxWidth: '1200px',
+    width: 'min(100% - 48px, 1560px)',
+    maxWidth: '1560px',
     margin: '0 auto',
-    padding: '2rem 1.5rem 3rem',
+    padding: '2rem 0 3rem',
   },
   header: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '1.5rem',
+    marginBottom: '1.25rem',
     flexWrap: 'wrap',
     gap: '1rem',
   },
   title: {
-    fontSize: '1.75rem',
+    fontSize: '1.65rem',
     fontWeight: 650,
     color: 'var(--text)',
     margin: 0,
@@ -211,7 +210,7 @@ const styles = {
   },
   summaryGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
     gap: '1rem',
     marginBottom: '1.5rem',
   },
@@ -219,7 +218,8 @@ const styles = {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius)',
-    padding: '1.15rem',
+    minHeight: '118px',
+    padding: '1.2rem',
   },
   cardLabel: {
     fontSize: '0.72rem',
@@ -246,6 +246,13 @@ const styles = {
     margin: '0.25rem 0',
   },
   formSection: {
+    marginBottom: '1.5rem',
+  },
+  controlsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+    gap: '1rem',
+    alignItems: 'start',
     marginBottom: '1.5rem',
   },
   chartSection: {
