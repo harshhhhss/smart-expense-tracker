@@ -28,7 +28,7 @@ const Navbar = () => {
         
         {/* Mobile menu button */}
         <button className="navbar-menu-button" onClick={toggleMenu}>
-          <span className="navbar-menu-icon">☰</span>
+          <span className="navbar-menu-icon">Menu</span>
         </button>
 
         {/* Desktop navigation */}
@@ -50,7 +50,7 @@ const Navbar = () => {
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            {theme === "dark" ? "Light" : "Dark"}
           </button>
           <span className="navbar-user">Welcome, {user?.name}</span>
           <button className="navbar-logout-btn" onClick={handleLogout}>
@@ -77,7 +77,7 @@ const Navbar = () => {
               onClick={toggleTheme}
               title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
             >
-              {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
             </button>
             <span className="navbar-user">Welcome, {user?.name}</span>
             <button className="navbar-mobile-logout-btn" onClick={handleLogout}>
