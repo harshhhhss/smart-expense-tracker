@@ -100,7 +100,7 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
   };
 
   return (
-    <div style={styles.card}>
+    <div className="product-card" style={styles.card}>
       <h3 style={styles.cardTitle}>{isEditing ? "Edit Expense" : "Add Expense"}</h3>
 
       {error && <div style={styles.error}>{error}</div>}
@@ -170,11 +170,11 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
         </div>
 
         <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button style={styles.btn} type="submit" disabled={loading}>
+          <button className="action-button" style={styles.btn} type="submit" disabled={loading}>
             {loading ? "Saving..." : isEditing ? "Save Changes" : "Add Expense"}
           </button>
           {isEditing && (
-            <button type="button" style={styles.cancelBtn} onClick={onCancelEdit}>
+            <button className="ghost-button" type="button" style={styles.cancelBtn} onClick={onCancelEdit}>
               Cancel
             </button>
           )}
@@ -188,20 +188,20 @@ const styles = {
   card: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
-    padding: "1.25rem",
+    borderRadius: "var(--radius)",
+    padding: "1.1rem",
   },
-  cardTitle: { fontSize: "1rem", fontWeight: 600, color: "var(--text)", marginBottom: "1.2rem", marginTop: 0 },
-  group: { marginBottom: "1rem" },
+  cardTitle: { fontSize: "0.98rem", fontWeight: 700, color: "var(--text)", marginBottom: "1rem", marginTop: 0 },
+  group: { marginBottom: "0.9rem" },
   label: {
     display: "flex", alignItems: "center", gap: "0.5rem",
-    fontSize: "0.82rem", color: "var(--muted)", fontWeight: 500, marginBottom: "0.4rem"
+    fontSize: "0.78rem", color: "var(--muted)", fontWeight: 700, marginBottom: "0.35rem"
   },
   input: {
-    width: "100%", padding: "0.7rem 0.9rem",
+    width: "100%", padding: "0.68rem 0.82rem",
     background: "var(--surface-2)", border: "1px solid var(--border)",
-    borderRadius: "8px", color: "var(--text)",
-    fontFamily: "inherit", fontSize: "0.92rem", outline: "none",
+    borderRadius: "var(--radius)", color: "var(--text)",
+    fontFamily: "inherit", fontSize: "0.9rem", outline: "none",
     boxSizing: "border-box",
     transition: "border-color 0.2s",
   },
@@ -222,14 +222,14 @@ const styles = {
     marginBottom: "1rem", fontSize: "0.85rem",
   },
   btn: {
-    flex: 1, padding: "0.8rem", border: "none", borderRadius: "8px",
-    background: "var(--accent)",
+    flex: 1, padding: "0.78rem", border: "none", borderRadius: "var(--radius)",
+    background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
     color: "white", fontFamily: "inherit", fontSize: "0.95rem",
-    fontWeight: 600, cursor: "pointer", transition: "opacity 0.2s",
+    fontWeight: 700, cursor: "pointer",
   },
   cancelBtn: {
     padding: "0.8rem 1.2rem", border: "1px solid var(--border)",
-    borderRadius: "8px", background: "transparent",
+    borderRadius: "var(--radius)", background: "transparent",
     color: "var(--muted)", fontFamily: "inherit", fontSize: "0.9rem",
     cursor: "pointer",
   },
