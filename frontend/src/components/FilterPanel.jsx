@@ -42,8 +42,8 @@ const FilterPanel = ({ onFiltersChange, isOpen, onToggle }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <button style={styles.toggleBtn} onClick={onToggle}>
+    <div className="control-surface" style={styles.container}>
+      <button className="ghost-button" style={styles.toggleBtn} onClick={onToggle}>
         {isOpen ? "Hide Filters" : "Show Filters"}
       </button>
 
@@ -103,7 +103,7 @@ const FilterPanel = ({ onFiltersChange, isOpen, onToggle }) => {
             </div>
           </div>
 
-          <button style={styles.resetBtn} onClick={handleReset}>
+          <button className="ghost-button" style={styles.resetBtn} onClick={handleReset}>
             Reset Filters
           </button>
         </div>
@@ -116,19 +116,19 @@ const styles = {
   container: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
+    borderRadius: "var(--radius)",
     marginBottom: 0,
     padding: "0.5rem"
   },
   toggleBtn: {
     width: "100%",
-    padding: "0.75rem",
+    padding: "0.72rem 0.75rem",
     background: "transparent",
     border: "none",
     color: "var(--accent)",
     fontWeight: 600,
     cursor: "pointer",
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
     textAlign: "left",
     fontFamily: "inherit"
   },
@@ -147,30 +147,32 @@ const styles = {
     flexDirection: "column"
   },
   label: {
-    fontSize: "0.8rem",
-    fontWeight: 600,
+    fontSize: "0.72rem",
+    fontWeight: 700,
     color: "var(--muted)",
     marginBottom: "0.4rem",
     textTransform: "uppercase",
     letterSpacing: "0.5px"
   },
   input: {
-    padding: "0.6rem",
+    padding: "0.62rem 0.72rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
+    borderRadius: "var(--radius)",
     color: "var(--text)",
     fontFamily: "inherit",
-    fontSize: "0.9rem"
+    fontSize: "0.86rem",
+    outline: "none"
   },
   select: {
-    padding: "0.6rem",
+    padding: "0.62rem 0.72rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
+    borderRadius: "var(--radius)",
     color: "var(--text)",
     fontFamily: "inherit",
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
+    outline: "none",
     cursor: "pointer"
   },
   resetBtn: {
