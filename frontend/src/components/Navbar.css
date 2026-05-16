@@ -1,18 +1,19 @@
 .navbar {
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
   border-bottom: 1px solid var(--border);
   padding: 0;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(14px);
 }
 
 .navbar-container {
   width: min(100% - 48px, 1560px);
   max-width: 1560px;
   margin: 0 auto;
-  padding: 1rem 0;
+  padding: 0.85rem 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,31 +21,39 @@
 }
 
 .navbar-brand {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text);
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: transform 0.2s ease;
+  gap: 0.6rem;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.navbar-brand:hover { color: var(--accent); }
+.navbar-brand::before {
+  content: "";
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
 
-.navbar-brand-icon {
-  font-size: 1.8rem;
-  font-weight: 600;
+.navbar-brand:hover {
   color: var(--accent);
 }
 
 .navbar-menu-button {
   display: none;
-  background: transparent;
-  border: none;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
+  font-weight: 600;
   cursor: pointer;
+  padding: 0.48rem 0.75rem;
 }
 
 .navbar-nav-links {
@@ -55,85 +64,116 @@
 
 .navbar-link {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 500;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-sm);
   transition: all 0.2s ease;
-  position: relative;
 }
 
 .navbar-link:hover {
-  color: var(--accent);
+  color: var(--text);
   background-color: var(--surface-2);
 }
 
 .navbar-user-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .navbar-user {
-  color: var(--text);
-  font-size: 0.9rem;
+  color: var(--muted-strong);
+  font-size: 0.86rem;
   font-weight: 500;
 }
 
-.navbar-logout-btn {
+.navbar-logout-btn,
+.navbar-mobile-logout-btn {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--muted);
-  padding: 0.5rem 1rem;
+  padding: 0.52rem 0.9rem;
   border-radius: var(--radius);
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.84rem;
+  font-weight: 600;
   transition: all 0.2s ease;
 }
 
-.navbar-logout-btn:hover {
-  background-color: var(--danger);
-  color: var(--text);
+.navbar-logout-btn:hover,
+.navbar-mobile-logout-btn:hover {
+  background-color: var(--danger-soft);
+  color: var(--danger);
   border-color: var(--danger);
+  transform: translateY(-1px);
 }
 
-.navbar-theme-toggle {
+.navbar-theme-toggle,
+.navbar-theme-toggle-mobile {
   background: transparent;
-  border: 1px solid var(--border);
+  border: 0;
   color: var(--text);
-  padding: 0.5rem 0.75rem;
-  border-radius: var(--radius);
+  padding: 0;
+  border-radius: 999px;
   cursor: pointer;
-  font-size: 0.82rem;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.navbar-theme-toggle:hover {
-  background-color: var(--surface-2);
-  border-color: var(--accent);
-}
-
-.navbar-theme-toggle-mobile {
-  background: transparent;
-  border: none;
-  color: var(--text);
-  padding: 0.5rem 0;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  width: 100%;
-  text-align: left;
-}
-
+.navbar-theme-toggle:hover,
 .navbar-theme-toggle-mobile:hover {
+  transform: translateY(-1px);
+}
+
+.theme-toggle-track {
+  width: 54px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.16), var(--card-shadow);
+}
+
+.theme-toggle-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface);
   color: var(--accent);
+  display: grid;
+  place-items: center;
+  transform: translateX(0);
+  transition: transform 0.24s ease, background-color 0.24s ease, color 0.24s ease;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+}
+
+.navbar-theme-toggle.is-dark .theme-toggle-thumb,
+.navbar-theme-toggle-mobile.is-dark .theme-toggle-thumb {
+  transform: translateX(24px);
+  color: var(--accent-2);
+}
+
+.theme-icon {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-icon-sun circle {
+  fill: currentColor;
+  stroke: none;
 }
 
 .navbar-mobile-menu {
@@ -141,42 +181,35 @@
   flex-direction: column;
   background: var(--surface);
   border-top: 1px solid var(--border);
-  padding: 1rem 2rem;
-  gap: 1rem;
+  padding: 1rem 1.5rem 1.25rem;
+  gap: 0.75rem;
 }
 
 .navbar-mobile-link {
   color: var(--text);
   text-decoration: none;
-  padding: 0.5rem 0;
-  font-size: 1.1rem;
+  padding: 0.6rem 0;
+  font-size: 0.98rem;
   font-weight: 500;
+}
+
+.navbar-mobile-link:hover {
+  color: var(--accent);
 }
 
 .navbar-mobile-user {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem;
   align-items: flex-start;
-}
-
-.navbar-mobile-logout-btn {
-  background: var(--danger);
-  border: none;
-  color: var(--text);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
 }
 
 .navbar-menu-icon {
-  font-size: 0.9rem;
+  font-size: 0.86rem;
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
   .navbar-menu-button {
     display: block;
@@ -192,14 +225,11 @@
   }
 
   .navbar-container {
-    padding: 1rem;
+    width: 100%;
+    padding: 0.9rem 1rem;
   }
 
   .navbar-brand {
-    font-size: 1.3rem;
-  }
-
-  .navbar-brand-icon {
-    font-size: 1.5rem;
+    font-size: 1.05rem;
   }
 }
