@@ -6,7 +6,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as BarTooltip
 } from "recharts";
 
-const COLORS = ["#7c8cff", "#94a3b8", "#31c48d", "#d89a2b", "#60a5fa", "#aeb8ff", "#cbd5e1", "#64748b", "#e05252"];
+const COLORS = ["#2357c6", "#0f766e", "#b86b00", "#6d5bd0", "#256f9c", "#0f8f69", "#7a869a", "#475569", "#c2413a"];
 
 const PieTooltipContent = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
@@ -47,7 +47,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
     return (
       <div style={styles.chartsRow}>
         {[1, 2].map(i => (
-          <div key={i} style={styles.chartCard}>
+          <div key={i} className="product-card" style={styles.chartCard}>
             <div style={{ height: 12, width: "38%", background: "var(--surface-2)", borderRadius: 4, marginBottom: 16 }} />
             <div style={{ height: 220, background: "var(--surface-2)", borderRadius: 6 }} />
           </div>
@@ -61,8 +61,11 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
 
   return (
     <div style={styles.chartsRow}>
-      <div style={styles.chartCard}>
-        <h3 style={styles.chartTitle}>Category Breakdown</h3>
+      <div className="product-card" style={styles.chartCard}>
+        <div style={styles.chartHeader}>
+          <h3 style={styles.chartTitle}>Category Breakdown</h3>
+          <span style={styles.chartMeta}>Current mix</span>
+        </div>
         {hasCategoryData ? (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -70,14 +73,14 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
                 data={categoryData}
                 cx="50%"
                 cy="50%"
-                innerRadius={58}
-                outerRadius={88}
-                paddingAngle={2}
+                innerRadius={62}
+                outerRadius={92}
+                paddingAngle={3}
                 dataKey="value"
                 nameKey="name"
               >
                 {categoryData.map((entry, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="var(--surface)" strokeWidth={2} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="var(--surface)" strokeWidth={3} />
                 ))}
               </Pie>
               <PieTooltip content={<PieTooltipContent />} />
@@ -89,8 +92,11 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
         )}
       </div>
 
-      <div style={styles.chartCard}>
-        <h3 style={styles.chartTitle}>Monthly Trend</h3>
+      <div className="product-card" style={styles.chartCard}>
+        <div style={styles.chartHeader}>
+          <h3 style={styles.chartTitle}>Monthly Trend</h3>
+          <span style={styles.chartMeta}>Last 6 months</span>
+        </div>
         {hasMonthlyData ? (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={monthlyData} margin={{ top: 8, right: 10, left: 0, bottom: 4 }}>
@@ -107,8 +113,8 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
                 tickLine={false}
                 tickFormatter={v => `Rs ${v >= 1000 ? (v / 1000).toFixed(1) + "k" : v}`}
               />
-              <BarTooltip content={<BarTooltipContent />} cursor={{ fill: "rgba(124,140,255,0.08)" }} />
-              <Bar dataKey="total" fill="#7c8cff" radius={[4, 4, 0, 0]} maxBarSize={56} />
+              <BarTooltip content={<BarTooltipContent />} cursor={{ fill: "var(--accent-soft)" }} />
+              <Bar dataKey="total" fill="var(--accent)" radius={[6, 6, 0, 0]} maxBarSize={46} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -123,39 +129,52 @@ const styles = {
   chartsRow: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))",
-    gap: "1rem",
-    marginBottom: "1.5rem",
+    gap: "0.9rem",
+    marginBottom: "1.25rem",
   },
   chartCard: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
-    padding: "1.35rem",
+    borderRadius: "var(--radius)",
+    padding: "1.15rem",
+    minHeight: 372,
+  },
+  chartHeader: {
+    display: "flex",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    gap: "1rem",
+    marginBottom: "0.75rem",
   },
   chartTitle: {
-    fontSize: "0.88rem",
-    fontWeight: 600,
+    fontSize: "0.96rem",
+    fontWeight: 700,
     color: "var(--text)",
-    marginBottom: "1rem",
-    marginTop: 0,
+    margin: 0,
+  },
+  chartMeta: {
+    color: "var(--muted)",
+    fontSize: "0.76rem",
+    fontWeight: 600,
   },
   tooltip: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "6px",
-    padding: "8px 12px",
-    fontSize: "0.85rem",
+    borderRadius: "var(--radius-sm)",
+    padding: "0.55rem 0.7rem",
+    fontSize: "0.82rem",
+    boxShadow: "var(--card-hover-shadow)",
   },
   legend: {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: "0.5rem 0.75rem",
+    gap: "0.45rem 0.7rem",
     marginTop: "0.5rem",
   },
   legendItem: { display: "flex", alignItems: "center", gap: "0.35rem" },
   legendDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0 },
-  legendLabel: { fontSize: "0.72rem", color: "var(--muted)" },
+  legendLabel: { fontSize: "0.72rem", color: "var(--muted)", fontWeight: 600 },
   empty: {
     height: 200,
     display: "flex",
