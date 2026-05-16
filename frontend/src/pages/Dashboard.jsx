@@ -76,6 +76,7 @@ const Dashboard = () => {
             <p style={styles.subtitle}>{monthLabel}</p>
           </div>
           <button
+            className="action-button"
             style={styles.addButton}
             onClick={() => setShowForm(!showForm)}
           >
@@ -160,8 +161,11 @@ const Dashboard = () => {
 };
 
 const SummaryCard = ({ label, value, sub, color, loading }) => (
-  <div style={styles.card}>
-    <div style={styles.cardLabel}>{label}</div>
+  <div className="product-card" style={styles.card}>
+    <div style={styles.cardTopline}>
+      <div style={{ ...styles.cardIndicator, background: color }} />
+      <div style={styles.cardLabel}>{label}</div>
+    </div>
     {loading ? (
       <div style={styles.loadingSkeleton} />
     ) : (
@@ -176,7 +180,7 @@ const styles = {
     width: 'min(100% - 48px, 1560px)',
     maxWidth: '1560px',
     margin: '0 auto',
-    padding: '2rem 0 3rem',
+    padding: '1.75rem 0 3rem',
   },
   header: {
     display: 'flex',
@@ -187,55 +191,69 @@ const styles = {
     gap: '1rem',
   },
   title: {
-    fontSize: '1.65rem',
-    fontWeight: 650,
+    fontSize: '1.55rem',
+    fontWeight: 700,
     color: 'var(--text)',
     margin: 0,
+    letterSpacing: 0,
   },
   subtitle: {
     color: 'var(--muted)',
-    fontSize: '0.95rem',
-    margin: '0.35rem 0 0 0',
+    fontSize: '0.9rem',
+    margin: '0.25rem 0 0 0',
   },
   addButton: {
-    background: 'var(--accent)',
+    background: 'linear-gradient(135deg, var(--accent), var(--accent-2))',
     color: '#fff',
     border: '1px solid transparent',
     padding: '0.68rem 1rem',
     borderRadius: 'var(--radius)',
-    fontSize: '0.9rem',
+    fontSize: '0.88rem',
     fontWeight: 600,
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    boxShadow: 'var(--card-shadow)',
   },
   summaryGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
-    gap: '1rem',
-    marginBottom: '1.5rem',
+    gap: '0.9rem',
+    marginBottom: '1.25rem',
   },
   card: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius)',
-    minHeight: '118px',
-    padding: '1.2rem',
+    minHeight: '110px',
+    padding: '1.05rem',
+  },
+  cardTopline: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    marginBottom: '0.5rem',
+  },
+  cardIndicator: {
+    width: 7,
+    height: 7,
+    borderRadius: '50%',
+    flexShrink: 0,
   },
   cardLabel: {
     fontSize: '0.72rem',
     color: 'var(--muted)',
     textTransform: 'uppercase',
-    letterSpacing: '0.04em',
-    marginBottom: '0.5rem',
-    fontWeight: 600,
+    letterSpacing: '0.03em',
+    fontWeight: 700,
   },
   cardValue: {
-    fontSize: '1.55rem',
-    fontWeight: 650,
+    fontSize: '1.45rem',
+    fontWeight: 700,
     marginBottom: '0.25rem',
+    fontFamily: '"DM Mono", monospace',
+    letterSpacing: 0,
   },
   cardSub: {
-    fontSize: '0.8rem',
+    fontSize: '0.78rem',
     color: 'var(--muted)',
   },
   loadingSkeleton: {
@@ -251,12 +269,12 @@ const styles = {
   controlsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
-    gap: '1rem',
+    gap: '0.9rem',
     alignItems: 'start',
-    marginBottom: '1.5rem',
+    marginBottom: '1.25rem',
   },
   chartSection: {
-    marginBottom: '1.5rem',
+    marginBottom: '1.25rem',
   },
   expensesSection: {
     marginBottom: '2rem',
