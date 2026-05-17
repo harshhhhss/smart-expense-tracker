@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import SharedGroup from "./pages/SharedGroup";
 import Analytics from "./pages/Analytics";
+import Notifications from "./pages/Notifications";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -36,6 +37,9 @@ const App = () => (
             } />
             <Route path="/analytics" element={
               <ProtectedRoute><Analytics /></ProtectedRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute><Notifications /></ProtectedRoute>
             } />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
