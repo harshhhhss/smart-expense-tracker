@@ -28,7 +28,7 @@ const Analytics = () => {
   return (
     <>
       <Navbar />
-      <div style={styles.page}>
+      <div className="app-page" style={styles.page}>
         <div style={styles.header}>
           <h1 style={styles.title}>Analytics</h1>
           <p style={styles.subtitle}>Insights and planning tools</p>
@@ -55,28 +55,27 @@ const Analytics = () => {
 
 const styles = {
   page: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '2rem 1.5rem',
+    maxWidth: 'var(--app-content-max)',
+    padding: '1.75rem 0 3rem',
   },
   header: {
-    marginBottom: '2rem',
+    marginBottom: '1.5rem',
   },
   title: {
-    fontSize: '1.75rem',
-    fontWeight: 650,
+    fontSize: '1.55rem',
+    fontWeight: 800,
     color: 'var(--text)',
     margin: 0,
   },
   subtitle: {
     color: 'var(--muted)',
-    fontSize: '1rem',
-    margin: '0.5rem 0 0 0',
+    fontSize: '0.9rem',
+    margin: '0.25rem 0 0 0',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-    gap: '1rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
+    gap: '0.9rem',
   },
   section: {
     minWidth: 0,
