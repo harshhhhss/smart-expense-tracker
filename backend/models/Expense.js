@@ -6,6 +6,7 @@ const categories = [
   "Shopping",
   "Entertainment",
   "Bills",
+  "Work",
   "Health",
   "Education",
   "Travel",
