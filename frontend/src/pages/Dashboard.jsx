@@ -1,5 +1,5 @@
-// src/pages/Dashboard.jsx — Simplified for better UX
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import API from "../api/axios";
 import Navbar from "../components/Navbar";
 import ExpenseChart from "../components/ExpenseChart";
@@ -23,10 +23,10 @@ const Dashboard = () => {
     search: "",
     category: "All",
     startDate: "",
-    endDate: ""
+    endDate: "",
   });
   const toast = useToast();
-  const { checkBudgetStatus } = useBudgetAlert(expenses, budgets);
+  const { budgetAlerts } = useBudgetAlert(expenses, budgets);
 
   const fetchExpenses = useCallback(async () => {
     try {
@@ -40,16 +40,13 @@ const Dashboard = () => {
       setSummary(dashRes.data.dashboard?.summary || null);
       setChartData(dashRes.data.dashboard?.chartData || { categoryData: [], monthlyData: [] });
       setBudgets(budgetRes.data.budget || null);
-      
-      // Check budget status after fetching
-      setTimeout(() => checkBudgetStatus(), 500);
     } catch (err) {
       console.error(err);
       toast.showError("Failed to load data");
     } finally {
       setLoading(false);
     }
-  }, [filters, toast, checkBudgetStatus]);
+  }, [filters, toast]);
 
   useEffect(() => {
     fetchExpenses();
@@ -68,41 +65,38 @@ const Dashboard = () => {
   return (
     <>
       <Navbar />
-      <div style={styles.page}>
-        {/* Header */}
+      <div className="app-page" style={styles.page}>
         <div style={styles.header}>
           <div>
             <h1 style={styles.title}>Dashboard</h1>
             <p style={styles.subtitle}>{monthLabel}</p>
           </div>
-          <button
-            className="action-button"
-            style={styles.addButton}
-            onClick={() => setShowForm(!showForm)}
-          >
+          <button className="action-button" style={styles.addButton} onClick={() => setShowForm(!showForm)}>
             {showForm ? "Cancel" : "Add Expense"}
           </button>
         </div>
 
-        {/* Summary Cards */}
         <div style={styles.summaryGrid}>
           <SummaryCard
             label="This Month"
             value={`Rs ${(summary?.thisMonth || 0).toFixed(2)}`}
             sub={`${summary?.totalExpensesThisMonth || 0} transactions`}
             color="var(--accent)"
+            tone="primary"
             loading={loading}
           />
           <SummaryCard
             label="Last Month"
             value={`Rs ${(summary?.lastMonth || 0).toFixed(2)}`}
             color="var(--muted)"
+            tone="neutral"
             loading={loading}
           />
           <SummaryCard
             label="Change"
             value={pctChange !== null && pctChange !== undefined ? `${pctChange > 0 ? "+" : ""}${pctChange}%` : "-"}
             color={pctChange > 0 ? "var(--danger)" : "var(--success)"}
+            tone={pctChange > 0 ? "danger" : "success"}
             loading={loading}
           />
           <SummaryCard
@@ -110,9 +104,12 @@ const Dashboard = () => {
             value={expenses.length}
             sub="all time"
             color="var(--warning)"
+            tone="warning"
             loading={loading}
           />
         </div>
+
+        <NotificationSummary count={budgetAlerts.length} />
 
         <div style={styles.controlsGrid}>
           <FilterPanel
@@ -123,7 +120,6 @@ const Dashboard = () => {
           <ExportPanel expenses={expenses} summary={summary} />
         </div>
 
-        {/* Add Expense Form */}
         {showForm && (
           <div style={styles.formSection}>
             <ExpenseForm
@@ -134,7 +130,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Chart */}
         <div style={styles.chartSection}>
           <ExpenseChart
             categoryData={chartData.categoryData}
@@ -143,10 +138,9 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Recent Expenses */}
         <div style={styles.expensesSection}>
           <ExpenseList
-            expenses={expenses.slice(0, 10)} // Show only recent 10
+            expenses={expenses.slice(0, 10)}
             onRefresh={handleRefresh}
             onEdit={(exp) => {
               setEditingExp(exp);
@@ -160,8 +154,8 @@ const Dashboard = () => {
   );
 };
 
-const SummaryCard = ({ label, value, sub, color, loading }) => (
-  <div className="product-card" style={styles.card}>
+const SummaryCard = ({ label, value, sub, color, loading, tone = "neutral" }) => (
+  <div className="product-card" style={{ ...styles.card, ...styles.cardTone[tone] }}>
     <div style={styles.cardTopline}>
       <div style={{ ...styles.cardIndicator, background: color }} />
       <div style={styles.cardLabel}>{label}</div>
@@ -175,115 +169,177 @@ const SummaryCard = ({ label, value, sub, color, loading }) => (
   </div>
 );
 
+const NotificationSummary = ({ count }) => (
+  <Link to="/notifications" className="ghost-button" style={styles.notificationSummary}>
+    <span style={styles.notificationIcon}>
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+        <path d="M10 19a2 2 0 0 0 4 0" />
+      </svg>
+    </span>
+    <span style={styles.notificationText}>
+      {count > 0 ? `${count} budget notification${count === 1 ? "" : "s"}` : "No budget notifications"}
+    </span>
+    {count > 0 && <span style={styles.notificationBadge}>{count}</span>}
+  </Link>
+);
+
 const styles = {
   page: {
-    width: 'min(100% - 48px, 1560px)',
-    maxWidth: '1560px',
-    margin: '0 auto',
-    padding: '1.75rem 0 3rem',
+    maxWidth: "var(--app-content-max)",
+    padding: "1.75rem 0 3rem",
   },
   header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '1.25rem',
-    flexWrap: 'wrap',
-    gap: '1rem',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: "1.25rem",
+    flexWrap: "wrap",
+    gap: "1rem",
   },
   title: {
-    fontSize: '1.55rem',
+    fontSize: "1.55rem",
     fontWeight: 700,
-    color: 'var(--text)',
+    color: "var(--text)",
     margin: 0,
     letterSpacing: 0,
   },
   subtitle: {
-    color: 'var(--muted)',
-    fontSize: '0.9rem',
-    margin: '0.25rem 0 0 0',
+    color: "var(--muted)",
+    fontSize: "0.9rem",
+    margin: "0.25rem 0 0 0",
   },
   addButton: {
-    background: 'linear-gradient(135deg, var(--accent), var(--accent-2))',
-    color: '#fff',
-    border: '1px solid transparent',
-    padding: '0.68rem 1rem',
-    borderRadius: 'var(--radius)',
-    fontSize: '0.88rem',
+    background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
+    color: "#fff",
+    border: "1px solid transparent",
+    padding: "0.68rem 1rem",
+    borderRadius: "var(--radius)",
+    fontSize: "0.88rem",
     fontWeight: 600,
-    cursor: 'pointer',
-    boxShadow: 'var(--card-shadow)',
+    cursor: "pointer",
+    boxShadow: "var(--card-shadow)",
   },
   summaryGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
-    gap: '0.9rem',
-    marginBottom: '1.25rem',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+    gap: "0.9rem",
+    marginBottom: "1.25rem",
+  },
+  notificationSummary: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.55rem",
+    margin: "-0.35rem 0 1.1rem",
+    padding: "0.48rem 0.62rem",
+    borderRadius: "999px",
+    border: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
+    background: "var(--surface)",
+    color: "var(--muted-strong)",
+    fontSize: "0.78rem",
+    fontWeight: 750,
+    textDecoration: "none",
+    boxShadow: "var(--card-shadow)",
+  },
+  notificationIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: "50%",
+    display: "grid",
+    placeItems: "center",
+    color: "var(--accent)",
+    background: "var(--accent-soft)",
+  },
+  notificationText: {
+    whiteSpace: "nowrap",
+  },
+  notificationBadge: {
+    minWidth: 20,
+    height: 20,
+    padding: "0 0.35rem",
+    borderRadius: 999,
+    display: "grid",
+    placeItems: "center",
+    background: "var(--warning)",
+    color: "#fff",
+    fontFamily: '"DM Mono", monospace',
+    fontSize: "0.7rem",
+    fontWeight: 900,
   },
   card: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius)',
-    minHeight: '110px',
-    padding: '1.05rem',
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
+    borderRadius: "var(--radius)",
+    minHeight: "98px",
+    padding: "0.95rem",
+  },
+  cardTone: {
+    primary: {
+      background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface))",
+    },
+    neutral: {},
+    danger: {
+      background: "linear-gradient(135deg, color-mix(in srgb, var(--danger) 9%, var(--surface)), var(--surface))",
+    },
+    success: {
+      background: "linear-gradient(135deg, color-mix(in srgb, var(--success) 10%, var(--surface)), var(--surface))",
+    },
+    warning: {
+      background: "linear-gradient(135deg, color-mix(in srgb, var(--warning) 9%, var(--surface)), var(--surface))",
+    },
   },
   cardTopline: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    marginBottom: '0.5rem',
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    marginBottom: "0.38rem",
   },
   cardIndicator: {
     width: 7,
     height: 7,
-    borderRadius: '50%',
+    borderRadius: "50%",
     flexShrink: 0,
   },
   cardLabel: {
-    fontSize: '0.72rem',
-    color: 'var(--muted)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.03em',
+    fontSize: "0.72rem",
+    color: "var(--muted)",
+    textTransform: "uppercase",
+    letterSpacing: "0.03em",
     fontWeight: 700,
   },
   cardValue: {
-    fontSize: '1.45rem',
-    fontWeight: 700,
-    marginBottom: '0.25rem',
+    fontSize: "1.38rem",
+    fontWeight: 900,
+    marginBottom: "0.15rem",
     fontFamily: '"DM Mono", monospace',
     letterSpacing: 0,
   },
   cardSub: {
-    fontSize: '0.78rem',
-    color: 'var(--muted)',
+    fontSize: "0.78rem",
+    color: "var(--muted)",
   },
   loadingSkeleton: {
-    height: '2rem',
-    width: '70%',
-    background: 'var(--surface-2)',
-    borderRadius: '4px',
-    margin: '0.25rem 0',
+    height: "2rem",
+    width: "70%",
+    background: "var(--surface-2)",
+    borderRadius: "4px",
+    margin: "0.25rem 0",
   },
   formSection: {
-    marginBottom: '1.5rem',
+    marginBottom: "1.5rem",
   },
   controlsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
-    gap: '0.9rem',
-    alignItems: 'start',
-    marginBottom: '1.25rem',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
+    gap: "0.9rem",
+    alignItems: "start",
+    marginBottom: "1.25rem",
   },
   chartSection: {
-    marginBottom: '1.25rem',
+    marginBottom: "1.25rem",
   },
   expensesSection: {
-    marginBottom: '2rem',
-  },
-  sectionTitle: {
-    fontSize: '1.1rem',
-    fontWeight: 600,
-    color: 'var(--text)',
-    marginBottom: '1rem',
+    marginBottom: "2rem",
   },
 };
 
