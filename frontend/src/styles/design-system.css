@@ -2,17 +2,17 @@
 
 :root {
   /* Dark mode (default) */
-  --bg: #0b0d12;
-  --surface: #12151c;
-  --surface-2: #191d26;
-  --surface-3: #202532;
-  --border: #262b36;
-  --border-strong: #333a4a;
-  --text: #edf0f5;
-  --muted: #8c95a5;
-  --muted-strong: #b7c0cf;
-  --accent: #7c8cff;
-  --accent-2: #aeb8ff;
+  --bg: #090c11;
+  --surface: #11151c;
+  --surface-2: #171c25;
+  --surface-3: #202735;
+  --border: #242c39;
+  --border-strong: #334052;
+  --text: #eef3f8;
+  --muted: #8b97a8;
+  --muted-strong: #b9c3d1;
+  --accent: #7f8cff;
+  --accent-2: #35c2a2;
   --accent-soft: rgba(124, 140, 255, 0.12);
   --success: #31c48d;
   --success-soft: rgba(49, 196, 141, 0.1);
@@ -20,15 +20,18 @@
   --warning-soft: rgba(216, 154, 43, 0.12);
   --danger: #e05252;
   --danger-soft: rgba(224, 82, 82, 0.1);
+  --expense-amount: #ffb4a8;
+  --income-amount: #7ddfbd;
   --radius: 8px;
   --radius-sm: 6px;
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --card-hover-shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --card-hover-shadow: 0 14px 32px rgba(0, 0, 0, 0.34);
   --focus-ring: 0 0 0 3px rgba(124, 140, 255, 0.24);
+  --app-content-max: 1400px;
 }
 
 [data-theme="light"] {
-  --bg: #f4f7fb;
+  --bg: #f5f7fa;
   --surface: #ffffff;
   --surface-2: #f7f9fc;
   --surface-3: #eef3f8;
@@ -38,7 +41,7 @@
   --muted: #657187;
   --muted-strong: #3f4b60;
   --accent: #2357c6;
-  --accent-2: #0f766e;
+  --accent-2: #0f8f7a;
   --accent-soft: rgba(35, 87, 198, 0.1);
   --success: #0f8f69;
   --success-soft: rgba(15, 143, 105, 0.1);
@@ -46,6 +49,8 @@
   --warning-soft: rgba(184, 107, 0, 0.12);
   --danger: #c2413a;
   --danger-soft: rgba(194, 65, 58, 0.1);
+  --expense-amount: #a7372f;
+  --income-amount: #08745c;
   --card-shadow: 0 1px 2px rgba(24, 39, 75, 0.06), 0 8px 24px rgba(24, 39, 75, 0.06);
   --card-hover-shadow: 0 10px 30px rgba(24, 39, 75, 0.1), 0 2px 8px rgba(24, 39, 75, 0.06);
   --focus-ring: 0 0 0 3px rgba(35, 87, 198, 0.18);
@@ -71,7 +76,7 @@ body {
     linear-gradient(180deg, color-mix(in srgb, var(--surface-2) 42%, transparent), transparent 320px),
     var(--bg);
   color: var(--text);
-  font-family: "DM Sans", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: Inter, "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.45;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -123,6 +128,28 @@ a {
   background: linear-gradient(90deg, transparent, var(--surface-2), transparent);
 }
 
+.transaction-row:hover {
+  background: linear-gradient(90deg, transparent, var(--surface-2), transparent);
+}
+
+.app-page {
+  width: min(calc(100% - var(--app-sidebar-width) - 48px), var(--app-content-max));
+  margin-left: calc(var(--app-sidebar-width) + 24px) !important;
+  margin-right: 24px !important;
+}
+
+.empty-illustration {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 0.9rem;
+  color: var(--accent);
+  background: linear-gradient(135deg, var(--accent-soft), color-mix(in srgb, var(--accent-2) 12%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
 input:focus,
 select:focus,
 textarea:focus,
@@ -133,6 +160,12 @@ a:focus-visible {
 }
 
 @media (max-width: 900px) {
+  .app-page {
+    width: min(100% - 32px, var(--app-content-max));
+    margin: 0 auto !important;
+    padding-top: 5rem !important;
+  }
+
   .charts-row,
   .bottom-row {
     grid-template-columns: 1fr !important;
@@ -142,5 +175,43 @@ a:focus-visible {
 @media (max-width: 640px) {
   body {
     font-size: 14px;
+  }
+
+  .transaction-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  table:has(.transaction-row) {
+    min-width: 0 !important;
+  }
+
+  table:has(.transaction-row) thead {
+    display: none;
+  }
+
+  table:has(.transaction-row),
+  table:has(.transaction-row) tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .transaction-row td {
+    border-bottom: 0 !important;
+    padding: 0.28rem 0.2rem !important;
+    text-align: left !important;
+  }
+
+  .transaction-row td[data-label]::before {
+    content: attr(data-label);
+    display: inline-block;
+    min-width: 72px;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 }
