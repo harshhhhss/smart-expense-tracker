@@ -6,14 +6,14 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as BarTooltip
 } from "recharts";
 
-const COLORS = ["#2357c6", "#0f766e", "#b86b00", "#6d5bd0", "#256f9c", "#0f8f69", "#7a869a", "#475569", "#c2413a"];
+const COLORS = ["#0f8f7a", "#2357c6", "#b86b00", "#6d5bd0", "#256f9c", "#0f8f69", "#7a869a", "#475569", "#c2413a"];
 
 const PieTooltipContent = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={styles.tooltip}>
-      <p style={{ color: payload[0].payload.fill, fontWeight: 600, marginBottom: 2 }}>{payload[0].name}</p>
-      <p style={{ color: "var(--text)" }}>Rs {payload[0].value.toFixed(2)}</p>
+      <p style={{ color: payload[0].payload.fill, fontWeight: 800, marginBottom: 2 }}>{payload[0].name}</p>
+      <p style={{ color: "var(--expense-amount)", fontFamily: '"DM Mono", monospace', fontWeight: 900 }}>Rs {payload[0].value.toFixed(2)}</p>
     </div>
   );
 };
@@ -23,7 +23,7 @@ const BarTooltipContent = ({ active, payload, label }) => {
   return (
     <div style={styles.tooltip}>
       <p style={{ color: "var(--muted)", marginBottom: 2, fontSize: "0.8rem" }}>{label}</p>
-      <p style={{ color: "var(--accent)", fontWeight: 600 }}>Rs {payload[0]?.value?.toFixed(2)}</p>
+      <p style={{ color: "var(--expense-amount)", fontFamily: '"DM Mono", monospace', fontWeight: 900 }}>Rs {payload[0]?.value?.toFixed(2)}</p>
     </div>
   );
 };
@@ -42,6 +42,18 @@ const renderLegend = (props) => {
   );
 };
 
+const EmptyChart = ({ children }) => (
+  <div style={styles.empty}>
+    <div className="empty-illustration" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M4 19V5M4 19h16" />
+        <path d="M8 16v-4M12 16V8M16 16v-6" />
+      </svg>
+    </div>
+    <span>{children}</span>
+  </div>
+);
+
 const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) => {
   if (loading) {
     return (
@@ -58,13 +70,14 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
 
   const hasCategoryData = categoryData && categoryData.length > 0;
   const hasMonthlyData = monthlyData && monthlyData.some(m => m.total > 0);
+  const categoryTotal = categoryData.reduce((sum, item) => sum + Number(item.value || 0), 0);
 
   return (
     <div style={styles.chartsRow}>
       <div className="product-card" style={styles.chartCard}>
         <div style={styles.chartHeader}>
           <h3 style={styles.chartTitle}>Category Breakdown</h3>
-          <span style={styles.chartMeta}>Current mix</span>
+          <span style={styles.chartMeta}>Rs {categoryTotal.toFixed(0)} tracked</span>
         </div>
         {hasCategoryData ? (
           <ResponsiveContainer width="100%" height={300}>
@@ -73,14 +86,14 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
                 data={categoryData}
                 cx="50%"
                 cy="50%"
-                innerRadius={62}
+                innerRadius={66}
                 outerRadius={92}
-                paddingAngle={3}
+                paddingAngle={4}
                 dataKey="value"
                 nameKey="name"
               >
                 {categoryData.map((entry, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="var(--surface)" strokeWidth={3} />
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} stroke="var(--surface)" strokeWidth={4} />
                 ))}
               </Pie>
               <PieTooltip content={<PieTooltipContent />} />
@@ -88,7 +101,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div style={styles.empty}>No expenses this month yet</div>
+          <EmptyChart>No expenses this month yet</EmptyChart>
         )}
       </div>
 
@@ -118,7 +131,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div style={styles.empty}>No spending data for the last 6 months</div>
+          <EmptyChart>No spending data for the last 6 months</EmptyChart>
         )}
       </div>
     </div>
@@ -136,32 +149,32 @@ const styles = {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "var(--radius)",
-    padding: "1.15rem",
-    minHeight: 372,
+    padding: "1rem",
+    minHeight: 360,
   },
   chartHeader: {
     display: "flex",
     alignItems: "baseline",
     justifyContent: "space-between",
     gap: "1rem",
-    marginBottom: "0.75rem",
+    marginBottom: "0.55rem",
   },
   chartTitle: {
     fontSize: "0.96rem",
-    fontWeight: 700,
+    fontWeight: 800,
     color: "var(--text)",
     margin: 0,
   },
   chartMeta: {
     color: "var(--muted)",
-    fontSize: "0.76rem",
-    fontWeight: 600,
+    fontSize: "0.74rem",
+    fontWeight: 750,
   },
   tooltip: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "var(--radius-sm)",
-    padding: "0.55rem 0.7rem",
+    padding: "0.58rem 0.72rem",
     fontSize: "0.82rem",
     boxShadow: "var(--card-hover-shadow)",
   },
@@ -176,12 +189,14 @@ const styles = {
   legendDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0 },
   legendLabel: { fontSize: "0.72rem", color: "var(--muted)", fontWeight: 600 },
   empty: {
-    height: 200,
+    height: 260,
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
     color: "var(--muted)",
-    fontSize: "0.88rem",
+    fontSize: "0.84rem",
+    fontWeight: 650,
   },
 };
 
