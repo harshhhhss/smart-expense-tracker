@@ -30,13 +30,19 @@ const ActivityFeed = ({ expenses }) => {
   if (!activities.length) {
     return (
       <div style={styles.empty}>
+        <div className="empty-illustration" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 8v4l3 2" />
+            <circle cx="12" cy="12" r="8" />
+          </svg>
+        </div>
         <div style={styles.emptyText}>No activity yet</div>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
+    <div className="product-card" style={styles.container}>
       <h3 style={styles.title}>Recent Activity</h3>
       <div style={styles.feed}>
         {activities.map((activity, idx) => (
@@ -95,13 +101,13 @@ const styles = {
   container: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
-    padding: "1.25rem",
+    borderRadius: "var(--radius)",
+    padding: "1.1rem",
     marginBottom: "2rem"
   },
   title: {
-    fontSize: "1rem",
-    fontWeight: 600,
+    fontSize: "0.98rem",
+    fontWeight: 800,
     color: "var(--text)",
     margin: "0 0 1rem 0"
   },
@@ -147,7 +153,7 @@ const styles = {
   },
   action: {
     fontSize: "0.95rem",
-    fontWeight: 600,
+    fontWeight: 750,
     color: "var(--text)"
   },
   time: {
@@ -172,7 +178,7 @@ const styles = {
     fontSize: "0.95rem",
     fontWeight: 700,
     color: "var(--text)",
-    fontFamily: "monospace"
+    fontFamily: '"DM Mono", monospace'
   },
   description: {
     fontSize: "0.85rem",
@@ -191,7 +197,7 @@ const styles = {
   },
   empty: {
     textAlign: "center",
-    padding: "2rem 1rem",
+    padding: "3rem 1rem",
     color: "var(--muted)"
   },
   emptyText: {
