@@ -280,7 +280,7 @@ const SharedGroups = () => {
     return (
       <>
         <Navbar />
-        <div style={s.page}>
+        <div className="app-page" style={s.page}>
           <GroupDetail
             groupId={selectedId}
             currentUserId={currentUser._id}
@@ -294,7 +294,7 @@ const SharedGroups = () => {
   return (
     <>
       <Navbar />
-      <div style={s.page}>
+      <div className="app-page" style={s.page}>
         <div style={s.pageHeader}>
           <div>
             <h1 style={s.pageTitle}>Shared Expenses</h1>
@@ -347,7 +347,7 @@ const SharedGroups = () => {
 };
 
 const s = {
-  page: { maxWidth: 900, margin: "0 auto", padding: "2rem 1.5rem" },
+  page: { maxWidth: "var(--app-content-max)", padding: "1.75rem 0 3rem" },
   pageHeader: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "2rem", flexWrap: "wrap", gap: "1rem" },
   pageTitle: { fontSize: "1.5rem", fontWeight: 700, color: "var(--text)", margin: 0 },
   pageSubtitle: { color: "var(--muted)", fontSize: "0.88rem", marginTop: "0.2rem" },
