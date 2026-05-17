@@ -34,21 +34,21 @@ const ExportPanel = ({ expenses, summary }) => {
   };
 
   return (
-    <div style={styles.container}>
-      <button style={styles.toggleBtn} onClick={() => setIsOpen(!isOpen)}>
+    <div className="control-surface" style={styles.container}>
+      <button className="ghost-button" style={styles.toggleBtn} onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? "Hide Export Options" : "Export Data"}
       </button>
 
       {isOpen && (
         <div style={styles.panel}>
           <div style={styles.grid}>
-            <button style={styles.btn} onClick={handleExportExpensesCSV}>
+            <button className="ghost-button" style={styles.btn} onClick={handleExportExpensesCSV}>
               Expenses (CSV)
             </button>
-            <button style={styles.btn} onClick={handleExportExpensesPDF}>
+            <button className="ghost-button" style={styles.btn} onClick={handleExportExpensesPDF}>
               Expenses (PDF)
             </button>
-            <button style={styles.btn} onClick={handleExportSummaryCSV}>
+            <button className="ghost-button" style={styles.btn} onClick={handleExportSummaryCSV}>
               Summary (CSV)
             </button>
           </div>
@@ -65,19 +65,19 @@ const styles = {
   container: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
+    borderRadius: "var(--radius)",
     marginBottom: 0,
     padding: "0.5rem"
   },
   toggleBtn: {
     width: "100%",
-    padding: "0.75rem",
+    padding: "0.72rem 0.75rem",
     background: "transparent",
     border: "none",
     color: "var(--accent)",
     fontWeight: 600,
     cursor: "pointer",
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
     textAlign: "left",
     fontFamily: "inherit"
   },
@@ -95,12 +95,12 @@ const styles = {
     padding: "0.75rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
+    borderRadius: "var(--radius)",
     color: "var(--text)",
     cursor: "pointer",
     fontWeight: 500,
     fontFamily: "inherit",
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
     transition: "all 0.2s"
   },
   info: {
