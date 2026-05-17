@@ -31,27 +31,34 @@ const AnomalyPanel = () => {
   }, []);
 
   if (loading) return (
-    <div style={s.card}>
+    <div className="product-card" style={s.card}>
       <div style={s.shimmer} />
     </div>
   );
 
   if (!anomalies.length) return (
-    <div style={s.card}>
+    <div className="product-card" style={s.card}>
       <div style={s.header}>
         <span style={s.title}>Anomaly Detection</span>
         <span style={{ ...s.badge, background: "rgba(49,196,141,0.1)", color: "var(--success)", borderColor: "rgba(49,196,141,0.28)" }}>
           All Clear
         </span>
       </div>
-      <p style={s.emptyMsg}>No unusual spending detected in the last 90 days.</p>
+      <div style={s.emptyState}>
+        <div className="empty-illustration" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20 7 10 17l-5-5" />
+          </svg>
+        </div>
+        <p style={s.emptyMsg}>No unusual spending detected in the last 90 days.</p>
+      </div>
     </div>
   );
 
   const visible = expanded ? anomalies : anomalies.slice(0, 3);
 
   return (
-    <div style={s.card}>
+    <div className="product-card" style={s.card}>
       <div style={s.header}>
         <span style={s.title}>Anomaly Detection</span>
         <div style={s.badgeGroup}>
@@ -91,7 +98,7 @@ const AnomalyPanel = () => {
       </div>
 
       {anomalies.length > 3 && (
-        <button style={s.expandBtn} onClick={() => setExpanded(e => !e)}>
+        <button className="ghost-button" style={s.expandBtn} onClick={() => setExpanded(e => !e)}>
           {expanded ? "Show less" : `Show ${anomalies.length - 3} more`}
         </button>
       )}
@@ -102,16 +109,16 @@ const AnomalyPanel = () => {
 const s = {
   card: {
     background: "var(--surface)", border: "1px solid var(--border)",
-    borderRadius: "8px", padding: "1.15rem 1.25rem",
+    borderRadius: "var(--radius)", padding: "1.1rem",
   },
   header: {
     display: "flex", alignItems: "center",
     justifyContent: "space-between", marginBottom: "1rem", gap: "0.75rem"
   },
-  title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
+  title: { fontSize: "0.96rem", fontWeight: 800, color: "var(--text)" },
   badgeGroup: { display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "flex-end" },
   badge: {
-    fontSize: "0.7rem", fontWeight: 600,
+    fontSize: "0.68rem", fontWeight: 800,
     padding: "2px 8px", borderRadius: "999px", border: "1px solid"
   },
   list: { display: "flex", flexDirection: "column", gap: "0.55rem" },
@@ -130,7 +137,8 @@ const s = {
     cursor: "pointer", padding: "0.5rem", fontFamily: "inherit", borderRadius: "6px"
   },
   shimmer: { height: 120, borderRadius: 6, background: "var(--surface-2)" },
-  emptyMsg: { fontSize: "0.85rem", color: "var(--muted)", margin: 0 }
+  emptyState: { textAlign: "center", padding: "1.5rem 0.5rem 1rem" },
+  emptyMsg: { fontSize: "0.84rem", color: "var(--muted)", margin: 0, fontWeight: 650 }
 };
 
 export default AnomalyPanel;
