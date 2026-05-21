@@ -30,6 +30,23 @@ const CategoryIcon = ({ category, color }) => (
 
 const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
   const [deletingId, setDeletingId] = useState(null);
+  const [search, setSearch] = useState("");
+  const formatDate = (d) => new Date(d).toLocaleDateString("en-IN", {
+    day: "numeric", month: "short", year: "numeric"
+  });
+
+  const normalizedSearch = search.trim().toLowerCase();
+  const visibleExpenses = normalizedSearch
+    ? expenses.filter((expense) => {
+        const amount = Number(expense.amount).toFixed(2);
+        return [
+          expense.description,
+          expense.category,
+          formatDate(expense.date),
+          amount,
+        ].some((value) => String(value || "").toLowerCase().includes(normalizedSearch));
+      })
+    : expenses;
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this expense?")) return;
@@ -44,10 +61,6 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
     }
   };
 
-  const formatDate = (d) => new Date(d).toLocaleDateString("en-IN", {
-    day: "numeric", month: "short", year: "numeric"
-  });
-
   return (
     <div className="product-card" style={styles.card}>
       <div style={styles.cardHeader}>
@@ -55,6 +68,19 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
           <h3 style={styles.cardTitle}>Transactions</h3>
           <p style={styles.cardSubtitle}>Latest {expenses.length} transactions</p>
         </div>
+        <label style={styles.searchBox}>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m21 21-4.3-4.3" />
+            <circle cx="11" cy="11" r="7" />
+          </svg>
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search transactions"
+            style={styles.searchInput}
+          />
+        </label>
       </div>
 
       {expenses.length === 0 ? (
@@ -67,6 +93,11 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
           </div>
           <h4 style={styles.emptyTitle}>No transactions yet</h4>
           <p style={styles.emptyText}>Add an expense to start building your spending history.</p>
+        </div>
+      ) : visibleExpenses.length === 0 ? (
+        <div style={styles.empty}>
+          <h4 style={styles.emptyTitle}>No matching transactions</h4>
+          <p style={styles.emptyText}>Try a different description, category, date, or amount.</p>
         </div>
       ) : (
         <div style={styles.tableWrap}>
@@ -81,7 +112,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
               </tr>
             </thead>
             <tbody>
-              {expenses.map((expense) => {
+              {visibleExpenses.map((expense) => {
                 const color = CATEGORY_COLORS[expense.category] || "var(--muted)";
                 return (
                   <tr key={expense._id} className="transaction-row" style={styles.tr}>
@@ -131,34 +162,57 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
 
 const styles = {
   card: {
-    background: "var(--surface)", border: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
-    borderRadius: "var(--radius)", padding: "0.95rem",
+    background: "color-mix(in srgb, var(--surface) 96%, transparent)", border: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
+    borderRadius: "8px", padding: "0.78rem",
     overflow: "hidden",
   },
   cardHeader: {
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    gap: "1rem",
-    paddingBottom: "0.75rem",
+    gap: "0.75rem",
+    paddingBottom: "0.62rem",
     borderBottom: "1px solid color-mix(in srgb, var(--border) 72%, transparent)",
+    flexWrap: "wrap",
   },
-  cardTitle: { fontSize: "0.98rem", fontWeight: 800, color: "var(--text)", marginBottom: "0.15rem", marginTop: 0 },
-  cardSubtitle: { fontSize: "0.78rem", color: "var(--muted)", margin: 0 },
+  cardTitle: { fontSize: "0.9rem", fontWeight: 850, color: "var(--text)", marginBottom: "0.12rem", marginTop: 0 },
+  cardSubtitle: { fontSize: "0.72rem", color: "var(--muted)", margin: 0 },
+  searchBox: {
+    minWidth: 230,
+    flex: "0 1 300px",
+    height: 34,
+    display: "flex",
+    alignItems: "center",
+    gap: "0.45rem",
+    padding: "0 0.65rem",
+    color: "var(--muted)",
+    background: "var(--surface-2)",
+    border: "1px solid var(--border)",
+    borderRadius: "8px",
+  },
+  searchInput: {
+    width: "100%",
+    border: 0,
+    outline: 0,
+    background: "transparent",
+    color: "var(--text)",
+    fontSize: "0.8rem",
+    fontFamily: "inherit",
+  },
   tableWrap: { overflowX: "auto" },
   table: { width: "100%", borderCollapse: "collapse", minWidth: 720 },
   th: {
     color: "var(--muted)",
-    fontSize: "0.7rem",
+    fontSize: "0.66rem",
     fontWeight: 800,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
-    padding: "0.62rem 0.55rem",
+    padding: "0.52rem 0.5rem",
     borderBottom: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
   },
   tr: { transition: "background-color 0.18s ease, transform 0.18s ease" },
   td: {
-    padding: "0.58rem 0.55rem",
+    padding: "0.48rem 0.5rem",
     borderBottom: "1px solid color-mix(in srgb, var(--border) 55%, transparent)",
     verticalAlign: "middle",
     textAlign: "right",
@@ -167,9 +221,9 @@ const styles = {
   transactionCell: { display: "flex", alignItems: "center", gap: "0.68rem", minWidth: 0, textAlign: "left" },
   itemInfo: { minWidth: 0, flex: 1 },
   categoryIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: "10px",
+    width: 30,
+    height: 30,
+    borderRadius: "8px",
     border: "1px solid",
     display: "grid",
     placeItems: "center",
@@ -186,8 +240,8 @@ const styles = {
     background: "rgba(49,196,141,0.08)", padding: "1px 6px",
     borderRadius: "999px", border: "1px solid rgba(49,196,141,0.22)",
   },
-  desc: { fontSize: "0.88rem", color: "var(--text)", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 },
-  amount: { fontFamily: '"DM Mono", monospace', fontWeight: 900, color: "var(--expense-amount)", fontSize: "0.94rem", textAlign: "right" },
+  desc: { fontSize: "0.82rem", color: "var(--text)", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 },
+  amount: { fontFamily: '"DM Mono", monospace', fontWeight: 900, color: "var(--expense-amount)", fontSize: "0.86rem", textAlign: "right" },
   actions: { display: "flex", gap: "0.42rem", justifyContent: "flex-end" },
   editBtn: {
     padding: "0.4rem 0.72rem", borderRadius: "6px", border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
