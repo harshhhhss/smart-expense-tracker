@@ -48,11 +48,21 @@ const LogoutIcon = () => (
   </svg>
 );
 
-const navItems = [
-  { to: "/", label: "Dashboard", icon: <DashboardIcon /> },
-  { to: "/groups", label: "Groups", icon: <GroupsIcon /> },
-  { to: "/analytics", label: "Analytics", icon: <AnalyticsIcon /> },
-  { to: "/notifications", label: "Notifications", icon: <NotificationsIcon /> },
+const navGroups = [
+  {
+    label: "Workspace",
+    items: [
+      { to: "/", label: "Dashboard", icon: <DashboardIcon /> },
+      { to: "/analytics", label: "Analytics", icon: <AnalyticsIcon /> },
+    ],
+  },
+  {
+    label: "Money Ops",
+    items: [
+      { to: "/groups", label: "Groups", icon: <GroupsIcon /> },
+      { to: "/notifications", label: "Notifications", icon: <NotificationsIcon /> },
+    ],
+  },
 ];
 
 const Navbar = () => {
@@ -84,16 +94,21 @@ const Navbar = () => {
 
         {/* Desktop navigation */}
         <div className="navbar-nav-links">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/"}
-              className={({ isActive }) => `navbar-link ${isActive ? "is-active" : ""}`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </NavLink>
+          {navGroups.map((group) => (
+            <div className="navbar-nav-group" key={group.label}>
+              <div className="navbar-group-label">{group.label}</div>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === "/"}
+                  className={({ isActive }) => `navbar-link ${isActive ? "is-active" : ""}`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
           ))}
         </div>
 
@@ -127,17 +142,22 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="navbar-mobile-menu">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === "/"}
-              className={({ isActive }) => `navbar-mobile-link ${isActive ? "is-active" : ""}`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </NavLink>
+          {navGroups.map((group) => (
+            <div className="navbar-nav-group" key={group.label}>
+              <div className="navbar-group-label">{group.label}</div>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === "/"}
+                  className={({ isActive }) => `navbar-mobile-link ${isActive ? "is-active" : ""}`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+                </NavLink>
+              ))}
+            </div>
           ))}
           <div className="navbar-mobile-user">
             <button
