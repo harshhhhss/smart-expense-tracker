@@ -11,7 +11,7 @@ const TYPE_CONFIG = {
   tip: { color: "var(--warning)", label: "Tip" },
 };
 
-const InsightCard = ({ insights = [], loading = false }) => {
+const InsightCard = ({ insights = [], loading = false, filter = "all" }) => {
   if (loading) {
     return (
       <div className="product-card" style={styles.panel}>
@@ -30,6 +30,13 @@ const InsightCard = ({ insights = [], loading = false }) => {
     );
   }
 
+  const visibleInsights = filter === "all"
+    ? insights
+    : insights.filter((insight) => {
+        if (typeof insight === "string") return filter === "info";
+        return (insight.type || "info") === filter;
+      });
+
   if (!insights || insights.length === 0) return null;
 
   return (
@@ -39,10 +46,12 @@ const InsightCard = ({ insights = [], loading = false }) => {
           <h3 style={styles.heading}>Spending Insights</h3>
           <p style={styles.subheading}>Prioritized spending signals</p>
         </div>
-        <span style={styles.badge}>{insights.length}</span>
+        <span style={styles.badge}>{visibleInsights.length}</span>
       </div>
       <div style={styles.rows}>
-        {insights.map((insight, i) => {
+        {visibleInsights.length === 0 ? (
+          <div style={styles.emptyRow}>No insights match this filter.</div>
+        ) : visibleInsights.map((insight, i) => {
           const isString = typeof insight === "string";
           const type = isString ? "info" : (insight.type || "info");
           const title = isString ? "Insight" : insight.title;
@@ -104,6 +113,12 @@ const styles = {
   },
   title: { fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   message: { fontSize: "0.8rem", color: "var(--text)", lineHeight: 1.42, margin: 0 },
+  emptyRow: {
+    padding: "0.8rem 0",
+    color: "var(--muted)",
+    fontSize: "0.8rem",
+    fontWeight: 650,
+  },
   loadingRows: { display: "grid", borderTop: "1px solid var(--border)" },
   loadingRow: {
     display: "flex",
