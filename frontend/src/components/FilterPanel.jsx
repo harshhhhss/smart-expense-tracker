@@ -114,33 +114,33 @@ const FilterPanel = ({ onFiltersChange, isOpen, onToggle }) => {
 
 const styles = {
   container: {
-    background: "var(--surface)",
+    background: "color-mix(in srgb, var(--surface) 96%, transparent)",
     border: "1px solid var(--border)",
-    borderRadius: "var(--radius)",
+    borderRadius: "8px",
     marginBottom: 0,
-    padding: "0.5rem"
+    padding: "0.38rem"
   },
   toggleBtn: {
     width: "100%",
-    padding: "0.72rem 0.75rem",
+    padding: "0.56rem 0.62rem",
     background: "transparent",
     border: "none",
     color: "var(--accent)",
     fontWeight: 600,
     cursor: "pointer",
-    fontSize: "0.86rem",
+    fontSize: "0.8rem",
     textAlign: "left",
     fontFamily: "inherit"
   },
   panel: {
-    padding: "1rem",
+    padding: "0.75rem",
     borderTop: "1px solid var(--border)"
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "1rem",
-    marginBottom: "1rem"
+    gap: "0.72rem",
+    marginBottom: "0.75rem"
   },
   field: {
     display: "flex",
@@ -155,23 +155,23 @@ const styles = {
     letterSpacing: "0.5px"
   },
   input: {
-    padding: "0.62rem 0.72rem",
+    padding: "0.54rem 0.65rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "var(--radius)",
+    borderRadius: "8px",
     color: "var(--text)",
     fontFamily: "inherit",
-    fontSize: "0.86rem",
+    fontSize: "0.8rem",
     outline: "none"
   },
   select: {
-    padding: "0.62rem 0.72rem",
+    padding: "0.54rem 0.65rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "var(--radius)",
+    borderRadius: "8px",
     color: "var(--text)",
     fontFamily: "inherit",
-    fontSize: "0.86rem",
+    fontSize: "0.8rem",
     outline: "none",
     cursor: "pointer"
   },
