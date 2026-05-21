@@ -63,48 +63,48 @@ const ExportPanel = ({ expenses, summary }) => {
 
 const styles = {
   container: {
-    background: "var(--surface)",
+    background: "color-mix(in srgb, var(--surface) 96%, transparent)",
     border: "1px solid var(--border)",
-    borderRadius: "var(--radius)",
+    borderRadius: "8px",
     marginBottom: 0,
-    padding: "0.5rem"
+    padding: "0.38rem"
   },
   toggleBtn: {
     width: "100%",
-    padding: "0.72rem 0.75rem",
+    padding: "0.56rem 0.62rem",
     background: "transparent",
     border: "none",
     color: "var(--accent)",
     fontWeight: 600,
     cursor: "pointer",
-    fontSize: "0.86rem",
+    fontSize: "0.8rem",
     textAlign: "left",
     fontFamily: "inherit"
   },
   panel: {
-    padding: "1rem",
+    padding: "0.75rem",
     borderTop: "1px solid var(--border)"
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-    gap: "0.75rem",
-    marginBottom: "1rem"
+    gap: "0.62rem",
+    marginBottom: "0.75rem"
   },
   btn: {
-    padding: "0.75rem",
+    padding: "0.58rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "var(--radius)",
+    borderRadius: "8px",
     color: "var(--text)",
     cursor: "pointer",
     fontWeight: 500,
     fontFamily: "inherit",
-    fontSize: "0.86rem",
+    fontSize: "0.8rem",
     transition: "all 0.2s"
   },
   info: {
-    fontSize: "0.8rem",
+    fontSize: "0.76rem",
     color: "var(--muted)",
     padding: "0.5rem 0",
     textAlign: "center"
