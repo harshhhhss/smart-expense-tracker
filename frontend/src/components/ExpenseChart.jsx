@@ -80,14 +80,14 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
           <span style={styles.chartMeta}>Rs {categoryTotal.toFixed(0)} tracked</span>
         </div>
         {hasCategoryData ? (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={260}>
             <PieChart>
               <Pie
                 data={categoryData}
                 cx="50%"
                 cy="50%"
-                innerRadius={66}
-                outerRadius={92}
+                innerRadius={58}
+                outerRadius={82}
                 paddingAngle={4}
                 dataKey="value"
                 nameKey="name"
@@ -111,7 +111,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
           <span style={styles.chartMeta}>Last 6 months</span>
         </div>
         {hasMonthlyData ? (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={260}>
             <BarChart data={monthlyData} margin={{ top: 8, right: 10, left: 0, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
               <XAxis
@@ -142,32 +142,32 @@ const styles = {
   chartsRow: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))",
-    gap: "0.9rem",
-    marginBottom: "1.25rem",
+    gap: "0.72rem",
+    marginBottom: "0.85rem",
   },
   chartCard: {
-    background: "var(--surface)",
+    background: "color-mix(in srgb, var(--surface) 96%, transparent)",
     border: "1px solid var(--border)",
-    borderRadius: "var(--radius)",
-    padding: "1rem",
-    minHeight: 360,
+    borderRadius: "8px",
+    padding: "0.78rem",
+    minHeight: 318,
   },
   chartHeader: {
     display: "flex",
     alignItems: "baseline",
     justifyContent: "space-between",
     gap: "1rem",
-    marginBottom: "0.55rem",
+    marginBottom: "0.35rem",
   },
   chartTitle: {
-    fontSize: "0.96rem",
-    fontWeight: 800,
+    fontSize: "0.9rem",
+    fontWeight: 850,
     color: "var(--text)",
     margin: 0,
   },
   chartMeta: {
     color: "var(--muted)",
-    fontSize: "0.74rem",
+    fontSize: "0.7rem",
     fontWeight: 750,
   },
   tooltip: {
