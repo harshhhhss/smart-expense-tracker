@@ -16,18 +16,18 @@ const STATUS_CONFIG = {
 const HealthScoreRing = ({ score }) => {
   const color = score >= 70 ? "var(--success)" : score >= 40 ? "var(--warning)" : "var(--danger)";
   return (
-    <div style={{ position: "relative", width: 80, height: 80 }}>
-      <svg width="80" height="80" style={{ transform: "rotate(-90deg)" }}>
-        <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" strokeWidth="7" />
-        <circle cx="40" cy="40" r="32" fill="none" stroke={color} strokeWidth="7"
-          strokeDasharray={`${2 * Math.PI * 32}`}
-          strokeDashoffset={`${2 * Math.PI * 32 * (1 - score / 100)}`}
+    <div style={{ position: "relative", width: 64, height: 64 }}>
+      <svg width="64" height="64" style={{ transform: "rotate(-90deg)" }}>
+        <circle cx="32" cy="32" r="25" fill="none" stroke="var(--border)" strokeWidth="6" />
+        <circle cx="32" cy="32" r="25" fill="none" stroke={color} strokeWidth="6"
+          strokeDasharray={`${2 * Math.PI * 25}`}
+          strokeDashoffset={`${2 * Math.PI * 25 * (1 - score / 100)}`}
           strokeLinecap="round"
           style={{ transition: "stroke-dashoffset 0.8s ease" }}
         />
       </svg>
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontWeight: 700, fontSize: "1.1rem", color }}>{score}</span>
+        <span style={{ fontWeight: 850, fontSize: "0.98rem", color }}>{score}</span>
         <span style={{ fontSize: "0.6rem", color: "var(--muted)" }}>/ 100</span>
       </div>
     </div>
@@ -272,48 +272,48 @@ const BudgetPlanner = () => {
 };
 
 const s = {
-  card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "8px", padding: "1.15rem 1.25rem" },
-  header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.2rem", flexWrap: "wrap", gap: "0.5rem" },
-  title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
+  card: { background: "color-mix(in srgb, var(--surface) 96%, transparent)", border: "1px solid var(--border)", borderRadius: "8px", padding: "0.78rem" },
+  header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.72rem", flexWrap: "wrap", gap: "0.5rem" },
+  title: { fontSize: "0.9rem", fontWeight: 850, color: "var(--text)" },
   tabs: { display: "flex", gap: "0.25rem", background: "var(--surface-2)", borderRadius: "8px", padding: "3px" },
-  tab: { padding: "0.3rem 0.75rem", borderRadius: "6px", border: "none", background: "transparent", color: "var(--muted)", fontSize: "0.78rem", cursor: "pointer", fontFamily: "inherit" },
+  tab: { padding: "0.28rem 0.62rem", borderRadius: "6px", border: "none", background: "transparent", color: "var(--muted)", fontSize: "0.74rem", cursor: "pointer", fontFamily: "inherit", fontWeight: 750 },
   tabActive: { background: "var(--surface)", color: "var(--text)" },
-  overviewRow: { display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1.2rem" },
+  overviewRow: { display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.78rem" },
   overviewStats: { flex: 1 },
-  statRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" },
-  statLabel: { fontSize: "0.78rem", color: "var(--muted)" },
-  statVal: { fontFamily: "monospace", fontWeight: 600, fontSize: "0.88rem", color: "var(--text)" },
-  allocationGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", marginBottom: "1rem" },
-  allocCard: { background: "var(--surface-2)", borderRadius: "8px", padding: "0.75rem", border: "1px solid var(--border)" },
-  progBg: { height: 3, background: "var(--surface)", borderRadius: 2, marginTop: "0.4rem" },
+  statRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.28rem 0", borderBottom: "1px solid color-mix(in srgb, var(--border) 45%, transparent)" },
+  statLabel: { fontSize: "0.74rem", color: "var(--muted)" },
+  statVal: { fontFamily: '"DM Mono", monospace', fontWeight: 750, fontSize: "0.82rem", color: "var(--text)" },
+  allocationGrid: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.45rem", marginBottom: "0.72rem" },
+  allocCard: { background: "var(--surface-2)", borderRadius: "8px", padding: "0.58rem", border: "1px solid var(--border)" },
+  progBg: { height: 3, background: "var(--surface)", borderRadius: 2, marginTop: "0.32rem" },
   progFill: { height: "100%", borderRadius: 2, transition: "width 0.5s ease" },
-  applyBtn: { width: "100%", padding: "0.7rem", background: "rgba(124,140,255,0.1)", border: "1px solid rgba(124,140,255,0.24)", color: "var(--accent)", borderRadius: "8px", cursor: "pointer", fontSize: "0.85rem", fontFamily: "inherit", fontWeight: 600 },
-  incomeRow: { marginBottom: "1rem" },
-  fieldLabel: { fontSize: "0.78rem", color: "var(--muted)", fontWeight: 500 },
-  incomeInput: { padding: "0.6rem 0.9rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--text)", fontFamily: "inherit", fontSize: "0.88rem", outline: "none", width: "100%" },
-  refreshBtn: { padding: "0.6rem 1rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.82rem", whiteSpace: "nowrap" },
-  limitsGrid: { display: "flex", flexDirection: "column", gap: "0.6rem", marginBottom: "1rem" },
-  limitRow: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" },
+  applyBtn: { width: "100%", padding: "0.56rem", background: "var(--accent-soft)", border: "1px solid rgba(124,140,255,0.24)", color: "var(--accent)", borderRadius: "8px", cursor: "pointer", fontSize: "0.8rem", fontFamily: "inherit", fontWeight: 800 },
+  incomeRow: { marginBottom: "0.72rem" },
+  fieldLabel: { fontSize: "0.74rem", color: "var(--muted)", fontWeight: 650 },
+  incomeInput: { padding: "0.5rem 0.7rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--text)", fontFamily: "inherit", fontSize: "0.82rem", outline: "none", width: "100%" },
+  refreshBtn: { padding: "0.5rem 0.75rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontSize: "0.78rem", whiteSpace: "nowrap" },
+  limitsGrid: { display: "flex", flexDirection: "column", gap: "0.44rem", marginBottom: "0.72rem" },
+  limitRow: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.8rem" },
   limitLeft: { flex: 1 },
-  limitCat: { fontSize: "0.82rem", color: "var(--text)", fontWeight: 500 },
+  limitCat: { fontSize: "0.78rem", color: "var(--text)", fontWeight: 750 },
   limitProg: { height: 3, background: "var(--surface)", borderRadius: 2, margin: "3px 0" },
   limitFill: { height: "100%", borderRadius: 2 },
-  limitInput: { width: 90, padding: "0.4rem 0.6rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "7px", color: "var(--text)", fontFamily: "monospace", fontSize: "0.82rem", outline: "none" },
+  limitInput: { width: 88, padding: "0.34rem 0.54rem", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: "7px", color: "var(--text)", fontFamily: '"DM Mono", monospace', fontSize: "0.78rem", outline: "none" },
   planActions: { display: "flex", gap: "0.5rem" },
-  saveBtn: { flex: 1, padding: "0.7rem", background: "var(--accent)", border: "none", color: "white", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 },
-  cancelBtn: { padding: "0.7rem 1rem", background: "transparent", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
-  editBtn: { flex: 1, padding: "0.7rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "10px", cursor: "pointer", fontFamily: "inherit" },
-  recList: { display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" },
-  recItem: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.7rem 0.9rem", borderRadius: "10px" },
+  saveBtn: { flex: 1, padding: "0.56rem", background: "var(--accent)", border: "none", color: "white", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit", fontWeight: 800 },
+  cancelBtn: { padding: "0.56rem 0.8rem", background: "transparent", border: "1px solid var(--border)", color: "var(--muted)", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit" },
+  editBtn: { flex: 1, padding: "0.56rem", background: "var(--surface-2)", border: "1px solid var(--border)", color: "var(--text)", borderRadius: "8px", cursor: "pointer", fontFamily: "inherit" },
+  recList: { display: "flex", flexDirection: "column", gap: "0.42rem", marginBottom: "0.72rem" },
+  recItem: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0.54rem 0.65rem", borderRadius: "8px" },
   recLeft: { display: "flex", alignItems: "flex-start", gap: "0.5rem", flex: 1 },
   recIcon: { width: 7, height: 7, borderRadius: "50%", marginTop: "0.35rem", flexShrink: 0 },
-  recCat: { fontSize: "0.82rem", fontWeight: 700, display: "block", marginBottom: "0.15rem" },
-  recAdvice: { fontSize: "0.75rem", color: "var(--muted)", margin: 0, lineHeight: 1.4 },
+  recCat: { fontSize: "0.78rem", fontWeight: 800, display: "block", marginBottom: "0.12rem" },
+  recAdvice: { fontSize: "0.72rem", color: "var(--muted)", margin: 0, lineHeight: 1.34 },
   recNumbers: { display: "flex", alignItems: "center", gap: "0.4rem", flexShrink: 0 },
-  recCurrent: { fontFamily: "monospace", fontSize: "0.82rem", color: "var(--muted)" },
+  recCurrent: { fontFamily: '"DM Mono", monospace', fontSize: "0.78rem", color: "var(--muted)" },
   recArrow: { color: "var(--muted)", fontSize: "0.8rem" },
-  recTarget: { fontFamily: "monospace", fontSize: "0.82rem", fontWeight: 700 },
-  shimmer: { height: 280, borderRadius: 10, background: "var(--surface-2)" }
+  recTarget: { fontFamily: '"DM Mono", monospace', fontSize: "0.78rem", fontWeight: 850 },
+  shimmer: { height: 230, borderRadius: 8, background: "var(--surface-2)" }
 };
 
 export default BudgetPlanner;
