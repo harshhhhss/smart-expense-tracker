@@ -95,7 +95,7 @@ const PredictionPanel = () => {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={120}>
+      <ResponsiveContainer width="100%" height={96}>
         <AreaChart data={chartData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="actualGrad" x1="0" y1="0" x2="0" y2="1">
@@ -124,14 +124,14 @@ const PredictionPanel = () => {
 };
 
 const s = {
-  card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "8px", padding: "1.15rem 1.25rem" },
-  header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", gap: "0.75rem" },
-  title: { fontSize: "0.92rem", fontWeight: 600, color: "var(--text)" },
-  trendBadge: { fontSize: "0.7rem", fontWeight: 600, padding: "2px 8px", borderRadius: "999px", border: "1px solid" },
-  predictionBox: { marginBottom: "1rem" },
-  predLabel: { fontSize: "0.72rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: "0.3rem" },
-  predAmount: { fontSize: "1.8rem", fontWeight: 700, fontFamily: "monospace", color: "var(--text)", lineHeight: 1.2 },
-  predRange: { fontSize: "0.78rem", color: "var(--muted)", marginTop: "0.2rem", marginBottom: "0.6rem" },
+  card: { background: "color-mix(in srgb, var(--surface) 96%, transparent)", border: "1px solid var(--border)", borderRadius: "8px", padding: "0.78rem" },
+  header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.62rem", gap: "0.75rem" },
+  title: { fontSize: "0.9rem", fontWeight: 850, color: "var(--text)" },
+  trendBadge: { fontSize: "0.66rem", fontWeight: 800, padding: "2px 8px", borderRadius: "999px", border: "1px solid" },
+  predictionBox: { marginBottom: "0.62rem", display: "grid", gridTemplateColumns: "minmax(160px, auto) 1fr", gap: "0.8rem", alignItems: "end" },
+  predLabel: { fontSize: "0.66rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.18rem", fontWeight: 850 },
+  predAmount: { fontSize: "1.42rem", fontWeight: 850, fontFamily: '"DM Mono", monospace', color: "var(--text)", lineHeight: 1.2 },
+  predRange: { fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.12rem", marginBottom: 0 },
   confidence: { display: "flex", alignItems: "center", gap: "0.55rem" },
   confTrack: { flex: 1, height: 4, background: "var(--surface-2)", borderRadius: 999, overflow: "hidden" },
   confBar: {
@@ -139,11 +139,11 @@ const s = {
     background: "var(--accent)",
     transition: "width 0.5s ease"
   },
-  confLabel: { fontSize: "0.72rem", color: "var(--muted)", whiteSpace: "nowrap" },
-  legend: { display: "flex", gap: "1rem", marginTop: "0.5rem" },
-  legendItem: { display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.75rem", color: "var(--muted)" },
+  confLabel: { fontSize: "0.7rem", color: "var(--muted)", whiteSpace: "nowrap" },
+  legend: { display: "flex", gap: "1rem", marginTop: "0.35rem" },
+  legendItem: { display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.72rem", color: "var(--muted)" },
   dot: { width: 7, height: 7, borderRadius: "50%", display: "inline-block" },
-  shimmer: { height: 220, borderRadius: 6, background: "var(--surface-2)" },
+  shimmer: { height: 190, borderRadius: 6, background: "var(--surface-2)" },
   empty: { fontSize: "0.85rem", color: "var(--muted)", margin: "0.5rem 0 0" }
 };
 
