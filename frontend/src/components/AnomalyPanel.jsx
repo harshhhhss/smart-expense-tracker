@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import API from "../api/axios";
 
 const SEVERITY_CONFIG = {
-  critical: { color: "var(--danger)", bg: "rgba(224,82,82,0.08)", border: "rgba(224,82,82,0.24)", label: "Critical" },
-  warning: { color: "var(--warning)", bg: "rgba(216,154,43,0.08)", border: "rgba(216,154,43,0.24)", label: "Warning" },
+  critical: { color: "var(--danger)", label: "Critical" },
+  warning: { color: "var(--warning)", label: "Warning" },
 };
 
 const AnomalyPanel = () => {
@@ -39,17 +39,15 @@ const AnomalyPanel = () => {
   if (!anomalies.length) return (
     <div className="product-card" style={s.card}>
       <div style={s.header}>
-        <span style={s.title}>Anomaly Detection</span>
+        <div>
+          <span style={s.title}>Anomaly Detection</span>
+          <p style={s.subtitle}>90-day spending scan</p>
+        </div>
         <span style={{ ...s.badge, background: "rgba(49,196,141,0.1)", color: "var(--success)", borderColor: "rgba(49,196,141,0.28)" }}>
           All Clear
         </span>
       </div>
       <div style={s.emptyState}>
-        <div className="empty-illustration" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20 7 10 17l-5-5" />
-          </svg>
-        </div>
         <p style={s.emptyMsg}>No unusual spending detected in the last 90 days.</p>
       </div>
     </div>
@@ -60,7 +58,10 @@ const AnomalyPanel = () => {
   return (
     <div className="product-card" style={s.card}>
       <div style={s.header}>
-        <span style={s.title}>Anomaly Detection</span>
+        <div>
+          <span style={s.title}>Anomaly Detection</span>
+          <p style={s.subtitle}>90-day spending scan</p>
+        </div>
         <div style={s.badgeGroup}>
           {summary?.critical > 0 && (
             <span style={{ ...s.badge, background: "rgba(224,82,82,0.1)", color: "var(--danger)", borderColor: "rgba(224,82,82,0.28)" }}>
@@ -75,20 +76,28 @@ const AnomalyPanel = () => {
         </div>
       </div>
 
-      <div style={s.list}>
+      <div style={s.table}>
+        <div style={s.tableHead}>
+          <span>Signal</span>
+          <span>Severity</span>
+          <span style={{ textAlign: "right" }}>Amount</span>
+        </div>
         {visible.map((a, i) => {
           const cfg = SEVERITY_CONFIG[a.severity] || SEVERITY_CONFIG.warning;
           return (
-            <div key={i} style={{ ...s.item, background: cfg.bg, borderColor: cfg.border }}>
-              <div style={s.itemLeft}>
-                <span style={{ ...s.severityBar, background: cfg.color }} />
+            <div key={i} style={s.row}>
+              <div style={s.signalCell}>
+                <span style={{ ...s.statusDot, background: cfg.color }} />
                 <div>
-                  <div style={{ ...s.itemLabel, color: cfg.color }}>
+                  <div style={s.itemLabel}>
                     {a.type === "monthly_spike" ? `Monthly Spike - ${a.month}` : a.category}
                   </div>
                   <div style={s.itemMsg}>{a.message}</div>
                 </div>
               </div>
+              <span style={{ ...s.severityPill, color: cfg.color, borderColor: `${cfg.color}40`, background: `${cfg.color}12` }}>
+                {cfg.label}
+              </span>
               <div style={{ ...s.amount, color: cfg.color }}>
                 Rs {Number(a.amount).toFixed(0)}
               </div>
@@ -108,37 +117,63 @@ const AnomalyPanel = () => {
 
 const s = {
   card: {
-    background: "var(--surface)", border: "1px solid var(--border)",
-    borderRadius: "var(--radius)", padding: "1.1rem",
+    background: "color-mix(in srgb, var(--surface) 96%, transparent)", border: "1px solid var(--border)",
+    borderRadius: "8px", padding: "0.78rem",
   },
   header: {
     display: "flex", alignItems: "center",
-    justifyContent: "space-between", marginBottom: "1rem", gap: "0.75rem"
+    justifyContent: "space-between", marginBottom: "0.58rem", gap: "0.75rem"
   },
-  title: { fontSize: "0.96rem", fontWeight: 800, color: "var(--text)" },
-  badgeGroup: { display: "flex", gap: "0.5rem", flexWrap: "wrap", justifyContent: "flex-end" },
+  title: { fontSize: "0.9rem", fontWeight: 850, color: "var(--text)" },
+  subtitle: { fontSize: "0.72rem", color: "var(--muted)", margin: "0.12rem 0 0" },
+  badgeGroup: { display: "flex", gap: "0.38rem", flexWrap: "wrap", justifyContent: "flex-end" },
   badge: {
     fontSize: "0.68rem", fontWeight: 800,
     padding: "2px 8px", borderRadius: "999px", border: "1px solid"
   },
-  list: { display: "flex", flexDirection: "column", gap: "0.55rem" },
-  item: {
-    display: "flex", alignItems: "center", justifyContent: "space-between",
-    padding: "0.75rem 0.85rem", borderRadius: "7px", border: "1px solid",
+  table: {
+    borderTop: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
   },
-  itemLeft: { display: "flex", alignItems: "flex-start", gap: "0.7rem", flex: 1 },
-  severityBar: { width: 3, minHeight: 34, borderRadius: 2, flexShrink: 0, marginTop: 1 },
-  itemLabel: { fontSize: "0.78rem", fontWeight: 700, marginBottom: "0.2rem" },
-  itemMsg: { fontSize: "0.78rem", color: "var(--muted)", lineHeight: 1.45 },
-  amount: { fontFamily: "monospace", fontWeight: 700, fontSize: "0.86rem", flexShrink: 0, marginLeft: "0.75rem" },
+  tableHead: {
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) 76px 82px",
+    gap: "0.6rem",
+    padding: "0.48rem 0",
+    color: "var(--muted)",
+    fontSize: "0.64rem",
+    fontWeight: 850,
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+  },
+  row: {
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr) 76px 82px",
+    alignItems: "center",
+    gap: "0.6rem",
+    padding: "0.58rem 0",
+    borderTop: "1px solid color-mix(in srgb, var(--border) 52%, transparent)",
+  },
+  signalCell: { display: "flex", alignItems: "flex-start", gap: "0.5rem", minWidth: 0 },
+  statusDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0, marginTop: 5 },
+  itemLabel: { fontSize: "0.78rem", fontWeight: 800, marginBottom: "0.12rem", color: "var(--text)" },
+  itemMsg: { fontSize: "0.72rem", color: "var(--muted)", lineHeight: 1.35 },
+  severityPill: {
+    justifySelf: "start",
+    fontSize: "0.62rem",
+    fontWeight: 850,
+    padding: "1px 6px",
+    borderRadius: "999px",
+    border: "1px solid",
+  },
+  amount: { fontFamily: '"DM Mono", monospace', fontWeight: 850, fontSize: "0.78rem", flexShrink: 0, textAlign: "right" },
   expandBtn: {
-    marginTop: "0.75rem", width: "100%", background: "transparent",
+    marginTop: "0.62rem", width: "100%", background: "transparent",
     border: "1px solid var(--border)", color: "var(--accent)", fontSize: "0.82rem",
-    cursor: "pointer", padding: "0.5rem", fontFamily: "inherit", borderRadius: "6px"
+    cursor: "pointer", padding: "0.42rem", fontFamily: "inherit", borderRadius: "6px"
   },
-  shimmer: { height: 120, borderRadius: 6, background: "var(--surface-2)" },
-  emptyState: { textAlign: "center", padding: "1.5rem 0.5rem 1rem" },
-  emptyMsg: { fontSize: "0.84rem", color: "var(--muted)", margin: 0, fontWeight: 650 }
+  shimmer: { height: 112, borderRadius: 6, background: "var(--surface-2)" },
+  emptyState: { borderTop: "1px solid var(--border)", padding: "0.7rem 0 0.15rem" },
+  emptyMsg: { fontSize: "0.8rem", color: "var(--muted)", margin: 0, fontWeight: 650 }
 };
 
 export default AnomalyPanel;
