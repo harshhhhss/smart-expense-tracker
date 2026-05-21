@@ -9,7 +9,7 @@ const SEVERITY_CONFIG = {
   warning: { color: "var(--warning)", label: "Warning" },
 };
 
-const AnomalyPanel = () => {
+const AnomalyPanel = ({ sortBy = "severity" }) => {
   const [anomalies, setAnomalies] = useState([]);
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -53,7 +53,13 @@ const AnomalyPanel = () => {
     </div>
   );
 
-  const visible = expanded ? anomalies : anomalies.slice(0, 3);
+  const sortedAnomalies = [...anomalies].sort((a, b) => {
+    if (sortBy === "amount") return Number(b.amount || 0) - Number(a.amount || 0);
+    if (sortBy === "recent") return String(b.month || b.category || "").localeCompare(String(a.month || a.category || ""));
+    const severityRank = { critical: 2, warning: 1 };
+    return (severityRank[b.severity] || 0) - (severityRank[a.severity] || 0);
+  });
+  const visible = expanded ? sortedAnomalies : sortedAnomalies.slice(0, 3);
 
   return (
     <div className="product-card" style={s.card}>
@@ -106,9 +112,9 @@ const AnomalyPanel = () => {
         })}
       </div>
 
-      {anomalies.length > 3 && (
+      {sortedAnomalies.length > 3 && (
         <button className="ghost-button" style={s.expandBtn} onClick={() => setExpanded(e => !e)}>
-          {expanded ? "Show less" : `Show ${anomalies.length - 3} more`}
+          {expanded ? "Show less" : `Show ${sortedAnomalies.length - 3} more`}
         </button>
       )}
     </div>
