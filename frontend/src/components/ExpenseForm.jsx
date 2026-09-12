@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import API from "../api/axios";
 import useToast from "../hooks/useToast";
 
-const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Education","Personal Care","Miscellaneous"];
+const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Education","Health","Bills","Work","Utilities","Personal Care","Miscellaneous"];
 
 const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
   const isEditing = !!editingExpense;
@@ -36,6 +36,13 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
       setAutoTagged(false);
     }
   }, [editingExpense]);
+
+  // Cancel any in-flight debounce so the timer cannot fire a detect request
+  // (and setForm/setDetecting) after the form has unmounted -- Dashboard drops
+  // this component on every successful save.
+  useEffect(() => () => {
+    if (detectTimer.current) clearTimeout(detectTimer.current);
+  }, []);
 
   // FEATURE 3: Debounced auto-category detection as user types description
   const handleDescriptionChange = (e) => {

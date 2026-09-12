@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [budgets, setBudgets] = useState(null);
   const [editingExp, setEditingExp] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
@@ -35,6 +36,7 @@ const Dashboard = () => {
         API.get("/advanced/dashboard"),
         API.get("/advanced/budget"),
       ]);
+      setFetchError(null);
       const fetchedExpenses = expRes.data.expenses || [];
       setExpenses(fetchedExpenses);
       setSummary(dashRes.data.dashboard?.summary || null);
@@ -42,6 +44,10 @@ const Dashboard = () => {
       setBudgets(budgetRes.data.budget || null);
     } catch (err) {
       console.error(err);
+      setFetchError(
+        err.response?.data?.message ||
+          "Could not load your dashboard. Check that the server is running and try again."
+      );
       toast.showError("Failed to load data");
     } finally {
       setLoading(false);
@@ -78,6 +84,18 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
+
+        {fetchError && (
+          <div style={styles.errorBanner} role="alert">
+            <div style={styles.errorBannerBody}>
+              <strong style={styles.errorBannerTitle}>Could not load dashboard data</strong>
+              <span style={styles.errorBannerText}>{fetchError}</span>
+            </div>
+            <button className="ghost-button" style={styles.errorBannerRetry} onClick={fetchExpenses}>
+              Retry
+            </button>
+          </div>
+        )}
 
         <div className="summary-grid" style={styles.summaryGrid}>
           <SummaryCard
@@ -227,6 +245,45 @@ const styles = {
     fontWeight: 800,
     cursor: "pointer",
     boxShadow: "var(--card-shadow)",
+  },
+  errorBanner: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "0.8rem",
+    flexWrap: "wrap",
+    background: "color-mix(in srgb, var(--danger) 9%, var(--surface))",
+    border: "1px solid color-mix(in srgb, var(--danger) 32%, transparent)",
+    borderRadius: "8px",
+    padding: "0.7rem 0.85rem",
+    marginBottom: "0.85rem",
+  },
+  errorBannerBody: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.15rem",
+    minWidth: 0,
+  },
+  errorBannerTitle: {
+    fontSize: "0.82rem",
+    fontWeight: 800,
+    color: "var(--danger)",
+  },
+  errorBannerText: {
+    fontSize: "0.78rem",
+    color: "var(--muted-strong)",
+  },
+  errorBannerRetry: {
+    padding: "0.42rem 0.8rem",
+    borderRadius: "8px",
+    border: "1px solid color-mix(in srgb, var(--danger) 40%, transparent)",
+    background: "transparent",
+    color: "var(--danger)",
+    fontFamily: "inherit",
+    fontSize: "0.78rem",
+    fontWeight: 800,
+    cursor: "pointer",
+    flexShrink: 0,
   },
   summaryGrid: {
     display: "grid",

@@ -11,6 +11,17 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 
+const REQUIRED_ENV = ["MONGO_URI", "JWT_SECRET"];
+const missingEnv = REQUIRED_ENV.filter((key) => !process.env[key]);
+
+if (missingEnv.length) {
+  console.error(
+    `Missing required environment variable(s): ${missingEnv.join(", ")}. ` +
+      "Add them to backend/.env before starting the server."
+  );
+  process.exit(1);
+}
+
 connectDB();
 
 const app = express();

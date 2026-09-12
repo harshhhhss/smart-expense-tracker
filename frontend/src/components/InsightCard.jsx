@@ -123,6 +123,7 @@ const styles = {
   loadingRow: {
     display: "flex",
     gap: "0.7rem",
+    animation: "pulse 1.5s ease-in-out infinite",
     padding: "0.72rem 0",
     borderBottom: "1px solid color-mix(in srgb, var(--border) 58%, transparent)",
   },

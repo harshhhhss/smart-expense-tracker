@@ -15,12 +15,20 @@ const normalizeExpenseInput = (body) => {
   };
 };
 
+// Rejects missing, non-numeric, infinite, zero and negative amounts.
+// Number(undefined) and Number("abc") are NaN, and NaN fails every comparison,
+// so an explicit Number.isFinite check is required -- "amount > 0" alone lets
+// nothing through but "!amount" alone would also wave through Infinity.
+const isValidAmount = (amount) => Number.isFinite(amount) && amount > 0;
+
+const INVALID_AMOUNT_MESSAGE = "Amount must be a positive number";
+
 export const addExpense = async (req, res, next) => {
   try {
     const input = normalizeExpenseInput(req.body);
 
-    if (!input.amount || input.amount <= 0) {
-      return res.status(400).json({ message: "Amount must be greater than 0" });
+    if (!isValidAmount(input.amount)) {
+      return res.status(400).json({ message: INVALID_AMOUNT_MESSAGE });
     }
 
     const expense = await Expense.create({
@@ -75,8 +83,8 @@ export const updateExpense = async (req, res, next) => {
   try {
     const input = normalizeExpenseInput(req.body);
 
-    if (!input.amount || input.amount <= 0) {
-      return res.status(400).json({ message: "Amount must be greater than 0" });
+    if (!isValidAmount(input.amount)) {
+      return res.status(400).json({ message: INVALID_AMOUNT_MESSAGE });
     }
 
     const expense = await Expense.findOneAndUpdate(

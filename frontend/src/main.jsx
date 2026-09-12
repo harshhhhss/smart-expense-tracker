@@ -16,6 +16,10 @@ globalStyle.textContent = `
     min-height: 100vh;
   }
   input, select, textarea, button { font-family: inherit; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+  }
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--surface); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
