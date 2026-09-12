@@ -5,7 +5,9 @@ import { useState, useEffect, useRef } from "react";
 import API from "../api/axios";
 import useToast from "../hooks/useToast";
 
-const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Education","Health","Bills","Work","Utilities","Personal Care","Miscellaneous"];
+// Must stay in sync with the category enum in backend/models/Expense.js --
+// a value absent there is rejected by Mongoose validation on save.
+const CATEGORIES = ["Food","Transport","Shopping","Entertainment","Bills","Work","Health","Education","Travel","Utilities","Personal Care","Miscellaneous"];
 
 const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
   const isEditing = !!editingExpense;
