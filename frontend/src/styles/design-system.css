@@ -1,59 +1,119 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
 :root {
-  /* Dark mode (default) */
-  --bg: #080b10;
-  --surface: #10151d;
-  --surface-2: #151b25;
-  --surface-3: #1d2633;
-  --border: #26303d;
-  --border-strong: #384657;
-  --text: #f1f5f9;
-  --muted: #8d99a8;
-  --muted-strong: #bbc5d1;
-  --accent: #8a96ff;
-  --accent-2: #47c2a5;
-  --accent-soft: rgba(138, 150, 255, 0.12);
-  --success: #31c48d;
-  --success-soft: rgba(49, 196, 141, 0.1);
-  --warning: #d89a2b;
-  --warning-soft: rgba(216, 154, 43, 0.12);
-  --danger: #e05252;
-  --danger-soft: rgba(224, 82, 82, 0.1);
-  --expense-amount: #ffb4a8;
-  --income-amount: #7ddfbd;
+  /* ---------- Dark (default) ----------
+     One accent family: indigo. Semantic colours sit at higher chroma so
+     success / warning / danger separate at severity-pill size. */
+  --bg: #0a0b0f;
+  --surface: #13151c;
+  --surface-2: #191c25;
+  --surface-3: #222634;
+  --border: #262a36;
+  --border-strong: #39404f;
+  --text: #f2f4f8;
+  --muted: #878da0;
+  --muted-strong: #b8bfd0;
+  --accent: #7c6bff;
+  --accent-2: #a595ff;
+  --accent-soft: rgba(124, 107, 255, 0.16);
+  --success: #2ee6a8;
+  --success-soft: rgba(46, 230, 168, 0.12);
+  --warning: #ffb020;
+  --warning-soft: rgba(255, 176, 32, 0.13);
+  --danger: #ff5c5c;
+  --danger-soft: rgba(255, 92, 92, 0.12);
+  --expense-amount: #ff9d94;
+  --income-amount: #5fe8b5;
+  --on-accent: #ffffff;
+  --overlay: rgba(3, 5, 10, 0.74);
+  /* Dark elevation reads as ambient lift, not a literal drop shadow. */
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --card-hover-shadow: 0 2px 6px rgba(0, 0, 0, 0.36);
+  --focus-ring: 0 0 0 3px rgba(124, 107, 255, 0.3);
+
+  /* ---------- Categorical ramp ----------
+     Evenly spaced hues held at one lightness so they read as a set. */
+  --chart-1: #7c8cf8;
+  --chart-2: #35cfc4;
+  --chart-3: #f2a13c;
+  --chart-4: #b184f5;
+  --chart-5: #45d68d;
+  --chart-6: #f478a6;
+  --chart-7: #d4bd4a;
+  --chart-8: #55aeea;
+  --chart-9: #f47a5c;
+  --chart-10: #98a1b5;
+  --chart-11: #3fc6dd;
+  --chart-12: #c88df2;
+
+  /* ---------- Type scale ----------
+     Three weights only: 400 body, 600 label/heading, 700 figures. */
+  --fw-body: 400;
+  --fw-label: 600;
+  --fw-number: 700;
+  /* Display step: above stat size, for marketing surfaces only. */
+  --text-display: clamp(2.5rem, 6vw, 4rem);
+  --text-lead: clamp(1rem, 1.6vw, 1.15rem);
+  --text-stat: 2.125rem;
+  --text-h1: 1.5rem;
+  --text-h2: 0.9375rem;
+  --text-body: 0.875rem;
+  --text-sub: 0.8125rem;
+  --text-label: 0.6875rem;
+  --ls-label: 0.09em;
+
   --radius: 8px;
   --radius-sm: 6px;
-  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.26);
-  --card-hover-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
-  --focus-ring: 0 0 0 3px rgba(124, 140, 255, 0.24);
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
   --app-content-max: 1400px;
 }
 
 [data-theme="light"] {
-  --bg: #f5f7fa;
+  --bg: #f7f8fb;
   --surface: #ffffff;
-  --surface-2: #f7f9fc;
-  --surface-3: #eef3f8;
-  --border: #dbe3ed;
-  --border-strong: #c6d2df;
-  --text: #172033;
-  --muted: #657187;
-  --muted-strong: #3f4b60;
-  --accent: #2357c6;
-  --accent-2: #0f8f7a;
-  --accent-soft: rgba(35, 87, 198, 0.1);
-  --success: #0f8f69;
-  --success-soft: rgba(15, 143, 105, 0.1);
-  --warning: #b86b00;
-  --warning-soft: rgba(184, 107, 0, 0.12);
-  --danger: #c2413a;
-  --danger-soft: rgba(194, 65, 58, 0.1);
-  --expense-amount: #a7372f;
-  --income-amount: #08745c;
-  --card-shadow: 0 1px 2px rgba(24, 39, 75, 0.06), 0 8px 24px rgba(24, 39, 75, 0.06);
-  --card-hover-shadow: 0 10px 30px rgba(24, 39, 75, 0.1), 0 2px 8px rgba(24, 39, 75, 0.06);
-  --focus-ring: 0 0 0 3px rgba(35, 87, 198, 0.18);
+  --surface-2: #f4f6fa;
+  --surface-3: #eaeef6;
+  --border: #e3e6ee;
+  --border-strong: #cbd1de;
+  --text: #14161f;
+  --muted: #656b7d;
+  --muted-strong: #3d4354;
+  --accent: #4f46e5;
+  --accent-2: #7366ec;
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.1);
+  --warning: #c2700a;
+  --warning-soft: rgba(194, 112, 10, 0.12);
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.1);
+  --expense-amount: #b3261e;
+  --income-amount: #04795c;
+  --on-accent: #ffffff;
+  --overlay: rgba(20, 22, 31, 0.45);
+  --card-shadow: 0 1px 2px rgba(20, 22, 31, 0.06);
+  --card-hover-shadow: 0 2px 6px rgba(20, 22, 31, 0.09);
+  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.22);
+
+  --chart-1: #4a52c9;
+  --chart-2: #0d8a7e;
+  --chart-3: #ad6610;
+  --chart-4: #7a4bc4;
+  --chart-5: #12854d;
+  --chart-6: #bf3d76;
+  --chart-7: #856910;
+  --chart-8: #1b6ca6;
+  --chart-9: #bf462b;
+  --chart-10: #626e85;
+  --chart-11: #167e93;
+  --chart-12: #8549c0;
 }
 
 *,
@@ -72,13 +132,11 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--surface-2) 34%, transparent), transparent 280px),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
-  font-family: Inter, "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 15px;
-  line-height: 1.45;
+  line-height: 1.55;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -106,7 +164,6 @@ a {
 .product-card:hover {
   border-color: var(--border-strong) !important;
   box-shadow: var(--card-hover-shadow);
-  transform: translateY(-1px);
 }
 
 .control-surface {
@@ -120,16 +177,15 @@ a {
 
 .action-button:hover,
 .ghost-button:hover {
-  transform: translateY(-1px);
   box-shadow: var(--card-shadow);
 }
 
 .expense-row:hover {
-  background: linear-gradient(90deg, transparent, var(--surface-2), transparent);
+  background: var(--surface-2);
 }
 
 .transaction-row:hover {
-  background: linear-gradient(90deg, transparent, var(--surface-2), transparent);
+  background: var(--surface-2);
 }
 
 .app-page {
@@ -151,7 +207,7 @@ a {
   place-items: center;
   margin: 0 auto 0.9rem;
   color: var(--accent);
-  background: linear-gradient(135deg, var(--accent-soft), color-mix(in srgb, var(--accent-2) 12%, transparent));
+  background: var(--surface-2);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
