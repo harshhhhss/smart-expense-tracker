@@ -6,6 +6,7 @@ import AnomalyPanel from "../components/AnomalyPanel";
 import PredictionPanel from "../components/PredictionPanel";
 import BudgetPlanner from "../components/BudgetPlanner";
 import InsightCard from "../components/InsightCard";
+import { Clock, Lightbulb, TrendingDown, TrendingUp, TriangleAlert, Wallet } from "lucide-react";
 
 const Analytics = () => {
   const [insights, setInsights] = useState([]);
@@ -70,7 +71,7 @@ const Analytics = () => {
         <div className="dashboard-header" style={styles.header}>
           <div>
             <h1 style={styles.title}>Analytics</h1>
-            <p style={styles.subtitle}>Forecasts, risk signals, and budget controls</p>
+            <p style={styles.subtitle}>Forecasts, budgets and unusual spending</p>
           </div>
           <div style={styles.headerActions}>
             <label style={styles.selectControl}>
@@ -106,11 +107,11 @@ const Analytics = () => {
         </div>
 
         <div className="analytics-metrics" style={styles.metricsGrid}>
-          <MetricCard label="Current Spend" value={`Rs ${(summary?.thisMonth || 0).toLocaleString("en-IN")}`} detail={dateRangeLabel} tone="accent" loading={loading} />
-          <MetricCard label="Prior Period" value={`Rs ${(summary?.lastMonth || 0).toLocaleString("en-IN")}`} detail="comparison baseline" tone="neutral" loading={loading} />
-          <MetricCard label="Spend Delta" value={mom !== null && mom !== undefined ? `${mom > 0 ? "+" : ""}${mom}%` : "-"} detail="month over month" tone={mom > 0 ? "danger" : "success"} loading={loading} />
-          <MetricCard label="Risk Signals" value={(anomalySummary?.critical || 0) + (anomalySummary?.warnings || 0)} detail={`${anomalySummary?.critical || 0} critical`} tone="warning" loading={loading} />
-          <MetricCard label="Insights" value={insights.length} detail="active recommendations" tone="success" loading={loading} />
+          <MetricCard label="Current Spend" value={`Rs ${(summary?.thisMonth || 0).toLocaleString("en-IN")}`} detail={dateRangeLabel} icon={Wallet} variant="hero" loading={loading} />
+          <MetricCard label="Prior Period" value={`Rs ${(summary?.lastMonth || 0).toLocaleString("en-IN")}`} detail="comparison baseline" icon={Clock} loading={loading} />
+          <MetricCard label="Spend Delta" value={mom !== null && mom !== undefined ? `${mom > 0 ? "+" : ""}${mom}%` : "-"} detail="month over month" icon={mom > 0 ? TrendingUp : TrendingDown} loading={loading} />
+          <MetricCard label="Risk Signals" value={(anomalySummary?.critical || 0) + (anomalySummary?.warnings || 0)} detail={`${anomalySummary?.critical || 0} critical`} icon={TriangleAlert} loading={loading} />
+          <MetricCard label="Insights" value={insights.length} detail="active recommendations" icon={Lightbulb} loading={loading} />
         </div>
 
         <div className="analytics-flow" style={styles.flowTop}>
@@ -135,10 +136,20 @@ const Analytics = () => {
   );
 };
 
-const MetricCard = ({ label, value, detail, tone = "neutral", loading }) => (
-  <div className="product-card" style={{ ...styles.metricCard, ...styles.metricTone[tone] }}>
-    <div style={styles.metricLabel}>{label}</div>
-    {loading ? <div style={styles.metricSkeleton} /> : <div style={styles.metricValue}>{value}</div>}
+// Current Spend is what this page is about, so it loses its container and
+// sits on the page ground; the rest stay in bordered cards.
+const MetricCard = ({ label, value, detail, icon: Icon, loading, variant = 'default' }) => (
+  <div
+    className={variant === 'hero' ? undefined : 'product-card'}
+    style={{ ...styles.metricCard, ...(variant === 'hero' ? styles.metricCardHero : null) }}
+  >
+    <div style={styles.metricTopline}>
+      {Icon && <Icon size={14} strokeWidth={1.9} style={styles.metricIcon} aria-hidden="true" />}
+      <div style={styles.metricLabel}>{label}</div>
+    </div>
+    {loading ? <div style={styles.metricSkeleton} /> : (
+      <div style={{ ...styles.metricValue, ...(variant === 'hero' ? styles.metricValueHero : null) }}>{value}</div>
+    )}
     <div style={styles.metricDetail}>{detail}</div>
   </div>
 );
@@ -160,7 +171,7 @@ const styles = {
   },
   title: {
     fontSize: '1.34rem',
-    fontWeight: 850,
+    fontWeight: 600,
     color: 'var(--text)',
     margin: 0,
   },
@@ -182,7 +193,7 @@ const styles = {
     gap: '0.2rem',
     color: 'var(--muted)',
     fontSize: '0.62rem',
-    fontWeight: 850,
+    fontWeight: 600,
     letterSpacing: '0.06em',
     textTransform: 'uppercase',
   },
@@ -194,7 +205,7 @@ const styles = {
     color: 'var(--text)',
     padding: '0 0.62rem',
     fontSize: '0.78rem',
-    fontWeight: 750,
+    fontWeight: 600,
     outline: 'none',
     textTransform: 'none',
     letterSpacing: 0,
@@ -202,53 +213,65 @@ const styles = {
   exportButton: {
     alignSelf: 'end',
     height: 34,
-    background: 'linear-gradient(135deg, var(--accent), var(--accent-2))',
-    border: '1px solid transparent',
-    color: '#fff',
+    background: 'var(--surface)',
+    border: '1px solid var(--border)',
+    color: 'var(--muted-strong)',
     borderRadius: 8,
     padding: '0 0.9rem',
     fontSize: '0.8rem',
-    fontWeight: 850,
+    fontWeight: 600,
     cursor: 'pointer',
   },
   metricsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(5, minmax(150px, 1fr))',
-    gap: '0.72rem',
-    marginBottom: '0.72rem',
+    gap: '0.875rem',
+    marginBottom: '1.25rem',
+  },
+  metricCardHero: {
+    background: 'transparent',
+    border: '1px solid transparent',
+    boxShadow: 'none',
+    paddingLeft: 0,
+  },
+  metricValueHero: {
+    fontSize: 'clamp(2rem, 3vw, 2.5rem)',
   },
   metricCard: {
-    minHeight: 92,
-    background: 'color-mix(in srgb, var(--surface) 96%, transparent)',
+    minHeight: 118,
+    background: 'var(--surface)',
     border: '1px solid var(--border)',
     borderRadius: 8,
-    padding: '0.78rem',
+    padding: '1rem 1rem 0.95rem',
   },
-  metricTone: {
-    accent: { boxShadow: 'inset 0 1px 0 color-mix(in srgb, var(--accent) 22%, transparent), var(--card-shadow)' },
-    neutral: {},
-    danger: { borderColor: 'color-mix(in srgb, var(--danger) 26%, var(--border))' },
-    warning: { borderColor: 'color-mix(in srgb, var(--warning) 28%, var(--border))' },
-    success: { borderColor: 'color-mix(in srgb, var(--success) 24%, var(--border))' },
+  metricTopline: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    marginBottom: '0.6rem',
+  },
+  metricIcon: {
+    color: 'var(--muted)',
+    flexShrink: 0,
   },
   metricLabel: {
     color: 'var(--muted)',
-    fontSize: '0.66rem',
-    fontWeight: 850,
-    letterSpacing: '0.06em',
+    fontSize: 'var(--text-label)',
+    fontWeight: 600,
+    letterSpacing: 'var(--ls-label)',
     textTransform: 'uppercase',
-    marginBottom: '0.28rem',
   },
   metricValue: {
     color: 'var(--text)',
-    fontFamily: '"DM Mono", monospace',
-    fontSize: '1.15rem',
-    fontWeight: 900,
-    lineHeight: 1.15,
+    fontVariantNumeric: "tabular-nums",
+    fontSize: 'var(--text-stat)',
+    fontWeight: 700,
+    letterSpacing: '-0.03em',
+    lineHeight: 1.05,
   },
   metricDetail: {
     color: 'var(--muted)',
-    fontSize: '0.72rem',
+    fontSize: 'var(--text-sub)',
     marginTop: '0.24rem',
   },
   metricSkeleton: {

@@ -65,17 +65,17 @@ const Signup = () => {
 const styles = {
   page: {
     minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-    background: "radial-gradient(circle at 40% 80%, rgba(108,99,255,0.12), transparent 35%), var(--bg)",
+    background: "var(--bg)",
   },
   box: {
-    background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "20px",
+    background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)",
     padding: "2.5rem", width: "100%", maxWidth: "420px",
     boxShadow: "var(--card-shadow)",
   },
   logo: { textAlign: "center", marginBottom: "2rem" },
   logoIcon: {
     fontSize: "2.5rem",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--accent)",
     background: "var(--surface)",
     border: "2px solid var(--accent)",
@@ -86,35 +86,34 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     marginBottom: "0.5rem",
-    boxShadow: "0 4px 12px rgba(108, 99, 255, 0.3)"
+    boxShadow: "0 4px 12px color-mix(in srgb, var(--accent) 30%, transparent)"
   },
   logoTitle: {
-    fontSize: "1.6rem", fontWeight: 700, margin: 0,
-    background: "linear-gradient(135deg, #6c63ff, #ff6584)",
-    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+    fontSize: "1.6rem", fontWeight: 600, margin: 0,
+    color: "var(--text)", letterSpacing: "-0.02em",
   },
   logoSub: { color: "var(--muted)", fontSize: "0.88rem", marginTop: "0.3rem" },
   error: {
-    background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)",
+    background: "var(--danger-soft)", border: "1px solid color-mix(in srgb, var(--danger) 20%, transparent)",
     color: "var(--danger)", padding: "0.7rem 1rem", borderRadius: "8px",
     marginBottom: "1rem", fontSize: "0.88rem",
   },
   group: { marginBottom: "1.1rem" },
-  label: { display: "block", fontSize: "0.82rem", color: "var(--muted)", fontWeight: 500, marginBottom: "0.4rem" },
+  label: { display: "block", fontSize: "0.82rem", color: "var(--muted)", fontWeight: 400, marginBottom: "0.4rem" },
   input: {
     width: "100%", padding: "0.75rem 1rem",
     background: "var(--surface-2)", border: "1px solid var(--border)",
-    borderRadius: "10px", color: "var(--text)",
+    borderRadius: "var(--radius-sm)", color: "var(--text)",
     fontFamily: "inherit", fontSize: "0.95rem", outline: "none", boxSizing: "border-box",
   },
   btn: {
-    width: "100%", padding: "0.85rem", border: "none", borderRadius: "10px",
-    background: "linear-gradient(135deg, #6c63ff, #8b5cf6)",
-    color: "white", fontFamily: "inherit", fontSize: "1rem",
+    width: "100%", padding: "0.85rem", border: "none", borderRadius: "var(--radius)",
+    background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
+    color: "var(--on-accent)", fontFamily: "inherit", fontSize: "1rem",
     fontWeight: 600, cursor: "pointer", marginTop: "0.5rem",
   },
   switch: { textAlign: "center", marginTop: "1.5rem", color: "var(--muted)", fontSize: "0.88rem" },
-  link: { color: "var(--accent)", textDecoration: "none", fontWeight: 500 },
+  link: { color: "var(--accent)", textDecoration: "none", fontWeight: 400 },
 };
 
 export default Signup;

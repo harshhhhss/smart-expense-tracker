@@ -45,7 +45,7 @@ const Notifications = () => {
         <div style={styles.header}>
           <div>
             <h1 style={styles.title}>Notifications</h1>
-            <p style={styles.subtitle}>Budget and system updates in one place</p>
+            <p style={styles.subtitle}>Budget and system alerts</p>
           </div>
           <div style={styles.headerPill}>{totalCount} active</div>
         </div>
@@ -54,7 +54,7 @@ const Notifications = () => {
           <div style={styles.panelHeader}>
             <div>
               <h2 style={styles.panelTitle}>Budget alerts</h2>
-              <p style={styles.panelSub}>Current-month budget thresholds and category limits</p>
+              <p style={styles.panelSub}>This month's limits</p>
             </div>
             {budgetAlerts.length > 0 && <span style={styles.countBadge}>{budgetAlerts.length}</span>}
           </div>
@@ -62,7 +62,7 @@ const Notifications = () => {
           {loading ? (
             <div style={styles.loading}>Loading notifications...</div>
           ) : budgetAlerts.length === 0 ? (
-            <EmptyState title="No budget alerts" message="Your spending is currently within configured budget limits." />
+            <EmptyState title="No budget alerts" message="You're inside every budget you've set." />
           ) : (
             <div style={styles.list}>
               {budgetAlerts.map(alert => (
@@ -80,10 +80,10 @@ const Notifications = () => {
           <div style={styles.panelHeader}>
             <div>
               <h2 style={styles.panelTitle}>System alerts</h2>
-              <p style={styles.panelSub}>Account, sync, and app-level messages</p>
+              <p style={styles.panelSub}>Account and app messages</p>
             </div>
           </div>
-          <EmptyState title="No system alerts" message="Everything looks normal right now." />
+          <EmptyState title="No system alerts" message="Nothing needs your attention." />
         </section>
       </div>
     </>
@@ -156,7 +156,7 @@ const styles = {
   },
   title: {
     fontSize: "1.55rem",
-    fontWeight: 800,
+    fontWeight: 600,
     color: "var(--text)",
     margin: 0,
   },
@@ -172,7 +172,7 @@ const styles = {
     borderRadius: 999,
     padding: "0.45rem 0.7rem",
     fontSize: "0.78rem",
-    fontWeight: 800,
+    fontWeight: 600,
   },
   panel: {
     background: "var(--surface)",
@@ -192,7 +192,7 @@ const styles = {
   panelTitle: {
     color: "var(--text)",
     fontSize: "1rem",
-    fontWeight: 800,
+    fontWeight: 600,
     margin: 0,
   },
   panelSub: {
@@ -206,11 +206,11 @@ const styles = {
     borderRadius: 999,
     display: "grid",
     placeItems: "center",
-    color: "#fff",
+    color: "var(--on-accent)",
     background: "var(--warning)",
-    fontFamily: '"DM Mono", monospace',
+    fontVariantNumeric: "tabular-nums",
     fontSize: "0.72rem",
-    fontWeight: 900,
+    fontWeight: 700,
   },
   list: {
     display: "grid",
@@ -245,19 +245,19 @@ const styles = {
   itemTitle: {
     color: "var(--text)",
     fontSize: "0.9rem",
-    fontWeight: 850,
+    fontWeight: 600,
   },
   itemMessage: {
     color: "var(--muted)",
     fontSize: "0.78rem",
-    fontWeight: 650,
+    fontWeight: 600,
     marginTop: "0.12rem",
   },
   percent: {
     color: "var(--warning)",
-    fontFamily: '"DM Mono", monospace',
+    fontVariantNumeric: "tabular-nums",
     fontSize: "0.86rem",
-    fontWeight: 900,
+    fontWeight: 700,
     whiteSpace: "nowrap",
   },
   progressTrack: {
@@ -273,7 +273,7 @@ const styles = {
   meta: {
     color: "var(--muted)",
     fontSize: "0.74rem",
-    fontWeight: 700,
+    fontWeight: 600,
     marginTop: "0.4rem",
   },
   dismiss: {
@@ -284,7 +284,7 @@ const styles = {
     padding: "0.45rem 0.65rem",
     cursor: "pointer",
     fontSize: "0.76rem",
-    fontWeight: 800,
+    fontWeight: 600,
   },
   loading: {
     color: "var(--muted)",
@@ -299,7 +299,7 @@ const styles = {
   emptyTitle: {
     color: "var(--text)",
     fontSize: "0.98rem",
-    fontWeight: 800,
+    fontWeight: 600,
     margin: "0 0 0.25rem",
   },
   emptyText: {

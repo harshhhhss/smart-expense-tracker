@@ -9,6 +9,7 @@ import FilterPanel from "../components/FilterPanel";
 import ExportPanel from "../components/ExportPanel";
 import useToast from "../hooks/useToast";
 import useBudgetAlert from "../hooks/useBudgetAlert";
+import { CalendarDays, Clock, Receipt, TrendingDown, TrendingUp } from "lucide-react";
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
@@ -48,7 +49,7 @@ const Dashboard = () => {
         err.response?.data?.message ||
           "Could not load your dashboard. Check that the server is running and try again."
       );
-      toast.showError("Failed to load data");
+      toast.showError("Couldn't load your dashboard");
     } finally {
       setLoading(false);
     }
@@ -75,7 +76,7 @@ const Dashboard = () => {
         <div className="dashboard-header" style={styles.header}>
           <div>
             <h1 style={styles.title}>Dashboard</h1>
-            <p style={styles.subtitle}>Live expense command center for {monthLabel}</p>
+            <p style={styles.subtitle}>{monthLabel}</p>
           </div>
           <div style={styles.headerActions}>
             <NotificationSummary count={budgetAlerts.length} />
@@ -102,30 +103,28 @@ const Dashboard = () => {
             label="This Month"
             value={`Rs ${(summary?.thisMonth || 0).toFixed(2)}`}
             sub={`${summary?.totalExpensesThisMonth || 0} transactions`}
-            color="var(--accent)"
-            tone="primary"
+            icon={CalendarDays}
+            variant="hero"
             loading={loading}
           />
           <SummaryCard
             label="Last Month"
             value={`Rs ${(summary?.lastMonth || 0).toFixed(2)}`}
-            color="var(--muted)"
-            tone="neutral"
+            icon={Clock}
             loading={loading}
           />
           <SummaryCard
             label="Change"
             value={pctChange !== null && pctChange !== undefined ? `${pctChange > 0 ? "+" : ""}${pctChange}%` : "-"}
-            color={pctChange > 0 ? "var(--danger)" : "var(--success)"}
-            tone={pctChange > 0 ? "danger" : "success"}
+            valueColor={pctChange > 0 ? "var(--danger)" : "var(--success)"}
+            icon={pctChange > 0 ? TrendingUp : TrendingDown}
             loading={loading}
           />
           <SummaryCard
             label="Total Expenses"
-            value={expenses.length}
+            value={summary?.totalExpenses ?? expenses.length}
             sub="all time"
-            color="var(--warning)"
-            tone="warning"
+            icon={Receipt}
             loading={loading}
           />
         </div>
@@ -173,20 +172,31 @@ const Dashboard = () => {
   );
 };
 
-const SummaryCard = ({ label, value, sub, color, loading, tone = "neutral" }) => (
-  <div className="product-card" style={{ ...styles.card, ...styles.cardTone[tone] }}>
-    <div style={styles.cardTopline}>
-      <div style={{ ...styles.cardIndicator, background: color }} />
-      <div style={styles.cardLabel}>{label}</div>
+// The month-to-date figure is the one number the page exists for, so it
+// drops its border and sits straight on the page ground while the
+// supporting stats stay in bordered cards.
+const SummaryCard = ({ label, value, sub, icon: Icon, valueColor, loading, variant = "default" }) => {
+  const isHero = variant === "hero";
+  return (
+    <div
+      className={isHero ? undefined : "product-card"}
+      style={{ ...styles.card, ...(isHero ? styles.cardHero : null) }}
+    >
+      <div style={styles.cardTopline}>
+        {Icon && <Icon size={14} strokeWidth={1.9} style={styles.cardIcon} aria-hidden="true" />}
+        <div style={styles.cardLabel}>{label}</div>
+      </div>
+      {loading ? (
+        <div style={styles.loadingSkeleton} />
+      ) : (
+        <div style={{ ...styles.cardValue, ...(isHero ? styles.cardValueHero : null), color: valueColor }}>
+          {value}
+        </div>
+      )}
+      {sub && <div style={styles.cardSub}>{sub}</div>}
     </div>
-    {loading ? (
-      <div style={styles.loadingSkeleton} />
-    ) : (
-      <div style={{ ...styles.cardValue, color }}>{value}</div>
-    )}
-    {sub && <div style={styles.cardSub}>{sub}</div>}
-  </div>
-);
+  );
+};
 
 const NotificationSummary = ({ count }) => (
   <Link to="/notifications" className="ghost-button" style={styles.notificationSummary}>
@@ -218,16 +228,17 @@ const styles = {
     minHeight: 58,
   },
   title: {
-    fontSize: "1.34rem",
-    fontWeight: 850,
+    fontSize: "var(--text-h1)",
+    fontWeight: 600,
+    letterSpacing: "-0.02em",
+    lineHeight: 1.2,
     color: "var(--text)",
     margin: 0,
-    letterSpacing: 0,
   },
   subtitle: {
     color: "var(--muted)",
-    fontSize: "0.82rem",
-    margin: "0.18rem 0 0 0",
+    fontSize: "var(--text-sub)",
+    margin: "0.3rem 0 0 0",
   },
   headerActions: {
     display: "flex",
@@ -237,12 +248,12 @@ const styles = {
   },
   addButton: {
     background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
-    color: "#fff",
+    color: "var(--on-accent)",
     border: "1px solid transparent",
     padding: "0.6rem 0.88rem",
     borderRadius: "8px",
     fontSize: "0.82rem",
-    fontWeight: 800,
+    fontWeight: 600,
     cursor: "pointer",
     boxShadow: "var(--card-shadow)",
   },
@@ -266,7 +277,7 @@ const styles = {
   },
   errorBannerTitle: {
     fontSize: "0.82rem",
-    fontWeight: 800,
+    fontWeight: 600,
     color: "var(--danger)",
   },
   errorBannerText: {
@@ -281,15 +292,15 @@ const styles = {
     color: "var(--danger)",
     fontFamily: "inherit",
     fontSize: "0.78rem",
-    fontWeight: 800,
+    fontWeight: 600,
     cursor: "pointer",
     flexShrink: 0,
   },
   summaryGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-    gap: "0.72rem",
-    marginBottom: "0.85rem",
+    gap: "0.875rem",
+    marginBottom: "1.25rem",
   },
   notificationSummary: {
     display: "inline-flex",
@@ -302,18 +313,14 @@ const styles = {
     background: "color-mix(in srgb, var(--surface) 92%, transparent)",
     color: "var(--muted-strong)",
     fontSize: "0.74rem",
-    fontWeight: 750,
+    fontWeight: 600,
     textDecoration: "none",
     boxShadow: "var(--card-shadow)",
   },
   notificationIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: "50%",
     display: "grid",
     placeItems: "center",
-    color: "var(--accent)",
-    background: "var(--accent-soft)",
+    color: "var(--muted)",
   },
   notificationText: {
     whiteSpace: "nowrap",
@@ -326,61 +333,56 @@ const styles = {
     display: "grid",
     placeItems: "center",
     background: "var(--warning)",
-    color: "#fff",
-    fontFamily: '"DM Mono", monospace',
+    color: "var(--on-accent)",
+    fontVariantNumeric: "tabular-nums",
     fontSize: "0.7rem",
-    fontWeight: 900,
+    fontWeight: 700,
   },
   card: {
-    background: "color-mix(in srgb, var(--surface) 96%, transparent)",
+    background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "8px",
-    minHeight: "86px",
-    padding: "0.76rem 0.82rem",
+    borderRadius: "var(--radius)",
+    minHeight: "112px",
+    padding: "1rem 1rem 0.95rem",
   },
-  cardTone: {
-    primary: {
-      background: "linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface))",
-    },
-    neutral: {},
-    danger: {
-      background: "linear-gradient(135deg, color-mix(in srgb, var(--danger) 9%, var(--surface)), var(--surface))",
-    },
-    success: {
-      background: "linear-gradient(135deg, color-mix(in srgb, var(--success) 10%, var(--surface)), var(--surface))",
-    },
-    warning: {
-      background: "linear-gradient(135deg, color-mix(in srgb, var(--warning) 9%, var(--surface)), var(--surface))",
-    },
+  cardHero: {
+    background: "transparent",
+    border: "1px solid transparent",
+    boxShadow: "none",
+    paddingLeft: 0,
+    paddingRight: "1.25rem",
   },
   cardTopline: {
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
-    marginBottom: "0.28rem",
+    marginBottom: "0.6rem",
   },
-  cardIndicator: {
-    width: 7,
-    height: 7,
-    borderRadius: "50%",
+  cardIcon: {
+    color: "var(--muted)",
     flexShrink: 0,
   },
   cardLabel: {
-    fontSize: "0.66rem",
+    fontSize: "var(--text-label)",
     color: "var(--muted)",
     textTransform: "uppercase",
-    letterSpacing: "0.06em",
-    fontWeight: 700,
+    letterSpacing: "var(--ls-label)",
+    fontWeight: 600,
+  },
+  cardValueHero: {
+    fontSize: "clamp(2.25rem, 3.4vw, 2.75rem)",
   },
   cardValue: {
-    fontSize: "1.18rem",
-    fontWeight: 900,
-    marginBottom: "0.15rem",
-    fontFamily: '"DM Mono", monospace',
-    letterSpacing: 0,
+    fontSize: "var(--text-stat)",
+    color: "var(--text)",
+    fontWeight: 700,
+    marginBottom: "0.35rem",
+    fontVariantNumeric: "tabular-nums",
+    letterSpacing: "-0.03em",
+    lineHeight: 1.05,
   },
   cardSub: {
-    fontSize: "0.72rem",
+    fontSize: "var(--text-sub)",
     color: "var(--muted)",
   },
   loadingSkeleton: {
