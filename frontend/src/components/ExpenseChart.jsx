@@ -5,15 +5,17 @@ import {
   PieChart, Pie, Cell, Tooltip as PieTooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as BarTooltip
 } from "recharts";
+import { CHART_SERIES } from "../theme/palette";
 
-const COLORS = ["#0f8f7a", "#2357c6", "#b86b00", "#6d5bd0", "#256f9c", "#0f8f69", "#7a869a", "#475569", "#c2413a"];
+// Themed categorical palette -- see theme/palette.js and the --chart-* tokens.
+const COLORS = CHART_SERIES;
 
 const PieTooltipContent = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={styles.tooltip}>
-      <p style={{ color: payload[0].payload.fill, fontWeight: 800, marginBottom: 2 }}>{payload[0].name}</p>
-      <p style={{ color: "var(--expense-amount)", fontFamily: '"DM Mono", monospace', fontWeight: 900 }}>Rs {payload[0].value.toFixed(2)}</p>
+      <p style={{ color: payload[0].payload.fill, fontWeight: 600, marginBottom: 2 }}>{payload[0].name}</p>
+      <p style={{ color: "var(--expense-amount)", fontVariantNumeric: "tabular-nums", fontWeight: 700 }}>Rs {payload[0].value.toFixed(2)}</p>
     </div>
   );
 };
@@ -23,7 +25,7 @@ const BarTooltipContent = ({ active, payload, label }) => {
   return (
     <div style={styles.tooltip}>
       <p style={{ color: "var(--muted)", marginBottom: 2, fontSize: "0.8rem" }}>{label}</p>
-      <p style={{ color: "var(--expense-amount)", fontFamily: '"DM Mono", monospace', fontWeight: 900 }}>Rs {payload[0]?.value?.toFixed(2)}</p>
+      <p style={{ color: "var(--expense-amount)", fontVariantNumeric: "tabular-nums", fontWeight: 700 }}>Rs {payload[0]?.value?.toFixed(2)}</p>
     </div>
   );
 };
@@ -161,14 +163,14 @@ const styles = {
   },
   chartTitle: {
     fontSize: "0.9rem",
-    fontWeight: 850,
+    fontWeight: 600,
     color: "var(--text)",
     margin: 0,
   },
   chartMeta: {
     color: "var(--muted)",
     fontSize: "0.7rem",
-    fontWeight: 750,
+    fontWeight: 600,
   },
   tooltip: {
     background: "var(--surface)",
@@ -196,7 +198,7 @@ const styles = {
     justifyContent: "center",
     color: "var(--muted)",
     fontSize: "0.84rem",
-    fontWeight: 650,
+    fontWeight: 600,
   },
 };
 

@@ -1,5 +1,4 @@
-// src/components/InsightCard.jsx
-// Displays spending insights as a compact grouped panel
+import { tint } from "../theme/palette";
 
 const TYPE_CONFIG = {
   summary: { color: "var(--accent)", label: "Summary" },
@@ -44,13 +43,13 @@ const InsightCard = ({ insights = [], loading = false, filter = "all" }) => {
       <div style={styles.headingRow}>
         <div>
           <h3 style={styles.heading}>Spending Insights</h3>
-          <p style={styles.subheading}>Prioritized spending signals</p>
+          <p style={styles.subheading}>What changed this month</p>
         </div>
         <span style={styles.badge}>{visibleInsights.length}</span>
       </div>
       <div style={styles.rows}>
         {visibleInsights.length === 0 ? (
-          <div style={styles.emptyRow}>No insights match this filter.</div>
+          <div style={styles.emptyRow}>Nothing matches this filter.</div>
         ) : visibleInsights.map((insight, i) => {
           const isString = typeof insight === "string";
           const type = isString ? "info" : (insight.type || "info");
@@ -64,7 +63,7 @@ const InsightCard = ({ insights = [], loading = false, filter = "all" }) => {
               style={styles.row}
             >
               <div style={styles.rowTop}>
-                <span style={{ ...styles.typePill, color: cfg.color, borderColor: `${cfg.color}40`, background: `${cfg.color}12` }}>
+                <span style={{ ...styles.typePill, color: cfg.color, borderColor: tint(cfg.color, 32), background: tint(cfg.color, 12) }}>
                   {cfg.label}
                 </span>
                 {title && <span style={styles.title}>{title}</span>}
@@ -86,12 +85,12 @@ const styles = {
     padding: "0.78rem",
   },
   headingRow: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.6rem", marginBottom: "0.55rem" },
-  heading: { fontSize: "0.9rem", fontWeight: 850, color: "var(--text)", margin: 0 },
+  heading: { fontSize: "0.9rem", fontWeight: 600, color: "var(--text)", margin: 0 },
   subheading: { fontSize: "0.72rem", color: "var(--muted)", margin: "0.12rem 0 0" },
   badge: {
-    fontSize: "0.68rem", fontWeight: 800,
+    fontSize: "0.68rem", fontWeight: 600,
     background: "var(--accent-soft)", color: "var(--accent)",
-    padding: "2px 7px", borderRadius: "999px", border: "1px solid rgba(124,140,255,0.22)"
+    padding: "2px 7px", borderRadius: "999px", border: "1px solid color-mix(in srgb, var(--accent) 22%, transparent)"
   },
   rows: {
     borderTop: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
@@ -105,19 +104,19 @@ const styles = {
     minWidth: 58,
     textAlign: "center",
     fontSize: "0.62rem",
-    fontWeight: 850,
+    fontWeight: 600,
     padding: "1px 6px",
     borderRadius: "999px",
     border: "1px solid",
     flexShrink: 0,
   },
-  title: { fontSize: "0.7rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  title: { fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   message: { fontSize: "0.8rem", color: "var(--text)", lineHeight: 1.42, margin: 0 },
   emptyRow: {
     padding: "0.8rem 0",
     color: "var(--muted)",
     fontSize: "0.8rem",
-    fontWeight: 650,
+    fontWeight: 600,
   },
   loadingRows: { display: "grid", borderTop: "1px solid var(--border)" },
   loadingRow: {

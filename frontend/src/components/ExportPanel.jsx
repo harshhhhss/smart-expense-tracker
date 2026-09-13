@@ -36,7 +36,7 @@ const ExportPanel = ({ expenses, summary }) => {
   return (
     <div className="control-surface" style={styles.container}>
       <button className="ghost-button" style={styles.toggleBtn} onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? "Hide Export Options" : "Export Data"}
+        {isOpen ? "Hide export options" : "Export"}
       </button>
 
       {isOpen && (
@@ -53,7 +53,7 @@ const ExportPanel = ({ expenses, summary }) => {
             </button>
           </div>
           <div style={styles.info}>
-            Export your expense data for backup or analysis.
+            Download your expenses as a file.
           </div>
         </div>
       )}
@@ -98,7 +98,7 @@ const styles = {
     borderRadius: "8px",
     color: "var(--text)",
     cursor: "pointer",
-    fontWeight: 500,
+    fontWeight: 400,
     fontFamily: "inherit",
     fontSize: "0.8rem",
     transition: "all 0.2s"

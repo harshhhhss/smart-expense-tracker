@@ -25,7 +25,7 @@ const BudgetManager = ({ refreshTrigger, expenses }) => {
       setCategoryLimits(budget.limits || {});
     } catch (err) {
       console.error(err);
-      toast.showError("Failed to load budget");
+      toast.showError("Couldn't load your budget");
     } finally {
       setLoading(false);
     }
@@ -39,9 +39,9 @@ const BudgetManager = ({ refreshTrigger, expenses }) => {
         income: Number(income) || 0,
         limits: categoryLimits
       });
-      toast.showSuccess("Budget updated successfully!");
+      toast.showSuccess("Budget saved");
     } catch (err) {
-      toast.showError(err.response?.data?.message || "Failed to save budget");
+      toast.showError(err.response?.data?.message || "Couldn't save your budget");
     } finally {
       setSaving(false);
     }
@@ -194,13 +194,13 @@ const styles = {
   container: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "12px",
+    borderRadius: "var(--radius)",
     padding: "2rem",
     marginBottom: "2rem"
   },
   title: {
     fontSize: "1.3rem",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--text)",
     margin: "0 0 1.5rem 0"
   },
@@ -268,7 +268,7 @@ const styles = {
   categoryItem: {
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "10px",
+    borderRadius: "var(--radius)",
     padding: "1rem"
   },
   categoryHeader: {

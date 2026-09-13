@@ -1,12 +1,8 @@
 // src/components/ExpenseList.jsx
 import { useState } from "react";
 import API from "../api/axios";
+import { categoryColor, tint } from "../theme/palette";
 
-const CATEGORY_COLORS = {
-  Food: "#b86b00", Travel: "#256f9c", Shopping: "#7a869a",
-  Entertainment: "#6d5bd0", Health: "#0f8f69", Utilities: "#2357c6",
-  Education: "#64748b", "Personal Care": "#7a869a", Miscellaneous: "var(--muted)",
-};
 
 const CATEGORY_GLYPHS = {
   Food: "M7 8h10M8 4v16M16 4v16M6 12h12",
@@ -21,7 +17,7 @@ const CATEGORY_GLYPHS = {
 };
 
 const CategoryIcon = ({ category, color }) => (
-  <span style={{ ...styles.categoryIcon, color, background: `${color}14`, borderColor: `${color}35` }}>
+  <span style={{ ...styles.categoryIcon, color, background: tint(color, 8), borderColor: tint(color, 30) }}>
     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d={CATEGORY_GLYPHS[category] || CATEGORY_GLYPHS.Miscellaneous} />
     </svg>
@@ -49,13 +45,13 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
     : expenses;
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this expense?")) return;
+    if (!window.confirm("Delete this expense? This can't be undone.")) return;
     setDeletingId(id);
     try {
       await API.delete(`/expenses/${id}`);
       onRefresh();
     } catch {
-      alert("Failed to delete expense");
+      alert("Couldn't delete that expense. Check your connection and try again.");
     } finally {
       setDeletingId(null);
     }
@@ -91,13 +87,13 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
               <path d="M9 8h6M9 12h6M9 16h3" />
             </svg>
           </div>
-          <h4 style={styles.emptyTitle}>No transactions yet</h4>
-          <p style={styles.emptyText}>Add an expense to start building your spending history.</p>
+          <h4 style={styles.emptyTitle}>No expenses yet</h4>
+          <p style={styles.emptyText}>Add your first one and it&rsquo;ll show up here.</p>
         </div>
       ) : visibleExpenses.length === 0 ? (
         <div style={styles.empty}>
-          <h4 style={styles.emptyTitle}>No matching transactions</h4>
-          <p style={styles.emptyText}>Try a different description, category, date, or amount.</p>
+          <h4 style={styles.emptyTitle}>Nothing matches that search</h4>
+          <p style={styles.emptyText}>Try a different word, category or date.</p>
         </div>
       ) : (
         <div style={styles.tableWrap}>
@@ -113,7 +109,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
             </thead>
             <tbody>
               {visibleExpenses.map((expense) => {
-                const color = CATEGORY_COLORS[expense.category] || "var(--muted)";
+                const color = categoryColor(expense.category);
                 return (
                   <tr key={expense._id} className="transaction-row" style={styles.tr}>
                     <td style={styles.td}>
@@ -126,7 +122,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
                       </div>
                     </td>
                     <td style={styles.td} data-label="Category">
-                      <span style={{ ...styles.catBadge, color, borderColor: color + "40", background: color + "14" }}>
+                      <span style={{ ...styles.catBadge, color, borderColor: tint(color, 32), background: tint(color, 12) }}>
                         {expense.category}
                       </span>
                     </td>
@@ -175,7 +171,7 @@ const styles = {
     borderBottom: "1px solid color-mix(in srgb, var(--border) 72%, transparent)",
     flexWrap: "wrap",
   },
-  cardTitle: { fontSize: "0.9rem", fontWeight: 850, color: "var(--text)", marginBottom: "0.12rem", marginTop: 0 },
+  cardTitle: { fontSize: "0.9rem", fontWeight: 600, color: "var(--text)", marginBottom: "0.12rem", marginTop: 0 },
   cardSubtitle: { fontSize: "0.72rem", color: "var(--muted)", margin: 0 },
   searchBox: {
     minWidth: 230,
@@ -204,7 +200,7 @@ const styles = {
   th: {
     color: "var(--muted)",
     fontSize: "0.66rem",
-    fontWeight: 800,
+    fontWeight: 600,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
     padding: "0.52rem 0.5rem",
@@ -230,18 +226,18 @@ const styles = {
     flexShrink: 0,
   },
   catBadge: {
-    fontSize: "0.68rem", fontWeight: 700,
+    fontSize: "0.68rem", fontWeight: 600,
     padding: "3px 8px", borderRadius: "999px", border: "1px solid",
   },
   autoTag: {
     display: "inline-block",
     marginTop: "0.18rem",
     fontSize: "0.66rem", color: "var(--success)",
-    background: "rgba(49,196,141,0.08)", padding: "1px 6px",
-    borderRadius: "999px", border: "1px solid rgba(49,196,141,0.22)",
+    background: "var(--success-soft)", padding: "1px 6px",
+    borderRadius: "999px", border: "1px solid color-mix(in srgb, var(--success) 22%, transparent)",
   },
-  desc: { fontSize: "0.82rem", color: "var(--text)", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 },
-  amount: { fontFamily: '"DM Mono", monospace', fontWeight: 900, color: "var(--expense-amount)", fontSize: "0.86rem", textAlign: "right" },
+  desc: { fontSize: "0.82rem", color: "var(--text)", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 360 },
+  amount: { fontVariantNumeric: "tabular-nums", fontWeight: 700, color: "var(--expense-amount)", fontSize: "0.86rem", textAlign: "right" },
   actions: { display: "flex", gap: "0.42rem", justifyContent: "flex-end" },
   editBtn: {
     padding: "0.4rem 0.72rem", borderRadius: "6px", border: "1px solid color-mix(in srgb, var(--accent) 28%, transparent)",
@@ -254,7 +250,7 @@ const styles = {
     fontSize: "0.76rem", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
   },
   empty: { textAlign: "center", color: "var(--muted)", padding: "3rem 1rem", fontSize: "0.9rem" },
-  emptyTitle: { color: "var(--text)", fontSize: "0.98rem", fontWeight: 800, margin: "0 0 0.25rem" },
+  emptyTitle: { color: "var(--text)", fontSize: "0.98rem", fontWeight: 600, margin: "0 0 0.25rem" },
   emptyText: { color: "var(--muted)", fontSize: "0.84rem", margin: 0 },
 };
 

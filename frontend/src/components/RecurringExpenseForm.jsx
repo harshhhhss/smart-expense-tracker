@@ -57,7 +57,7 @@ const RecurringExpenseForm = ({ onCreated, editingRecurring, onCancelEdit }) => 
 
       if (isEditing) {
         await API.put(`/recurring/${editingRecurring._id}`, payload);
-        toast.showSuccess("Recurring expense updated!");
+        toast.showSuccess("Recurring expense saved");
       } else {
         await API.post("/recurring", payload);
         toast.showSuccess(`Recurring expense created: ₹${form.amount} every ${form.frequency}`);
@@ -74,7 +74,7 @@ const RecurringExpenseForm = ({ onCreated, editingRecurring, onCancelEdit }) => 
       onCreated();
       if (onCancelEdit) onCancelEdit();
     } catch (err) {
-      const errMsg = err.response?.data?.message || "Failed to save recurring expense";
+      const errMsg = err.response?.data?.message || "Couldn't save that recurring expense";
       setError(errMsg);
       toast.showError(errMsg);
     } finally {
@@ -186,7 +186,7 @@ const styles = {
   card: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "12px",
+    borderRadius: "var(--radius)",
     padding: "1.5rem",
     marginBottom: "1.5rem"
   },
@@ -197,8 +197,8 @@ const styles = {
     margin: "0 0 1rem 0"
   },
   error: {
-    background: "rgba(220, 38, 38, 0.1)",
-    border: "1px solid rgba(220, 38, 38, 0.3)",
+    background: "var(--danger-soft)",
+    border: "1px solid color-mix(in srgb, var(--danger) 30%, transparent)",
     color: "var(--danger)",
     padding: "0.75rem",
     borderRadius: "8px",
@@ -255,7 +255,7 @@ const styles = {
     flex: 1,
     padding: "0.75rem",
     background: "var(--accent)",
-    color: "white",
+    color: "var(--on-accent)",
     border: "none",
     borderRadius: "8px",
     fontWeight: 600,

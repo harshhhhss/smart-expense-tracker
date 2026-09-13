@@ -44,7 +44,7 @@ const FilterPanel = ({ onFiltersChange, isOpen, onToggle }) => {
   return (
     <div className="control-surface" style={styles.container}>
       <button className="ghost-button" style={styles.toggleBtn} onClick={onToggle}>
-        {isOpen ? "Hide Filters" : "Show Filters"}
+        {isOpen ? "Hide filters" : "Filters"}
       </button>
 
       {isOpen && (
@@ -104,7 +104,7 @@ const FilterPanel = ({ onFiltersChange, isOpen, onToggle }) => {
           </div>
 
           <button className="ghost-button" style={styles.resetBtn} onClick={handleReset}>
-            Reset Filters
+            Reset
           </button>
         </div>
       )}
@@ -148,7 +148,7 @@ const styles = {
   },
   label: {
     fontSize: "0.72rem",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--muted)",
     marginBottom: "0.4rem",
     textTransform: "uppercase",
@@ -183,7 +183,7 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     fontSize: "0.85rem",
-    fontWeight: 500,
+    fontWeight: 400,
     fontFamily: "inherit",
     transition: "all 0.2s"
   }

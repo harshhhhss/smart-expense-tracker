@@ -17,7 +17,7 @@ const RecurringExpenseList = ({ refreshTrigger, onEdit }) => {
       setRecurring(res.data.recurring || []);
     } catch (err) {
       console.error(err);
-      toast.showError("Failed to load recurring expenses");
+      toast.showError("Couldn't load your recurring expenses");
     } finally {
       setLoading(false);
     }
@@ -31,7 +31,7 @@ const RecurringExpenseList = ({ refreshTrigger, onEdit }) => {
       setRecurring(recurring.filter(r => r._id !== id));
       toast.showSuccess("Recurring expense deleted");
     } catch (err) {
-      toast.showError(err.response?.data?.message || "Failed to delete");
+      toast.showError(err.response?.data?.message || "Couldn't delete that");
     }
   };
 
@@ -41,14 +41,14 @@ const RecurringExpenseList = ({ refreshTrigger, onEdit }) => {
       setRecurring(recurring.map(r => r._id === id ? { ...r, active: !active } : r));
       toast.showSuccess(`Recurring expense ${!active ? "enabled" : "disabled"}`);
     } catch (err) {
-      toast.showError("Failed to update");
+      toast.showError("Couldn't update that");
     }
   };
 
   if (loading) return <div style={styles.loading}>Loading...</div>;
 
   if (recurring.length === 0) {
-    return <div style={styles.empty}>No recurring expenses set up yet</div>;
+    return <div style={styles.empty}>No recurring expenses yet</div>;
   }
 
   return (
@@ -119,7 +119,7 @@ const styles = {
     gap: "1rem",
     background: "var(--surface-2)",
     border: "1px solid var(--border)",
-    borderRadius: "10px",
+    borderRadius: "var(--radius)",
     padding: "1rem",
     transition: "all 0.2s"
   },
@@ -136,7 +136,7 @@ const styles = {
     fontSize: "0.85rem",
     fontWeight: 600,
     color: "var(--accent)",
-    background: "rgba(108, 99, 255, 0.1)",
+    background: "var(--accent-soft)",
     padding: "0.2rem 0.6rem",
     borderRadius: "4px"
   },
@@ -144,7 +144,7 @@ const styles = {
     fontSize: "0.75rem",
     color: "var(--muted)",
     textTransform: "capitalize",
-    fontWeight: 500
+    fontWeight: 400
   },
   description: {
     fontSize: "0.9rem",
@@ -157,11 +157,11 @@ const styles = {
   },
   amount: {
     fontSize: "1.1rem",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--accent)",
     minWidth: "80px",
     textAlign: "right",
-    fontFamily: "monospace"
+    fontVariantNumeric: "tabular-nums"
   },
   actions: {
     display: "flex",
@@ -175,21 +175,21 @@ const styles = {
     color: "var(--text)",
     cursor: "pointer",
     fontSize: "0.8rem",
-    fontWeight: 500,
+    fontWeight: 400,
     fontFamily: "inherit",
     transition: "all 0.2s"
   },
   toggleBtn: {
     color: "var(--success)",
-    borderColor: "rgba(5, 150, 105, 0.3)"
+    borderColor: "color-mix(in srgb, var(--success) 30%, transparent)"
   },
   editBtn: {
     color: "var(--accent)",
-    borderColor: "rgba(108, 99, 255, 0.3)"
+    borderColor: "color-mix(in srgb, var(--accent) 30%, transparent)"
   },
   deleteBtn: {
     color: "var(--danger)",
-    borderColor: "rgba(220, 38, 38, 0.3)"
+    borderColor: "color-mix(in srgb, var(--danger) 30%, transparent)"
   },
   loading: {
     textAlign: "center",

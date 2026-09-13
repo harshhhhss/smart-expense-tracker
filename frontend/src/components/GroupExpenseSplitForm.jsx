@@ -87,7 +87,7 @@ const GroupExpenseSplitForm = ({ groupId, groupMembers, onExpenseAdded, onCancel
       });
       onExpenseAdded();
     } catch (err) {
-      const errMsg = err.response?.data?.message || "Failed to add expense";
+      const errMsg = err.response?.data?.message || "Couldn't add that expense";
       setError(errMsg);
       toast.showError(errMsg);
     } finally {
@@ -224,7 +224,7 @@ const styles = {
   container: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
-    borderRadius: "12px",
+    borderRadius: "var(--radius)",
     padding: "1.5rem",
     marginBottom: "1.5rem"
   },
@@ -248,8 +248,8 @@ const styles = {
     fontSize: "1.2rem"
   },
   error: {
-    background: "rgba(220, 38, 38, 0.1)",
-    border: "1px solid rgba(220, 38, 38, 0.3)",
+    background: "var(--danger-soft)",
+    border: "1px solid color-mix(in srgb, var(--danger) 30%, transparent)",
     color: "var(--danger)",
     padding: "0.75rem",
     borderRadius: "8px",
@@ -347,8 +347,8 @@ const styles = {
     borderTop: "1px solid var(--border)"
   },
   preview: {
-    background: "rgba(108, 99, 255, 0.08)",
-    border: "1px solid rgba(108, 99, 255, 0.2)",
+    background: "var(--accent-soft)",
+    border: "1px solid color-mix(in srgb, var(--accent) 20%, transparent)",
     borderRadius: "8px",
     padding: "0.75rem 1rem",
     display: "flex",
@@ -362,7 +362,7 @@ const styles = {
   },
   previewAmount: {
     fontSize: "1rem",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--accent)"
   },
   actions: {
@@ -373,7 +373,7 @@ const styles = {
     flex: 1,
     padding: "0.75rem",
     background: "var(--accent)",
-    color: "white",
+    color: "var(--on-accent)",
     border: "none",
     borderRadius: "8px",
     fontWeight: 600,

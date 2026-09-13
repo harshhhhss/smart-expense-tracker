@@ -135,19 +135,19 @@ const ExpenseForm = ({ onExpenseAdded, editingExpense, onCancelEdit }) => {
         <div style={styles.group}>
           <label style={styles.label}>
             Description
-            {detecting && <span style={styles.detectingBadge}>detecting...</span>}
+            {detecting && <span style={styles.detectingBadge}>detecting</span>}
           </label>
           <input
             style={styles.input}
             type="text"
             name="description"
-            placeholder="e.g. pizza with friends, uber to airport"
+            placeholder="e.g. lunch with the team"
             value={form.description}
             onChange={handleDescriptionChange}
           />
           {autoTagged && (
             <div style={styles.autoTagHint}>
-              Category auto-detected as <strong>{form.category}</strong>
+              Detected as <strong>{form.category}</strong>
             </div>
           )}
         </div>
@@ -200,11 +200,11 @@ const styles = {
     borderRadius: "var(--radius)",
     padding: "1.1rem",
   },
-  cardTitle: { fontSize: "0.98rem", fontWeight: 700, color: "var(--text)", marginBottom: "1rem", marginTop: 0 },
+  cardTitle: { fontSize: "0.98rem", fontWeight: 600, color: "var(--text)", marginBottom: "1rem", marginTop: 0 },
   group: { marginBottom: "0.9rem" },
   label: {
     display: "flex", alignItems: "center", gap: "0.5rem",
-    fontSize: "0.78rem", color: "var(--muted)", fontWeight: 700, marginBottom: "0.35rem"
+    fontSize: "0.78rem", color: "var(--muted)", fontWeight: 600, marginBottom: "0.35rem"
   },
   input: {
     width: "100%", padding: "0.68rem 0.82rem",
@@ -216,25 +216,25 @@ const styles = {
   },
   autoTagHint: {
     marginTop: "0.4rem", fontSize: "0.78rem",
-    color: "var(--success)", background: "rgba(49,196,141,0.08)",
-    border: "1px solid rgba(49,196,141,0.22)",
+    color: "var(--success)", background: "var(--success-soft)",
+    border: "1px solid color-mix(in srgb, var(--success) 22%, transparent)",
     borderRadius: "6px", padding: "0.3rem 0.6rem",
   },
   detectingBadge: {
     fontSize: "0.7rem", color: "var(--accent)",
-    background: "rgba(124,140,255,0.08)", padding: "1px 6px",
-    borderRadius: "999px", fontWeight: 500,
+    background: "var(--accent-soft)", padding: "1px 6px",
+    borderRadius: "999px", fontWeight: 400,
   },
   error: {
-    background: "rgba(224,82,82,0.08)", border: "1px solid rgba(224,82,82,0.24)",
+    background: "var(--danger-soft)", border: "1px solid color-mix(in srgb, var(--danger) 24%, transparent)",
     color: "var(--danger)", padding: "0.6rem 0.9rem", borderRadius: "8px",
     marginBottom: "1rem", fontSize: "0.85rem",
   },
   btn: {
     flex: 1, padding: "0.78rem", border: "none", borderRadius: "var(--radius)",
     background: "linear-gradient(135deg, var(--accent), var(--accent-2))",
-    color: "white", fontFamily: "inherit", fontSize: "0.95rem",
-    fontWeight: 700, cursor: "pointer",
+    color: "var(--on-accent)", fontFamily: "inherit", fontSize: "0.95rem",
+    fontWeight: 600, cursor: "pointer",
   },
   cancelBtn: {
     padding: "0.8rem 1.2rem", border: "1px solid var(--border)",

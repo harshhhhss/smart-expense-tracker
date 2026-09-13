@@ -6,26 +6,26 @@ const Toast = ({ id, message, type }) => {
 
   const typeConfig = {
     success: {
-      bg: "rgba(5, 150, 105, 0.1)",
-      border: "rgba(5, 150, 105, 0.3)",
+      bg: "var(--success-soft)",
+      border: "color-mix(in srgb, var(--success) 30%, transparent)",
       icon: "",
       color: "var(--success)"
     },
     error: {
-      bg: "rgba(220, 38, 38, 0.1)",
-      border: "rgba(220, 38, 38, 0.3)",
+      bg: "var(--danger-soft)",
+      border: "color-mix(in srgb, var(--danger) 30%, transparent)",
       icon: "",
       color: "var(--danger)"
     },
     warning: {
-      bg: "rgba(217, 119, 6, 0.1)",
-      border: "rgba(217, 119, 6, 0.3)",
+      bg: "var(--warning-soft)",
+      border: "color-mix(in srgb, var(--warning) 30%, transparent)",
       icon: "",
       color: "var(--warning)"
     },
     info: {
-      bg: "rgba(124, 140, 255, 0.08)",
-      border: "rgba(124, 140, 255, 0.24)",
+      bg: "var(--accent-soft)",
+      border: "color-mix(in srgb, var(--accent) 24%, transparent)",
       icon: "",
       color: "var(--accent)"
     }
@@ -88,15 +88,15 @@ const styles = {
     alignItems: "center",
     gap: "0.75rem",
     padding: "0.875rem 1rem",
-    borderRadius: "8px",
-    fontSize: "0.95rem",
-    fontWeight: 500,
+    borderRadius: "var(--radius)",
+    fontSize: "0.9rem",
+    fontWeight: 400,
     boxShadow: "var(--card-shadow)",
     animation: "slideIn 0.3s ease",
     pointerEvents: "all"
   },
   icon: {
-    fontWeight: 700,
+    fontWeight: 600,
     fontSize: "1.1rem",
     flexShrink: 0
   },

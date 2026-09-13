@@ -1,3 +1,5 @@
+import { categoryColor } from "../theme/palette";
+
 const ActivityFeed = ({ expenses }) => {
   // Transform expenses into activity items
   const activities = (expenses || [])
@@ -36,7 +38,7 @@ const ActivityFeed = ({ expenses }) => {
             <circle cx="12" cy="12" r="8" />
           </svg>
         </div>
-        <div style={styles.emptyText}>No activity yet</div>
+        <div style={styles.emptyText}>Nothing here yet</div>
       </div>
     );
   }
@@ -80,22 +82,9 @@ const ActivityFeed = ({ expenses }) => {
   );
 };
 
-const getCategoryColor = (category) => {
-  const colors = {
-    "Food": "#d89a2b",
-    "Transport": "#60a5fa",
-    "Shopping": "#94a3b8",
-    "Entertainment": "#aeb8ff",
-    "Bills": "#7c8cff",
-    "Health": "#31c48d",
-    "Education": "#cbd5e1",
-    "Travel": "#60a5fa",
-    "Utilities": "#7c8cff",
-    "Personal Care": "#94a3b8",
-    "Miscellaneous": "#9ca3af"
-  };
-  return colors[category] || "#9ca3af";
-};
+// Category colours come from the shared themed palette (theme/palette.js),
+// so they follow data-theme instead of being frozen dark-mode greys.
+const getCategoryColor = (category) => categoryColor(category);
 
 const styles = {
   container: {
@@ -107,7 +96,7 @@ const styles = {
   },
   title: {
     fontSize: "0.98rem",
-    fontWeight: 800,
+    fontWeight: 600,
     color: "var(--text)",
     margin: "0 0 1rem 0"
   },
@@ -153,7 +142,7 @@ const styles = {
   },
   action: {
     fontSize: "0.95rem",
-    fontWeight: 750,
+    fontWeight: 600,
     color: "var(--text)"
   },
   time: {
@@ -176,9 +165,9 @@ const styles = {
   },
   amount: {
     fontSize: "0.95rem",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--text)",
-    fontFamily: '"DM Mono", monospace'
+    fontVariantNumeric: "tabular-nums"
   },
   description: {
     fontSize: "0.85rem",
@@ -189,11 +178,11 @@ const styles = {
   badge: {
     display: "inline-block",
     fontSize: "0.7rem",
-    background: "rgba(124, 140, 255, 0.08)",
+    background: "var(--accent-soft)",
     color: "var(--accent)",
     padding: "0.2rem 0.5rem",
     borderRadius: "3px",
-    fontWeight: 500
+    fontWeight: 400
   },
   empty: {
     textAlign: "center",
