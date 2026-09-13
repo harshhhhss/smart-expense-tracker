@@ -9,15 +9,28 @@ import Dashboard from "./pages/Dashboard";
 import SharedGroup from "./pages/SharedGroup";
 import Analytics from "./pages/Analytics";
 import Notifications from "./pages/Notifications";
+import LandingPage from "./pages/LandingPage";
+
+const FullPageLoader = () => (
+  <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100vh", color:"var(--muted)" }}>
+    Loading...
+  </div>
+);
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return (
-    <div style={{ display:"flex", alignItems:"center", justifyContent:"center", height:"100vh", color:"var(--muted)" }}>
-      Loading...
-    </div>
-  );
+  if (loading) return <FullPageLoader />;
   return user ? children : <Navigate to="/login" replace />;
+};
+
+// "/" serves two audiences: the marketing page to visitors, the dashboard
+// to anyone signed in. Waiting on `loading` matters here -- rendering the
+// landing page first would flash marketing copy at a returning user on
+// every refresh while the session is still being restored.
+const RootRoute = () => {
+  const { user, loading } = useAuth();
+  if (loading) return <FullPageLoader />;
+  return user ? <Dashboard /> : <LandingPage />;
 };
 
 const App = () => (
@@ -29,9 +42,7 @@ const App = () => (
           <Routes>
             <Route path="/login"  element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/" element={
-              <ProtectedRoute><Dashboard /></ProtectedRoute>
-            } />
+            <Route path="/" element={<RootRoute />} />
             <Route path="/groups" element={
               <ProtectedRoute><SharedGroup /></ProtectedRoute>
             } />
