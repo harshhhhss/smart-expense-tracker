@@ -112,31 +112,6 @@ const Navbar = () => {
           ))}
         </div>
 
-        <div className="navbar-user-section">
-          <div className="navbar-user-card">
-            <span className="navbar-user-avatar">{user?.name?.charAt(0)?.toUpperCase() || "U"}</span>
-            <span className="navbar-user">Welcome, {user?.name}</span>
-          </div>
-          <button
-            className={`navbar-theme-toggle ${theme === "light" ? "is-light" : "is-dark"}`}
-            onClick={toggleTheme}
-            type="button"
-            role="switch"
-            aria-checked={theme === "dark"}
-            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          >
-            <span className="theme-toggle-track">
-              <span className="theme-toggle-thumb">
-                {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-              </span>
-            </span>
-          </button>
-          <button className="navbar-logout-btn" onClick={handleLogout}>
-            <LogoutIcon />
-            <span>Logout</span>
-          </button>
-        </div>
       </div>
 
       {/* Mobile menu */}
