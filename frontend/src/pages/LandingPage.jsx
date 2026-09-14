@@ -10,6 +10,10 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
+// Swap this to change the pill above the headline. Kept as a constant so
+// the alternatives are a one-line edit rather than a hunt through JSX.
+const EYEBROW = "No bank linking required";
+
 // Every example below is real output from backend/utils/autoCategory.js --
 // verified against detectCategory(), not invented for the demo.
 const DEMO_ENTRIES = [
@@ -59,12 +63,15 @@ const FEATURES = [
   },
 ];
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 const useReducedMotion = () => {
-  const [reduced, setReduced] = useState(false);
+  const [reduced, setReduced] = useState(prefersReducedMotion);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
+    const update = (event) => setReduced(event.matches);
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
@@ -161,6 +168,51 @@ const CategorizeDemo = () => {
   );
 };
 
+// Scroll-triggered reveal. Plain IntersectionObserver plus a CSS
+// transition -- no animation library. Content starts visible and only
+// becomes hidden once the observer is confirmed available, so a failed
+// script or an unsupported browser can never leave the page blank.
+const Reveal = ({ children, delay = 0 }) => {
+  const reduced = useReducedMotion();
+  const ref = useRef(null);
+  const [shown, setShown] = useState(
+    () => typeof IntersectionObserver === "undefined"
+  );
+
+  useEffect(() => {
+    if (reduced || shown) return;
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShown(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -6% 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [reduced, shown]);
+
+  const hidden = !reduced && !shown;
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: hidden ? 0 : 1,
+        transform: hidden ? "translateY(10px)" : "none",
+        transition: reduced ? "none" : "opacity 420ms ease-out, transform 420ms ease-out",
+        transitionDelay: hidden ? "0ms" : `${delay}ms`,
+        willChange: hidden ? "opacity, transform" : "auto",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
 const FeatureIcon = ({ children }) => (
   <span style={s.featureIcon}>
     <svg
@@ -187,7 +239,7 @@ const LandingPage = () => {
       <header style={s.header}>
         <div style={s.headerInner}>
           <span style={s.brand}>ExpenseIQ</span>
-          <nav style={s.headerNav}>
+          <nav className="landing-nav" style={s.headerNav}>
             <button
               type="button"
               onClick={toggleTheme}
@@ -206,16 +258,17 @@ const LandingPage = () => {
                 )}
               </svg>
             </button>
-            <Link to="/login" style={s.headerLink}>Sign in</Link>
-            <Link to="/signup" style={s.headerCta}>Create free account</Link>
+            <Link to="/login" className="landing-signin" style={s.headerLink}>Sign in</Link>
+            <Link to="/signup" className="landing-cta" style={s.headerCta}>Create free account</Link>
           </nav>
         </div>
       </header>
 
       {/* ---------- 1. hero ---------- */}
-      <section style={s.hero}>
+      <section className="landing-hero-floor" style={s.hero}>
         <div style={s.heroInner}>
           <div style={s.heroCopy}>
+            <span style={s.eyebrowPill}>{EYEBROW}</span>
             <h1 style={s.h1}>Type what you spent. We&rsquo;ll do the rest.</h1>
             <p style={s.lead}>
               ExpenseIQ reads &ldquo;uber to the airport&rdquo; and files it under Travel &mdash;
@@ -225,15 +278,22 @@ const LandingPage = () => {
               <Link to="/signup" style={s.primaryCta}>Create free account</Link>
               <Link to="/login" style={s.secondaryLink}>Sign in</Link>
             </div>
-            <p style={s.heroNote}>Free to use. No bank account linking.</p>
+            <p style={s.heroNote}>Free to use. Your data stays on your account.</p>
           </div>
           <div style={s.heroVisual}>
             <CategorizeDemo />
           </div>
         </div>
+        <div style={s.scrollCue} aria-hidden="true">
+          <span style={s.scrollCueText}>How it works</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v13M6 13l6 6 6-6" />
+          </svg>
+        </div>
       </section>
 
       {/* ---------- 2. how it works ---------- */}
+      <Reveal>
       <section style={s.section}>
         <div style={s.sectionInner}>
           <p style={s.eyebrow}>How it works</p>
@@ -249,8 +309,10 @@ const LandingPage = () => {
           </ol>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- 3. features ---------- */}
+      <Reveal>
       <section style={s.section}>
         <div style={s.sectionInner}>
           <p style={s.eyebrow}>What it does</p>
@@ -266,8 +328,10 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- 4. privacy ---------- */}
+      <Reveal>
       <section style={s.section}>
         <div style={{ ...s.sectionInner, maxWidth: 640, textAlign: "center" }}>
           <p style={s.eyebrow}>Privacy</p>
@@ -278,8 +342,10 @@ const LandingPage = () => {
           </p>
         </div>
       </section>
+      </Reveal>
 
       {/* ---------- 5. final CTA ---------- */}
+      <Reveal>
       <section style={s.finalSection}>
         <div style={{ ...s.sectionInner, textAlign: "center" }}>
           <h2 style={s.finalH2}>Start tracking in about a minute.</h2>
@@ -289,11 +355,22 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+      </Reveal>
 
       <footer style={s.footer}>
         <div style={s.footerInner}>
           <span style={s.footerBrand}>ExpenseIQ</span>
-          <span style={s.footerNote}>Personal expense tracking with forecasts and budgets.</span>
+          <span style={s.footerNote}>
+            Built by Harsh Singh &middot;{" "}
+            <a
+              href="https://github.com/harshhhhss/smart-expense-tracker"
+              target="_blank"
+              rel="noreferrer noopener"
+              style={s.footerLink}
+            >
+              Source on GitHub
+            </a>
+          </span>
         </div>
       </footer>
     </div>
@@ -318,10 +395,10 @@ const s = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: "1rem",
+    gap: "var(--space-4)",
   },
-  brand: { fontSize: "1rem", fontWeight: 600, letterSpacing: "-0.02em" },
-  headerNav: { display: "flex", alignItems: "center", gap: "0.55rem" },
+  brand: { fontSize: "var(--text-h2)", fontWeight: 600, letterSpacing: "-0.02em" },
+  headerNav: { display: "flex", alignItems: "center", gap: "var(--space-2)" },
   themeBtn: {
     display: "grid",
     placeItems: "center",
@@ -333,10 +410,41 @@ const s = {
     color: "var(--muted-strong)",
     cursor: "pointer",
   },
+  eyebrowPill: {
+    display: "inline-block",
+    fontSize: "var(--text-sub)",
+    fontWeight: 600,
+    color: "var(--muted-strong)",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
+    borderRadius: "var(--radius-pill)",
+    padding: "0.3rem 0.75rem",
+    marginBottom: "var(--space-4)",
+  },
+  scrollCue: {
+    maxWidth: 1100,
+    margin: "clamp(40px, 6vw, 68px) auto 0",
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--space-2)",
+    color: "var(--muted)",
+    fontSize: "var(--text-sub)",
+  },
+  scrollCueText: {
+    fontWeight: 600,
+    letterSpacing: "var(--ls-label)",
+    textTransform: "uppercase",
+    fontSize: "var(--text-label)",
+  },
+  footerLink: {
+    color: "var(--muted-strong)",
+    textDecoration: "underline",
+    textUnderlineOffset: "3px",
+  },
   headerLink: {
     color: "var(--muted-strong)",
     textDecoration: "none",
-    fontSize: "0.875rem",
+    fontSize: "var(--text-body)",
     padding: "0.5rem 0.6rem",
     borderRadius: 8,
   },
@@ -344,7 +452,7 @@ const s = {
     color: "var(--on-accent)",
     background: "var(--accent)",
     textDecoration: "none",
-    fontSize: "0.875rem",
+    fontSize: "var(--text-body)",
     fontWeight: 600,
     padding: "0.55rem 0.95rem",
     borderRadius: 8,
@@ -352,7 +460,9 @@ const s = {
   },
 
   /* ---- hero ---- */
-  hero: { padding: "clamp(56px, 9vw, 104px) 24px clamp(48px, 7vw, 88px)" },
+  hero: {
+    padding: "clamp(44px, 7vw, 92px) 24px clamp(40px, 5vw, 64px)",
+  },
   heroInner: {
     maxWidth: 1100,
     margin: "0 auto",
@@ -382,8 +492,8 @@ const s = {
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
-    gap: "0.9rem",
-    marginTop: "2rem",
+    gap: "var(--space-4)",
+    marginTop: "var(--space-6)",
   },
   primaryCta: {
     display: "inline-flex",
@@ -391,7 +501,7 @@ const s = {
     background: "var(--accent)",
     color: "var(--on-accent)",
     textDecoration: "none",
-    fontSize: "0.95rem",
+    fontSize: "var(--text-body)",
     fontWeight: 600,
     padding: "0.8rem 1.4rem",
     borderRadius: "var(--radius)",
@@ -400,11 +510,11 @@ const s = {
   secondaryLink: {
     color: "var(--muted-strong)",
     textDecoration: "none",
-    fontSize: "0.95rem",
+    fontSize: "var(--text-body)",
     fontWeight: 600,
     padding: "0.8rem 0.4rem",
   },
-  heroNote: { fontSize: "0.8125rem", color: "var(--muted)", margin: "1.1rem 0 0" },
+  heroNote: { fontSize: "var(--text-sub)", color: "var(--muted)", margin: "1.1rem 0 0" },
   heroVisual: { minWidth: 0, display: "flex", justifyContent: "center" },
 
   /* ---- hero demo card ---- */
@@ -421,11 +531,11 @@ const s = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: "1.1rem",
+    marginBottom: "var(--space-4)",
   },
-  demoLabel: { fontSize: "0.9375rem", fontWeight: 600 },
+  demoLabel: { fontSize: "var(--text-h2)", fontWeight: 600 },
   demoTag: {
-    fontSize: "0.625rem",
+    fontSize: "var(--text-label)",
     fontWeight: 600,
     letterSpacing: "0.09em",
     textTransform: "uppercase",
@@ -434,7 +544,7 @@ const s = {
     borderRadius: 999,
     padding: "2px 8px",
   },
-  demoField: { marginBottom: "0.9rem" },
+  demoField: { marginBottom: "var(--space-4)" },
   demoFieldLabel: {
     display: "block",
     fontSize: "var(--text-label)",
@@ -442,7 +552,7 @@ const s = {
     letterSpacing: "var(--ls-label)",
     textTransform: "uppercase",
     color: "var(--muted)",
-    marginBottom: "0.4rem",
+    marginBottom: "var(--space-2)",
   },
   demoInput: {
     display: "flex",
@@ -452,7 +562,7 @@ const s = {
     border: "1px solid var(--border)",
     borderRadius: "var(--radius-sm)",
     padding: "0 0.75rem",
-    fontSize: "0.875rem",
+    fontSize: "var(--text-body)",
     color: "var(--text)",
   },
   caret: {
@@ -467,27 +577,27 @@ const s = {
   demoChip: {
     display: "inline-flex",
     alignItems: "center",
-    gap: "0.4rem",
-    fontSize: "0.8125rem",
+    gap: "var(--space-2)",
+    fontSize: "var(--text-sub)",
     fontWeight: 600,
     border: "1px solid",
     borderRadius: 999,
     padding: "0.25rem 0.7rem",
   },
   chipDot: { width: 6, height: 6, borderRadius: "50%" },
-  demoChipGhost: { fontSize: "0.8125rem", color: "var(--muted)" },
+  demoChipGhost: { fontSize: "var(--text-sub)", color: "var(--muted)" },
   demoFooter: {
     display: "flex",
     alignItems: "baseline",
     justifyContent: "space-between",
-    gap: "0.75rem",
+    gap: "var(--space-3)",
     borderTop: "1px solid var(--border)",
     margin: "0 -1.15rem",
     padding: "0.85rem 1.15rem",
   },
-  demoFooterLabel: { fontSize: "0.8125rem", color: "var(--muted)" },
+  demoFooterLabel: { fontSize: "var(--text-sub)", color: "var(--muted)" },
   demoFooterValue: {
-    fontSize: "1.15rem",
+    fontSize: "var(--text-stat-sm)",
     fontWeight: 700,
     letterSpacing: "-0.02em",
     fontVariantNumeric: "tabular-nums",
@@ -505,7 +615,7 @@ const s = {
     margin: "0 0 0.85rem",
   },
   h2: {
-    fontSize: "clamp(1.6rem, 3.4vw, 2.3rem)",
+    fontSize: "var(--text-h2-lg)",
     fontWeight: 600,
     letterSpacing: "-0.03em",
     lineHeight: 1.15,
@@ -525,21 +635,21 @@ const s = {
   step: { minWidth: 0 },
   stepNum: {
     display: "block",
-    fontSize: "0.8125rem",
+    fontSize: "var(--text-sub)",
     fontWeight: 600,
     fontVariantNumeric: "tabular-nums",
     color: "var(--accent)",
-    marginBottom: "0.75rem",
+    marginBottom: "var(--space-3)",
   },
-  stepTitle: { fontSize: "1.0625rem", fontWeight: 600, letterSpacing: "-0.01em", margin: "0 0 0.45rem" },
-  stepBody: { fontSize: "0.9375rem", lineHeight: 1.6, color: "var(--muted)", margin: 0, maxWidth: "38ch" },
+  stepTitle: { fontSize: "var(--text-stat-sm)", fontWeight: 600, letterSpacing: "-0.01em", margin: "0 0 0.45rem" },
+  stepBody: { fontSize: "var(--text-h2)", lineHeight: 1.6, color: "var(--muted)", margin: 0, maxWidth: "38ch" },
 
   /* ---- features: the only containment on the page ---- */
   featureGrid: {
     marginTop: "clamp(32px, 5vw, 56px)",
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 232px), 1fr))",
-    gap: "1rem",
+    gap: "var(--space-4)",
   },
   featureCard: {
     minWidth: 0,
@@ -556,10 +666,10 @@ const s = {
     borderRadius: "var(--radius-sm)",
     color: "var(--muted-strong)",
     background: "var(--surface-2)",
-    marginBottom: "0.9rem",
+    marginBottom: "var(--space-4)",
   },
-  featureTitle: { fontSize: "0.9375rem", fontWeight: 600, letterSpacing: "-0.01em", margin: "0 0 0.4rem" },
-  featureBody: { fontSize: "0.875rem", lineHeight: 1.6, color: "var(--muted)", margin: 0 },
+  featureTitle: { fontSize: "var(--text-h2)", fontWeight: 600, letterSpacing: "-0.01em", margin: "0 0 0.4rem" },
+  featureBody: { fontSize: "var(--text-body)", lineHeight: 1.6, color: "var(--muted)", margin: 0 },
 
   /* ---- final CTA ---- */
   finalSection: {
@@ -568,7 +678,7 @@ const s = {
     background: "color-mix(in srgb, var(--accent) 4%, var(--bg))",
   },
   finalH2: {
-    fontSize: "clamp(1.6rem, 3.4vw, 2.3rem)",
+    fontSize: "var(--text-h2-lg)",
     fontWeight: 600,
     letterSpacing: "-0.03em",
     lineHeight: 1.15,
@@ -584,10 +694,10 @@ const s = {
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: "0.6rem",
+    gap: "var(--space-2)",
   },
-  footerBrand: { fontSize: "0.875rem", fontWeight: 600 },
-  footerNote: { fontSize: "0.8125rem", color: "var(--muted)" },
+  footerBrand: { fontSize: "var(--text-body)", fontWeight: 600 },
+  footerNote: { fontSize: "var(--text-sub)", color: "var(--muted)" },
 };
 
 export default LandingPage;
