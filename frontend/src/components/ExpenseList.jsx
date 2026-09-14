@@ -58,7 +58,7 @@ const ExpenseList = ({ expenses, onRefresh, onEdit }) => {
   };
 
   return (
-    <div className="product-card" style={styles.card}>
+    <div className="widget" style={styles.card}>
       <div style={styles.cardHeader}>
         <div>
           <h3 style={styles.cardTitle}>Transactions</h3>
@@ -198,13 +198,14 @@ const styles = {
   tableWrap: { overflowX: "auto" },
   table: { width: "100%", borderCollapse: "collapse", minWidth: 720 },
   th: {
+    background: "var(--surface-2)",
     color: "var(--muted)",
-    fontSize: "0.66rem",
+    fontSize: "var(--text-label)",
     fontWeight: 600,
-    letterSpacing: "0.04em",
+    letterSpacing: "var(--ls-label)",
     textTransform: "uppercase",
     padding: "0.52rem 0.5rem",
-    borderBottom: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
+    borderBottom: "1px solid var(--border)",
   },
   tr: { transition: "background-color 0.18s ease, transform 0.18s ease" },
   td: {
@@ -250,7 +251,7 @@ const styles = {
     fontSize: "0.76rem", cursor: "pointer", fontFamily: "inherit", fontWeight: 600,
   },
   empty: { textAlign: "center", color: "var(--muted)", padding: "3rem 1rem", fontSize: "0.9rem" },
-  emptyTitle: { color: "var(--text)", fontSize: "0.98rem", fontWeight: 600, margin: "0 0 0.25rem" },
+  emptyTitle: { color: "var(--text)", fontSize: "var(--text-h2)", fontWeight: 600, margin: "0 0 0.25rem" },
   emptyText: { color: "var(--muted)", fontSize: "0.84rem", margin: 0 },
 };
 

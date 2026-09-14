@@ -27,6 +27,38 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
+// A five-segment meter rather than a full-width track: a partially filled
+// bar spanning the panel reads as "loading", which is what this looked
+// like before. Discrete segments read as a level.
+const ConfidenceMeter = ({ value = 0 }) => {
+  const filled = Math.round((Math.max(0, Math.min(100, value)) / 100) * 5);
+  return (
+    <div style={s.meterWrap}>
+      <div
+        style={s.meterSegments}
+        role="meter"
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Forecast confidence"
+      >
+        {[0, 1, 2, 3, 4].map((i) => (
+          <span
+            key={i}
+            style={{
+              ...s.meterSegment,
+              background: i < filled ? "var(--accent)" : "var(--surface-3)",
+            }}
+          />
+        ))}
+      </div>
+      <span style={s.meterLabel}>
+        <strong style={s.meterValue}>{value}%</strong> confidence
+      </span>
+    </div>
+  );
+};
+
 const PredictionPanel = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -46,14 +78,14 @@ const PredictionPanel = () => {
   }, []);
 
   if (loading) return (
-    <div style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.shimmer} />
     </div>
   );
 
   if (!data || !data.prediction || data.prediction.dataPoints < 2) {
     return (
-      <div style={s.card}>
+      <div className="widget" style={s.card}>
         <div style={s.title}>Spending Forecast</div>
         <p style={s.empty}>Add a few more expenses and a forecast will appear here.</p>
       </div>
@@ -69,13 +101,28 @@ const PredictionPanel = () => {
     return d.toLocaleString("default", { month: "short", year: "2-digit" });
   })();
 
+  // Recharts draws a ranged Area from a [low, high] tuple. Anchoring the
+  // band at the last actual month with a zero-width range makes it open
+  // out from known data into the forecast, rather than appearing as a
+  // detached sliver above the single projected point.
+  const lastActual = history.length ? history[history.length - 1].total : prediction.predicted;
   const chartData = [
-    ...history.map(h => ({ month: h.month, actual: h.total, predicted: null })),
-    { month: nextMonthLabel, actual: null, predicted: prediction.predicted }
+    ...history.map((h, i) => ({
+      month: h.month,
+      actual: h.total,
+      predicted: null,
+      range: i === history.length - 1 ? [lastActual, lastActual] : null,
+    })),
+    {
+      month: nextMonthLabel,
+      actual: null,
+      predicted: prediction.predicted,
+      range: [prediction.lower, prediction.upper],
+    },
   ];
 
   return (
-    <div style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.header}>
         <span style={s.title}>Spending Forecast</span>
         <span style={{ ...s.trendBadge, color: trendCfg.color, borderColor: tint(trendCfg.color, 32), background: tint(trendCfg.color, 12) }}>
@@ -87,13 +134,10 @@ const PredictionPanel = () => {
         <div style={s.predLabel}>Next Month Forecast</div>
         <div style={s.predAmount}>Rs {prediction.predicted.toLocaleString("en-IN")}</div>
         <div style={s.predRange}>
-          Range: Rs {prediction.lower.toLocaleString()} - Rs {prediction.upper.toLocaleString()}
+          Rs {prediction.lower.toLocaleString("en-IN")} &ndash; Rs {prediction.upper.toLocaleString("en-IN")} likely range
         </div>
         <div style={s.confidence}>
-          <div style={s.confTrack}>
-            <div style={{ ...s.confBar, width: `${prediction.confidence}%` }} />
-          </div>
-          <span style={s.confLabel}>{prediction.confidence}% confidence</span>
+          <ConfidenceMeter value={prediction.confidence} />
         </div>
       </div>
 
@@ -112,6 +156,16 @@ const PredictionPanel = () => {
           <XAxis dataKey="month" tick={{ fill: "var(--muted)", fontSize: 10 }} axisLine={false} tickLine={false} />
           <YAxis hide />
           <Tooltip content={<CustomTooltip />} />
+          <Area
+            type="monotone"
+            dataKey="range"
+            stroke="none"
+            fill="var(--warning)"
+            fillOpacity={0.14}
+            connectNulls={false}
+            isAnimationActive={false}
+            activeDot={false}
+          />
           <Area type="monotone" dataKey="actual" stroke="var(--accent)" fill="url(#actualGrad)" strokeWidth={2} dot={false} connectNulls={false} />
           <Area type="monotone" dataKey="predicted" stroke="var(--warning)" fill="url(#predictGrad)" strokeWidth={2} dot={{ fill: "var(--warning)", r: 3 }} strokeDasharray="4 3" connectNulls={false} />
         </AreaChart>
@@ -128,20 +182,18 @@ const PredictionPanel = () => {
 const s = {
   card: { background: "color-mix(in srgb, var(--surface) 96%, transparent)", border: "1px solid var(--border)", borderRadius: "8px", padding: "0.78rem" },
   header: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.62rem", gap: "0.75rem" },
-  title: { fontSize: "0.9rem", fontWeight: 600, color: "var(--text)" },
+  title: { fontSize: "var(--text-h2)", fontWeight: 600, color: "var(--text)" },
   trendBadge: { fontSize: "0.66rem", fontWeight: 600, padding: "2px 8px", borderRadius: "999px", border: "1px solid" },
   predictionBox: { marginBottom: "0.62rem", display: "grid", gridTemplateColumns: "minmax(160px, auto) 1fr", gap: "0.8rem", alignItems: "end" },
   predLabel: { fontSize: "var(--text-label)", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "var(--ls-label)", marginBottom: "0.18rem", fontWeight: 600 },
   predAmount: { fontSize: "var(--text-stat)", fontWeight: 700, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.03em", color: "var(--text)", lineHeight: 1.2 },
-  predRange: { fontSize: "0.72rem", color: "var(--muted)", marginTop: "0.12rem", marginBottom: 0 },
-  confidence: { display: "flex", alignItems: "center", gap: "0.55rem" },
-  confTrack: { flex: 1, height: 4, background: "var(--surface-2)", borderRadius: 999, overflow: "hidden" },
-  confBar: {
-    height: "100%", borderRadius: 999,
-    background: "var(--accent)",
-    transition: "width 0.5s ease"
-  },
-  confLabel: { fontSize: "0.7rem", color: "var(--muted)", whiteSpace: "nowrap" },
+  predRange: { fontSize: "var(--text-sub)", color: "var(--muted)", marginTop: "0.12rem", marginBottom: 0 },
+  confidence: { display: "flex", alignItems: "center" },
+  meterWrap: { display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" },
+  meterSegments: { display: "flex", gap: 3, alignItems: "center" },
+  meterSegment: { width: 14, height: 5, borderRadius: 2, display: "block" },
+  meterLabel: { fontSize: "0.72rem", color: "var(--muted)", whiteSpace: "nowrap" },
+  meterValue: { color: "var(--text)", fontWeight: 600, fontVariantNumeric: "tabular-nums" },
   legend: { display: "flex", gap: "1rem", marginTop: "0.35rem" },
   legendItem: { display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.72rem", color: "var(--muted)" },
   dot: { width: 7, height: 7, borderRadius: "50%", display: "inline-block" },

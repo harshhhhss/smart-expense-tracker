@@ -13,7 +13,7 @@ const TYPE_CONFIG = {
 const InsightCard = ({ insights = [], loading = false, filter = "all" }) => {
   if (loading) {
     return (
-      <div className="product-card" style={styles.panel}>
+      <div className="widget" style={styles.panel}>
         <div style={styles.headingRow}>
           <h3 style={styles.heading}>Spending Insights</h3>
         </div>
@@ -39,7 +39,7 @@ const InsightCard = ({ insights = [], loading = false, filter = "all" }) => {
   if (!insights || insights.length === 0) return null;
 
   return (
-    <div className="product-card" style={styles.panel}>
+    <div className="widget" style={styles.panel}>
       <div style={styles.headingRow}>
         <div>
           <h3 style={styles.heading}>Spending Insights</h3>
@@ -85,7 +85,7 @@ const styles = {
     padding: "0.78rem",
   },
   headingRow: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.6rem", marginBottom: "0.55rem" },
-  heading: { fontSize: "0.9rem", fontWeight: 600, color: "var(--text)", margin: 0 },
+  heading: { fontSize: "var(--text-h2)", fontWeight: 600, color: "var(--text)", margin: 0 },
   subheading: { fontSize: "0.72rem", color: "var(--muted)", margin: "0.12rem 0 0" },
   badge: {
     fontSize: "0.68rem", fontWeight: 600,

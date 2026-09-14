@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 import API from "../api/axios";
-import { tint } from "../theme/palette";
 import { CircleAlert, TriangleAlert } from "lucide-react";
 
 // Severity is carried by an icon as well as a colour, so it survives a
@@ -35,13 +34,13 @@ const AnomalyPanel = ({ sortBy = "severity" }) => {
   }, []);
 
   if (loading) return (
-    <div className="product-card" style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.shimmer} />
     </div>
   );
 
   if (!anomalies.length) return (
-    <div className="product-card" style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.header}>
         <div>
           <span style={s.title}>Anomaly Detection</span>
@@ -66,7 +65,7 @@ const AnomalyPanel = ({ sortBy = "severity" }) => {
   const visible = expanded ? sortedAnomalies : sortedAnomalies.slice(0, 3);
 
   return (
-    <div className="product-card" style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.header}>
         <div>
           <span style={s.title}>Anomaly Detection</span>
@@ -86,34 +85,38 @@ const AnomalyPanel = ({ sortBy = "severity" }) => {
         </div>
       </div>
 
-      <div style={s.table}>
-        <div style={s.tableHead}>
-          <span>Signal</span>
-          <span>Severity</span>
-          <span style={{ textAlign: "right" }}>Amount</span>
-        </div>
-        {visible.map((a, i) => {
-          const cfg = SEVERITY_CONFIG[a.severity] || SEVERITY_CONFIG.warning;
-          return (
-            <div key={i} style={s.row}>
-              <div style={s.signalCell}>
-                <cfg.Icon size={14} strokeWidth={1.9} style={{ ...s.statusIcon, color: cfg.color }} aria-hidden="true" />
-                <div>
-                  <div style={s.itemLabel}>
-                    {a.type === "monthly_spike" ? `Monthly Spike - ${a.month}` : a.category}
-                  </div>
-                  <div style={s.itemMsg}>{a.message}</div>
-                </div>
-              </div>
-              <span style={{ ...s.severityPill, color: cfg.color, borderColor: tint(cfg.color, 32), background: tint(cfg.color, 12) }}>
-                {cfg.label}
-              </span>
-              <div style={{ ...s.amount, color: cfg.color }}>
-                Rs {Number(a.amount).toFixed(0)}
-              </div>
-            </div>
-          );
-        })}
+      <div style={s.tableWrap}>
+        <table style={s.table}>
+          <thead>
+            <tr>
+              <th style={{ ...s.th, width: 34 }} aria-label="Severity" />
+              <th style={s.th}>Category</th>
+              <th style={s.th}>Signal</th>
+              <th style={s.th}>Date</th>
+              <th style={{ ...s.th, textAlign: "right" }}>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {visible.map((a, i) => {
+              const cfg = SEVERITY_CONFIG[a.severity] || SEVERITY_CONFIG.warning;
+              return (
+                <tr key={a._id || i} style={s.tr}>
+                  <td style={{ ...s.td, textAlign: "center" }} title={cfg.label}>
+                    <cfg.Icon size={14} strokeWidth={2} style={{ color: cfg.color }} aria-label={cfg.label} />
+                  </td>
+                  <td style={{ ...s.td, fontWeight: 600 }}>{a.category}</td>
+                  <td style={{ ...s.td, color: "var(--muted)" }}>{a.message}</td>
+                  <td style={{ ...s.td, color: "var(--muted)", whiteSpace: "nowrap" }}>
+                    {new Date(a.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                  </td>
+                  <td style={{ ...s.td, ...s.tdAmount, color: cfg.color }}>
+                    Rs {Number(a.amount).toFixed(0)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
       {sortedAnomalies.length > 3 && (
@@ -134,48 +137,32 @@ const s = {
     display: "flex", alignItems: "center",
     justifyContent: "space-between", marginBottom: "0.58rem", gap: "0.75rem"
   },
-  title: { fontSize: "0.9rem", fontWeight: 600, color: "var(--text)" },
+  title: { fontSize: "var(--text-h2)", fontWeight: 600, color: "var(--text)" },
   subtitle: { fontSize: "0.72rem", color: "var(--muted)", margin: "0.12rem 0 0" },
   badgeGroup: { display: "flex", gap: "0.38rem", flexWrap: "wrap", justifyContent: "flex-end" },
   badge: {
     fontSize: "0.68rem", fontWeight: 600,
     padding: "2px 8px", borderRadius: "999px", border: "1px solid"
   },
-  table: {
-    borderTop: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
-  },
-  tableHead: {
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) 76px 82px",
-    gap: "0.6rem",
-    padding: "0.48rem 0",
-    color: "var(--muted)",
-    fontSize: "0.64rem",
+  tableWrap: { overflowX: "auto" },
+  table: { width: "100%", borderCollapse: "collapse", fontSize: "var(--text-sub)" },
+  th: {
+    textAlign: "left",
+    padding: "0.4rem 0.55rem",
+    fontSize: "var(--text-label)",
     fontWeight: 600,
-    letterSpacing: "0.06em",
+    letterSpacing: "var(--ls-label)",
     textTransform: "uppercase",
+    color: "var(--muted)",
+    background: "var(--surface-2)",
+    borderBottom: "1px solid var(--border)",
+    whiteSpace: "nowrap",
   },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "minmax(0, 1fr) 76px 82px",
-    alignItems: "center",
-    gap: "0.6rem",
-    padding: "0.58rem 0",
-    borderTop: "1px solid color-mix(in srgb, var(--border) 52%, transparent)",
-  },
-  signalCell: { display: "flex", alignItems: "flex-start", gap: "0.5rem", minWidth: 0 },
-  statusIcon: { flexShrink: 0, marginTop: 2 },
+  tr: { borderBottom: "1px solid var(--border)" },
+  td: { padding: "0.45rem 0.55rem", color: "var(--text)", verticalAlign: "middle" },
+  tdAmount: { textAlign: "right", fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" },
   itemLabel: { fontSize: "0.78rem", fontWeight: 600, marginBottom: "0.12rem", color: "var(--text)" },
   itemMsg: { fontSize: "0.72rem", color: "var(--muted)", lineHeight: 1.35 },
-  severityPill: {
-    justifySelf: "start",
-    fontSize: "0.62rem",
-    fontWeight: 600,
-    padding: "1px 6px",
-    borderRadius: "999px",
-    border: "1px solid",
-  },
-  amount: { fontVariantNumeric: "tabular-nums", fontWeight: 600, fontSize: "0.78rem", flexShrink: 0, textAlign: "right" },
   expandBtn: {
     marginTop: "0.62rem", width: "100%", background: "transparent",
     border: "1px solid var(--border)", color: "var(--accent)", fontSize: "0.82rem",

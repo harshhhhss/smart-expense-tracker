@@ -96,13 +96,13 @@ const BudgetPlanner = () => {
   };
 
   if (loading) return (
-    <div style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.shimmer} />
     </div>
   );
 
   return (
-    <div style={s.card}>
+    <div className="widget" style={s.card}>
       <div style={s.header}>
         <span style={s.title}>Budget Planner</span>
         <div style={s.tabs}>

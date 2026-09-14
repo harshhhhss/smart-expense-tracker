@@ -76,7 +76,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
 
   return (
     <div style={styles.chartsRow}>
-      <div className="product-card" style={styles.chartCard}>
+      <div className="widget" style={styles.chartCard}>
         <div style={styles.chartHeader}>
           <h3 style={styles.chartTitle}>Category Breakdown</h3>
           <span style={styles.chartMeta}>Rs {categoryTotal.toFixed(0)} tracked</span>
@@ -107,7 +107,7 @@ const ExpenseChart = ({ categoryData = [], monthlyData = [], loading = false }) 
         )}
       </div>
 
-      <div className="product-card" style={styles.chartCard}>
+      <div className="widget" style={styles.chartCard}>
         <div style={styles.chartHeader}>
           <h3 style={styles.chartTitle}>Monthly Trend</h3>
           <span style={styles.chartMeta}>Last 6 months</span>
@@ -162,7 +162,7 @@ const styles = {
     marginBottom: "0.35rem",
   },
   chartTitle: {
-    fontSize: "0.9rem",
+    fontSize: "var(--text-h2)",
     fontWeight: 600,
     color: "var(--text)",
     margin: 0,
