@@ -130,11 +130,21 @@ export const getBudgetRecommendation = async (req, res, next) => {
 
     const savingsRate = estimatedIncome ? Math.max(0, Math.round(((estimatedIncome - avgMonthlySpend) / estimatedIncome) * 100)) : 0;
 
+    // The score previously read savingsRate alone, so anything at or above
+    // a 35% savings rate clamped to 100 even with several categories far
+    // over their limits. Overspend now costs points directly.
+    const overspentCount = recommendations.filter((r) => r.status === "overspending").length;
+    const slightlyOverCount = recommendations.filter((r) => r.status === "slightly_over").length;
+    const budgetPenalty = overspentCount * 12 + slightlyOverCount * 5;
+
     res.json({
       avgMonthlySpend,
       estimatedIncome,
       savingsRate,
-      healthScore: Math.max(0, Math.min(100, savingsRate * 2 + (avgMonthlySpend <= estimatedIncome ? 30 : 0))),
+      healthScore: Math.max(
+        0,
+        Math.min(100, Math.round(savingsRate * 1.4 + (avgMonthlySpend <= estimatedIncome ? 20 : 0) - budgetPenalty))
+      ),
       allocation: {
         needs: { actual: Math.round((spend.Bills || 0) + (spend.Utilities || 0) + (spend.Health || 0) + (spend.Education || 0)), budget: needsBudget },
         wants: { actual: Math.round(avgMonthlySpend), budget: wantsBudget },
