@@ -13,9 +13,9 @@
   --text: #f2f4f8;
   --muted: #878da0;
   --muted-strong: #b8bfd0;
-  --accent: #7c6bff;
-  --accent-2: #a595ff;
-  --accent-soft: rgba(124, 107, 255, 0.16);
+  --accent: #1b96ff;
+  --accent-2: #57b4ff;
+  --accent-soft: rgba(27, 150, 255, 0.16);
   --success: #2ee6a8;
   --success-soft: rgba(46, 230, 168, 0.12);
   --warning: #ffb020;
@@ -29,11 +29,11 @@
   /* Dark elevation reads as ambient lift, not a literal drop shadow. */
   --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
   --card-hover-shadow: 0 2px 6px rgba(0, 0, 0, 0.36);
-  --focus-ring: 0 0 0 3px rgba(124, 107, 255, 0.3);
+  --focus-ring: 0 0 0 3px rgba(27, 150, 255, 0.32);
 
   /* ---------- Categorical ramp ----------
      Evenly spaced hues held at one lightness so they read as a set. */
-  --chart-1: #7c8cf8;
+  --chart-1: #3ba2ff;
   --chart-2: #35cfc4;
   --chart-3: #f2a13c;
   --chart-4: #b184f5;
@@ -52,9 +52,14 @@
   --fw-label: 600;
   --fw-number: 700;
   /* Display step: above stat size, for marketing surfaces only. */
-  --text-display: clamp(2.5rem, 6vw, 4rem);
+  --text-display: clamp(2rem, 5.6vw, 4rem);
   --text-lead: clamp(1rem, 1.6vw, 1.15rem);
-  --text-stat: 2.125rem;
+  /* Landing section headings: larger than app --text-h2 by design. */
+  --text-h2-lg: clamp(1.6rem, 3.4vw, 2.3rem);
+  /* One hero-number size for every page that has one. */
+  --text-stat: clamp(2rem, 3vw, 2.5rem);
+  /* Secondary stat figures: subordinate to the hero, above body text. */
+  --text-stat-sm: 1.0625rem;
   --text-h1: 1.5rem;
   --text-h2: 0.9375rem;
   --text-body: 0.875rem;
@@ -62,9 +67,10 @@
   --text-label: 0.6875rem;
   --ls-label: 0.09em;
 
-  --radius: 8px;
-  --radius-sm: 6px;
-  --radius-lg: 10px;
+  /* Enterprise widget chrome: sharper than the previous 8/6/10. */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --radius-lg: 8px;
   --radius-pill: 999px;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -73,6 +79,7 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
   --app-content-max: 1400px;
+  --app-topbar-height: 58px;
 }
 
 [data-theme="light"] {
@@ -85,9 +92,9 @@
   --text: #14161f;
   --muted: #656b7d;
   --muted-strong: #3d4354;
-  --accent: #4f46e5;
-  --accent-2: #7366ec;
-  --accent-soft: rgba(79, 70, 229, 0.1);
+  --accent: #0176d3;
+  --accent-2: #1b96ff;
+  --accent-soft: rgba(1, 118, 211, 0.1);
   --success: #059669;
   --success-soft: rgba(5, 150, 105, 0.1);
   --warning: #c2700a;
@@ -100,9 +107,9 @@
   --overlay: rgba(20, 22, 31, 0.45);
   --card-shadow: 0 1px 2px rgba(20, 22, 31, 0.06);
   --card-hover-shadow: 0 2px 6px rgba(20, 22, 31, 0.09);
-  --focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.22);
+  --focus-ring: 0 0 0 3px rgba(1, 118, 211, 0.24);
 
-  --chart-1: #4a52c9;
+  --chart-1: #0176d3;
   --chart-2: #0d8a7e;
   --chart-3: #ad6610;
   --chart-4: #7a4bc4;
@@ -303,5 +310,81 @@ a:focus-visible {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+  }
+}
+
+
+/* ---- Landing page ----
+   The landing hero is content-sized rather than 100dvh: it holds a
+   headline, a subhead, two actions and a 380px demo card, and forcing
+   that into a viewport on a 667px-tall phone cramps it. On desktop it
+   ends short of the fold on purpose, so the next section peeks. */
+
+.landing-hero-floor {
+  min-height: min(calc(100dvh - 180px), 560px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 620px) {
+  /* The header cannot hold brand + theme + both actions at 375px --
+     it overflows by roughly 64px. Sign in also sits in the hero, so the
+     header keeps only the primary action. */
+  .landing-signin {
+    display: none;
+  }
+  .landing-cta {
+    padding: 0.5rem 0.8rem !important;
+  }
+  .landing-hero-floor {
+    min-height: 0;
+  }
+}
+
+
+
+/* ---- Enterprise widget language ----
+   Every content block shares one chrome: same border, same radius, same
+   header rhythm, so widgets read as interchangeable slots in a grid. */
+
+.widget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: none;
+}
+
+.widget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  min-height: 40px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.widget-title {
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--muted-strong);
+}
+
+.widget-body {
+  padding: var(--space-4);
+}
+
+/* Content sits below the fixed top bar. */
+.app-page {
+  padding-top: calc(var(--app-topbar-height) + 8px) !important;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --app-topbar-height: 52px;
   }
 }
