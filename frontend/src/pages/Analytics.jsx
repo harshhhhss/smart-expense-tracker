@@ -6,7 +6,9 @@ import AnomalyPanel from "../components/AnomalyPanel";
 import PredictionPanel from "../components/PredictionPanel";
 import BudgetPlanner from "../components/BudgetPlanner";
 import InsightCard from "../components/InsightCard";
-import { Clock, Lightbulb, TrendingDown, TrendingUp, TriangleAlert, Wallet } from "lucide-react";
+import { Clock, Lightbulb, Receipt, TriangleAlert, Wallet } from "lucide-react";
+import TopBar from "../components/TopBar";
+import KpiTile, { KpiGrid } from "../components/KpiTile";
 
 const Analytics = () => {
   const [insights, setInsights] = useState([]);
@@ -67,6 +69,7 @@ const Analytics = () => {
   return (
     <>
       <Navbar />
+      <TopBar />
       <div className="app-page analytics-page" style={styles.page}>
         <div className="dashboard-header" style={styles.header}>
           <div>
@@ -106,13 +109,14 @@ const Analytics = () => {
           </div>
         </div>
 
-        <div className="analytics-metrics" style={styles.metricsGrid}>
-          <MetricCard label="Current Spend" value={`Rs ${(summary?.thisMonth || 0).toLocaleString("en-IN")}`} detail={dateRangeLabel} icon={Wallet} variant="hero" loading={loading} />
-          <MetricCard label="Prior Period" value={`Rs ${(summary?.lastMonth || 0).toLocaleString("en-IN")}`} detail="comparison baseline" icon={Clock} loading={loading} />
-          <MetricCard label="Spend Delta" value={mom !== null && mom !== undefined ? `${mom > 0 ? "+" : ""}${mom}%` : "-"} detail="month over month" icon={mom > 0 ? TrendingUp : TrendingDown} loading={loading} />
-          <MetricCard label="Risk Signals" value={(anomalySummary?.critical || 0) + (anomalySummary?.warnings || 0)} detail={`${anomalySummary?.critical || 0} critical`} icon={TriangleAlert} loading={loading} />
-          <MetricCard label="Insights" value={insights.length} detail="active recommendations" icon={Lightbulb} loading={loading} />
-        </div>
+        <KpiGrid>
+          <KpiTile label="Current spend" value={"Rs " + (summary?.thisMonth || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })} icon={Wallet} tone="accent" trend={mom} sub={dateRangeLabel} loading={loading} />
+          <KpiTile label="Prior period" value={"Rs " + (summary?.lastMonth || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })} icon={Clock} sub="baseline" loading={loading} />
+          <KpiTile label="Transactions" value={summary?.totalExpensesThisMonth ?? 0} icon={Receipt} sub="this month" loading={loading} />
+          <KpiTile label="Risk signals" value={(anomalySummary?.critical || 0) + (anomalySummary?.warnings || 0)} icon={TriangleAlert} tone="warning" sub="flagged" loading={loading} />
+          <KpiTile label="Critical" value={anomalySummary?.critical || 0} icon={TriangleAlert} tone="danger" sub="need review" loading={loading} />
+          <KpiTile label="Insights" value={insights.length} icon={Lightbulb} tone="success" sub="generated" loading={loading} />
+        </KpiGrid>
 
         <div className="analytics-flow" style={styles.flowTop}>
           <section style={styles.widePanel}>
@@ -138,6 +142,23 @@ const Analytics = () => {
 
 // Current Spend is what this page is about, so it loses its container and
 // sits on the page ground; the rest stay in bordered cards.
+// Subordinate figures on Analytics: no card, no border, separated by
+// space alone.
+const QuietStat = ({ label, value, detail, icon: Icon, valueColor, loading }) => (
+  <div style={styles.quietStat}>
+    <div style={styles.metricTopline}>
+      {Icon && <Icon size={13} strokeWidth={1.9} style={styles.metricIcon} aria-hidden="true" />}
+      <div style={styles.metricLabel}>{label}</div>
+    </div>
+    {loading ? (
+      <div style={styles.quietSkeleton} />
+    ) : (
+      <div style={{ ...styles.quietValue, color: valueColor }}>{value}</div>
+    )}
+    {detail && <div style={styles.quietDetail}>{detail}</div>}
+  </div>
+);
+
 const MetricCard = ({ label, value, detail, icon: Icon, loading, variant = 'default' }) => (
   <div
     className={variant === 'hero' ? undefined : 'product-card'}
@@ -164,35 +185,35 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: '1rem',
-    marginBottom: '0.95rem',
+    gap: 'var(--space-4)',
+    marginBottom: 'var(--space-4)',
     minHeight: 58,
     flexWrap: 'wrap',
   },
   title: {
-    fontSize: '1.34rem',
+    fontSize: 'var(--text-h1)',
     fontWeight: 600,
     color: 'var(--text)',
     margin: 0,
   },
   subtitle: {
     color: 'var(--muted)',
-    fontSize: '0.82rem',
+    fontSize: 'var(--text-body)',
     margin: '0.18rem 0 0 0',
   },
   headerActions: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: '0.5rem',
+    gap: 'var(--space-2)',
     flexWrap: 'wrap',
   },
   selectControl: {
     minWidth: 132,
     display: 'grid',
-    gap: '0.2rem',
+    gap: 'var(--space-1)',
     color: 'var(--muted)',
-    fontSize: '0.62rem',
+    fontSize: 'var(--text-label)',
     fontWeight: 600,
     letterSpacing: '0.06em',
     textTransform: 'uppercase',
@@ -204,7 +225,7 @@ const styles = {
     borderRadius: 8,
     color: 'var(--text)',
     padding: '0 0.62rem',
-    fontSize: '0.78rem',
+    fontSize: 'var(--text-sub)',
     fontWeight: 600,
     outline: 'none',
     textTransform: 'none',
@@ -218,15 +239,39 @@ const styles = {
     color: 'var(--muted-strong)',
     borderRadius: 8,
     padding: '0 0.9rem',
-    fontSize: '0.8rem',
+    fontSize: 'var(--text-sub)',
     fontWeight: 600,
     cursor: 'pointer',
   },
+  metricsBand: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+    gap: 'clamp(1rem, 3vw, 2.5rem)',
+    alignItems: 'center',
+    marginBottom: 'var(--space-5)',
+  },
+  metricsQuiet: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))',
+    gap: 'clamp(0.85rem, 2vw, 1.6rem)',
+    padding: '0.9rem 0 0.9rem clamp(1rem, 3vw, 2.25rem)',
+    borderLeft: '1px solid var(--border)',
+  },
+  quietStat: { minWidth: 0 },
+  quietValue: {
+    fontSize: 'var(--text-stat-sm)',
+    fontWeight: 600,
+    color: 'var(--text)',
+    fontVariantNumeric: 'tabular-nums',
+    letterSpacing: '-0.01em',
+  },
+  quietDetail: { fontSize: 'var(--text-sub)', color: 'var(--muted)', marginTop: 'var(--space-1)' },
+  quietSkeleton: { height: '1.1rem', width: '70%', background: 'var(--surface-2)', borderRadius: 4 },
   metricsGrid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(5, minmax(150px, 1fr))',
-    gap: '0.875rem',
-    marginBottom: '1.25rem',
+    gap: 'var(--space-4)',
+    marginBottom: 'var(--space-5)',
   },
   metricCardHero: {
     background: 'transparent',
@@ -235,7 +280,7 @@ const styles = {
     paddingLeft: 0,
   },
   metricValueHero: {
-    fontSize: 'clamp(2rem, 3vw, 2.5rem)',
+    fontSize: 'var(--text-stat)',
   },
   metricCard: {
     minHeight: 118,
@@ -247,8 +292,8 @@ const styles = {
   metricTopline: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.5rem',
-    marginBottom: '0.6rem',
+    gap: 'var(--space-2)',
+    marginBottom: 'var(--space-2)',
   },
   metricIcon: {
     color: 'var(--muted)',
@@ -272,7 +317,7 @@ const styles = {
   metricDetail: {
     color: 'var(--muted)',
     fontSize: 'var(--text-sub)',
-    marginTop: '0.24rem',
+    marginTop: 'var(--space-1)',
   },
   metricSkeleton: {
     width: '76%',
@@ -283,14 +328,14 @@ const styles = {
   flowTop: {
     display: 'grid',
     gridTemplateColumns: 'minmax(540px, 1.18fr) minmax(420px, 0.82fr)',
-    gap: '0.72rem',
+    gap: 'var(--space-3)',
     alignItems: 'stretch',
-    marginBottom: '0.72rem',
+    marginBottom: 'var(--space-3)',
   },
   flowBottom: {
     display: 'grid',
     gridTemplateColumns: 'minmax(540px, 1.08fr) minmax(420px, 0.92fr)',
-    gap: '0.72rem',
+    gap: 'var(--space-3)',
     alignItems: 'start',
   },
   widePanel: {

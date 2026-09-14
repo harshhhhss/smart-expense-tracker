@@ -9,7 +9,9 @@ import FilterPanel from "../components/FilterPanel";
 import ExportPanel from "../components/ExportPanel";
 import useToast from "../hooks/useToast";
 import useBudgetAlert from "../hooks/useBudgetAlert";
-import { CalendarDays, Clock, Receipt, TrendingDown, TrendingUp } from "lucide-react";
+import { CalendarDays, Clock, Receipt, Tag, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import TopBar from "../components/TopBar";
+import KpiTile, { KpiGrid } from "../components/KpiTile";
 
 const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
@@ -72,6 +74,7 @@ const Dashboard = () => {
   return (
     <>
       <Navbar />
+      <TopBar alertCount={budgetAlerts.length} />
       <div className="app-page" style={styles.page}>
         <div className="dashboard-header" style={styles.header}>
           <div>
@@ -79,7 +82,6 @@ const Dashboard = () => {
             <p style={styles.subtitle}>{monthLabel}</p>
           </div>
           <div style={styles.headerActions}>
-            <NotificationSummary count={budgetAlerts.length} />
             <button className="action-button" style={styles.addButton} onClick={() => setShowForm(!showForm)}>
               {showForm ? "Cancel" : "Add Expense"}
             </button>
@@ -98,36 +100,50 @@ const Dashboard = () => {
           </div>
         )}
 
-        <div className="summary-grid" style={styles.summaryGrid}>
-          <SummaryCard
-            label="This Month"
-            value={`Rs ${(summary?.thisMonth || 0).toFixed(2)}`}
-            sub={`${summary?.totalExpensesThisMonth || 0} transactions`}
+        <KpiGrid>
+          <KpiTile
+            label="This month"
+            value={"Rs " + (summary?.thisMonth || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
             icon={CalendarDays}
-            variant="hero"
+            tone="accent"
+            trend={pctChange}
             loading={loading}
           />
-          <SummaryCard
-            label="Last Month"
-            value={`Rs ${(summary?.lastMonth || 0).toFixed(2)}`}
+          <KpiTile
+            label="Last month"
+            value={"Rs " + (summary?.lastMonth || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
             icon={Clock}
             loading={loading}
           />
-          <SummaryCard
-            label="Change"
-            value={pctChange !== null && pctChange !== undefined ? `${pctChange > 0 ? "+" : ""}${pctChange}%` : "-"}
-            valueColor={pctChange > 0 ? "var(--danger)" : "var(--success)"}
-            icon={pctChange > 0 ? TrendingUp : TrendingDown}
-            loading={loading}
-          />
-          <SummaryCard
-            label="Total Expenses"
-            value={summary?.totalExpenses ?? expenses.length}
-            sub="all time"
+          <KpiTile
+            label="Transactions"
+            value={summary?.totalExpensesThisMonth ?? 0}
+            sub="this month"
             icon={Receipt}
             loading={loading}
           />
-        </div>
+          <KpiTile
+            label="Top category"
+            value={summary?.topCategory?.category || "None"}
+            sub={"Rs " + (summary?.topCategory?.amount || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+            icon={Tag}
+            tone="warning"
+            loading={loading}
+          />
+          <KpiTile
+            label="All-time spend"
+            value={"Rs " + (summary?.total || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+            icon={Wallet}
+            loading={loading}
+          />
+          <KpiTile
+            label="All-time count"
+            value={summary?.totalExpenses ?? expenses.length}
+            sub="expenses logged"
+            icon={Receipt}
+            loading={loading}
+          />
+        </KpiGrid>
 
         <div style={styles.controlsGrid}>
           <FilterPanel
@@ -175,43 +191,14 @@ const Dashboard = () => {
 // The month-to-date figure is the one number the page exists for, so it
 // drops its border and sits straight on the page ground while the
 // supporting stats stay in bordered cards.
-const SummaryCard = ({ label, value, sub, icon: Icon, valueColor, loading, variant = "default" }) => {
-  const isHero = variant === "hero";
-  return (
-    <div
-      className={isHero ? undefined : "product-card"}
-      style={{ ...styles.card, ...(isHero ? styles.cardHero : null) }}
-    >
-      <div style={styles.cardTopline}>
-        {Icon && <Icon size={14} strokeWidth={1.9} style={styles.cardIcon} aria-hidden="true" />}
-        <div style={styles.cardLabel}>{label}</div>
-      </div>
-      {loading ? (
-        <div style={styles.loadingSkeleton} />
-      ) : (
-        <div style={{ ...styles.cardValue, ...(isHero ? styles.cardValueHero : null), color: valueColor }}>
-          {value}
-        </div>
-      )}
-      {sub && <div style={styles.cardSub}>{sub}</div>}
-    </div>
-  );
-};
 
-const NotificationSummary = ({ count }) => (
-  <Link to="/notifications" className="ghost-button" style={styles.notificationSummary}>
-    <span style={styles.notificationIcon}>
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
-        <path d="M10 19a2 2 0 0 0 4 0" />
-      </svg>
-    </span>
-    <span style={styles.notificationText}>
-      {count > 0 ? `${count} budget notification${count === 1 ? "" : "s"}` : "No budget notifications"}
-    </span>
-    {count > 0 && <span style={styles.notificationBadge}>{count}</span>}
-  </Link>
-);
+// One tile shape for every figure on the page. Enterprise dashboards
+// favour a uniform grid over asymmetric emphasis: the reader scans a row
+// of equals instead of being steered toward a single number.
+
+// Supporting figures: no container of their own, separated by a rule
+// rather than a border, so they read as subordinate to the hero.
+
 
 const styles = {
   page: {
@@ -222,9 +209,9 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: "0.95rem",
+    marginBottom: "var(--space-4)",
     flexWrap: "wrap",
-    gap: "0.8rem",
+    gap: "var(--space-3)",
     minHeight: 58,
   },
   title: {
@@ -243,7 +230,7 @@ const styles = {
   headerActions: {
     display: "flex",
     alignItems: "center",
-    gap: "0.6rem",
+    gap: "var(--space-2)",
     flexWrap: "wrap",
   },
   addButton: {
@@ -252,7 +239,7 @@ const styles = {
     border: "1px solid transparent",
     padding: "0.6rem 0.88rem",
     borderRadius: "8px",
-    fontSize: "0.82rem",
+    fontSize: "var(--text-body)",
     fontWeight: 600,
     cursor: "pointer",
     boxShadow: "var(--card-shadow)",
@@ -261,27 +248,27 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: "0.8rem",
+    gap: "var(--space-3)",
     flexWrap: "wrap",
     background: "color-mix(in srgb, var(--danger) 9%, var(--surface))",
     border: "1px solid color-mix(in srgb, var(--danger) 32%, transparent)",
     borderRadius: "8px",
     padding: "0.7rem 0.85rem",
-    marginBottom: "0.85rem",
+    marginBottom: "var(--space-3)",
   },
   errorBannerBody: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.15rem",
+    gap: "var(--space-1)",
     minWidth: 0,
   },
   errorBannerTitle: {
-    fontSize: "0.82rem",
+    fontSize: "var(--text-body)",
     fontWeight: 600,
     color: "var(--danger)",
   },
   errorBannerText: {
-    fontSize: "0.78rem",
+    fontSize: "var(--text-sub)",
     color: "var(--muted-strong)",
   },
   errorBannerRetry: {
@@ -291,122 +278,102 @@ const styles = {
     background: "transparent",
     color: "var(--danger)",
     fontFamily: "inherit",
-    fontSize: "0.78rem",
+    fontSize: "var(--text-sub)",
     fontWeight: 600,
     cursor: "pointer",
     flexShrink: 0,
   },
-  summaryGrid: {
+  kpiGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-    gap: "0.875rem",
-    marginBottom: "1.25rem",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 176px), 1fr))",
+    gap: "var(--space-3)",
+    marginBottom: "var(--space-5)",
   },
-  notificationSummary: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "0.45rem",
-    margin: 0,
-    padding: "0.42rem 0.56rem",
-    borderRadius: "999px",
-    border: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
-    background: "color-mix(in srgb, var(--surface) 92%, transparent)",
-    color: "var(--muted-strong)",
-    fontSize: "0.74rem",
-    fontWeight: 600,
-    textDecoration: "none",
-    boxShadow: "var(--card-shadow)",
-  },
-  notificationIcon: {
-    display: "grid",
-    placeItems: "center",
-    color: "var(--muted)",
-  },
-  notificationText: {
-    whiteSpace: "nowrap",
-  },
-  notificationBadge: {
-    minWidth: 20,
-    height: 20,
-    padding: "0 0.35rem",
-    borderRadius: 999,
-    display: "grid",
-    placeItems: "center",
-    background: "var(--warning)",
-    color: "var(--on-accent)",
-    fontVariantNumeric: "tabular-nums",
-    fontSize: "0.7rem",
-    fontWeight: 700,
-  },
-  card: {
+  kpiTile: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "var(--radius)",
-    minHeight: "112px",
-    padding: "1rem 1rem 0.95rem",
+    padding: "var(--space-3) var(--space-4)",
+    minWidth: 0,
   },
-  cardHero: {
-    background: "transparent",
-    border: "1px solid transparent",
-    boxShadow: "none",
-    paddingLeft: 0,
-    paddingRight: "1.25rem",
-  },
-  cardTopline: {
+  kpiTop: {
     display: "flex",
     alignItems: "center",
-    gap: "0.5rem",
-    marginBottom: "0.6rem",
+    gap: "var(--space-2)",
+    marginBottom: "var(--space-2)",
   },
-  cardIcon: {
-    color: "var(--muted)",
+  kpiChip: {
+    display: "grid",
+    placeItems: "center",
+    width: 22,
+    height: 22,
+    borderRadius: "var(--radius-sm)",
     flexShrink: 0,
   },
-  cardLabel: {
+  kpiLabel: {
+    fontSize: "var(--text-label)",
+    fontWeight: 600,
+    letterSpacing: "var(--ls-label)",
+    textTransform: "uppercase",
+    color: "var(--muted)",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  kpiValue: {
+    fontSize: "1.375rem",
+    fontWeight: 700,
+    letterSpacing: "-0.02em",
+    color: "var(--text)",
+    fontVariantNumeric: "tabular-nums",
+    lineHeight: 1.15,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  kpiSkeleton: {
+    height: "1.375rem",
+    width: "76%",
+    background: "var(--surface-2)",
+    borderRadius: 3,
+  },
+  kpiFoot: {
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--space-2)",
+    marginTop: "var(--space-1)",
+    minHeight: 16,
+  },
+  kpiTrend: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 2,
+    fontSize: "var(--text-label)",
+    fontWeight: 700,
+    fontVariantNumeric: "tabular-nums",
+  },
+  kpiSub: {
     fontSize: "var(--text-label)",
     color: "var(--muted)",
-    textTransform: "uppercase",
-    letterSpacing: "var(--ls-label)",
-    fontWeight: 600,
-  },
-  cardValueHero: {
-    fontSize: "clamp(2.25rem, 3.4vw, 2.75rem)",
-  },
-  cardValue: {
-    fontSize: "var(--text-stat)",
-    color: "var(--text)",
-    fontWeight: 700,
-    marginBottom: "0.35rem",
-    fontVariantNumeric: "tabular-nums",
-    letterSpacing: "-0.03em",
-    lineHeight: 1.05,
-  },
-  cardSub: {
-    fontSize: "var(--text-sub)",
-    color: "var(--muted)",
-  },
-  loadingSkeleton: {
-    height: "2rem",
-    width: "70%",
-    background: "var(--surface-2)",
-    borderRadius: "4px",
-    margin: "0.25rem 0",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   formSection: {
-    marginBottom: "1.5rem",
+    marginBottom: "var(--space-5)",
   },
   controlsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))",
-    gap: "0.72rem",
+    gap: "var(--space-3)",
     alignItems: "start",
-    marginBottom: "0.85rem",
+    marginBottom: "var(--space-3)",
   },
   chartSection: {
-    marginBottom: "0.85rem",
+    marginBottom: "var(--space-3)",
   },
   expensesSection: {
-    marginBottom: "2rem",
+    marginBottom: "var(--space-6)",
   },
 };
 

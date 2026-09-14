@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import API from "../api/axios";
 import Navbar from "../components/Navbar";
+import TopBar from "../components/TopBar";
 
 const CATEGORIES = ["Food","Travel","Shopping","Entertainment","Health","Utilities","Miscellaneous"];
 
@@ -280,6 +281,7 @@ const SharedGroups = () => {
     return (
       <>
         <Navbar />
+        <TopBar />
         <div className="app-page" style={s.page}>
           <GroupDetail
             groupId={selectedId}
@@ -294,6 +296,7 @@ const SharedGroups = () => {
   return (
     <>
       <Navbar />
+      <TopBar />
       <div className="app-page" style={s.page}>
         <div style={s.pageHeader}>
           <div>

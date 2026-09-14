@@ -3,6 +3,9 @@ import API from "../api/axios";
 import Navbar from "../components/Navbar";
 import useBudgetAlert from "../hooks/useBudgetAlert";
 import useToast from "../hooks/useToast";
+import TopBar from "../components/TopBar";
+import KpiTile, { KpiGrid } from "../components/KpiTile";
+import { Bell, CircleAlert, TriangleAlert, Wallet } from "lucide-react";
 
 const Notifications = () => {
   const [expenses, setExpenses] = useState([]);
@@ -37,32 +40,52 @@ const Notifications = () => {
   }, [loading]);
 
   const totalCount = budgetAlerts.length + systemAlerts.length;
+  const criticalCount = budgetAlerts.filter((a) => a.severity === "critical").length;
+  const warningCount = totalCount - criticalCount;
+  const monthlyLimit = Number(budgets?.monthlyLimit || 0);
+  const trackedCategories = budgets?.limits ? Object.keys(budgets.limits).length : 0;
+  const monthSpend = expenses.reduce((sum, e) => {
+    const d = new Date(e.date);
+    const now = new Date();
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+      ? sum + Number(e.amount || 0)
+      : sum;
+  }, 0);
 
   return (
     <>
       <Navbar />
+      <TopBar alertCount={budgetAlerts.length} />
       <div className="app-page" style={styles.page}>
         <div style={styles.header}>
           <div>
             <h1 style={styles.title}>Notifications</h1>
             <p style={styles.subtitle}>Budget and system alerts</p>
           </div>
-          <div style={styles.headerPill}>{totalCount} active</div>
         </div>
 
-        <section className="product-card" style={styles.panel}>
+        <KpiGrid>
+          <KpiTile label="Active alerts" value={totalCount} icon={Bell} tone={totalCount > 0 ? "warning" : "neutral"} sub="needing attention" loading={loading} />
+          <KpiTile label="Critical" value={criticalCount} icon={TriangleAlert} tone="danger" sub="over limit" loading={loading} />
+          <KpiTile label="Warnings" value={warningCount} icon={CircleAlert} tone="warning" sub="approaching limit" loading={loading} />
+          <KpiTile label="Month spend" value={"Rs " + monthSpend.toLocaleString("en-IN", { maximumFractionDigits: 0 })} icon={Wallet} tone="accent" loading={loading} />
+          <KpiTile label="Monthly limit" value={monthlyLimit > 0 ? "Rs " + monthlyLimit.toLocaleString("en-IN") : "Not set"} icon={Wallet} loading={loading} />
+          <KpiTile label="Tracked categories" value={trackedCategories} icon={Wallet} sub="with limits" loading={loading} />
+        </KpiGrid>
+
+        <section className="widget" style={styles.panel}>
           <div style={styles.panelHeader}>
             <div>
-              <h2 style={styles.panelTitle}>Budget alerts</h2>
-              <p style={styles.panelSub}>This month's limits</p>
+              <h2 style={styles.panelTitle}>Alerts</h2>
+              <p style={styles.panelSub}>Budget limits and account messages</p>
             </div>
-            {budgetAlerts.length > 0 && <span style={styles.countBadge}>{budgetAlerts.length}</span>}
+            {totalCount > 0 && <span style={styles.countBadge}>{totalCount}</span>}
           </div>
 
           {loading ? (
-            <div style={styles.loading}>Loading notifications...</div>
-          ) : budgetAlerts.length === 0 ? (
-            <EmptyState title="No budget alerts" message="You're inside every budget you've set." />
+            <div style={styles.loading}>Loading alerts...</div>
+          ) : totalCount === 0 ? (
+            <EmptyState message="Nothing needs your attention. Budget and account alerts will appear here." />
           ) : (
             <div style={styles.list}>
               {budgetAlerts.map(alert => (
@@ -75,27 +98,19 @@ const Notifications = () => {
             </div>
           )}
         </section>
-
-        <section className="product-card" style={styles.panel}>
-          <div style={styles.panelHeader}>
-            <div>
-              <h2 style={styles.panelTitle}>System alerts</h2>
-              <p style={styles.panelSub}>Account and app messages</p>
-            </div>
-          </div>
-          <EmptyState title="No system alerts" message="Nothing needs your attention." />
-        </section>
       </div>
     </>
   );
 };
 
 const NotificationItem = ({ alert, onDismiss }) => {
-  const isWarning = alert.severity === "warning";
+  // critical -> danger, warning -> warning. Same mapping as AnomalyPanel.
+  const isCritical = alert.severity === "critical";
+  const severityColor = isCritical ? "var(--danger)" : "var(--warning)";
 
   return (
     <div style={styles.item}>
-      <div style={{ ...styles.statusRail, background: isWarning ? "var(--danger)" : "var(--warning)" }} />
+      <div style={{ ...styles.statusRail, background: severityColor }} />
       <div style={styles.itemBody}>
         <div style={styles.itemTop}>
           <div>
@@ -109,7 +124,7 @@ const NotificationItem = ({ alert, onDismiss }) => {
             style={{
               ...styles.progressFill,
               width: `${Math.min(alert.percent, 100)}%`,
-              background: isWarning ? "var(--danger)" : "var(--warning)",
+              background: severityColor,
             }}
           />
         </div>
@@ -130,14 +145,11 @@ const NotificationItem = ({ alert, onDismiss }) => {
   );
 };
 
-const EmptyState = ({ title, message }) => (
+const EmptyState = ({ message }) => (
   <div style={styles.empty}>
-    <div className="empty-illustration" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M20 7 10 17l-5-5" />
-      </svg>
-    </div>
-    <h3 style={styles.emptyTitle}>{title}</h3>
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ color: "var(--success)", flexShrink: 0 }}>
+      <path d="M20 7 10 17l-5-5" />
+    </svg>
     <p style={styles.emptyText}>{message}</p>
   </div>
 );
@@ -151,18 +163,18 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    gap: "1rem",
-    marginBottom: "1.25rem",
+    gap: "var(--space-4)",
+    marginBottom: "var(--space-5)",
   },
   title: {
-    fontSize: "1.55rem",
+    fontSize: "var(--text-h1)",
     fontWeight: 600,
     color: "var(--text)",
     margin: 0,
   },
   subtitle: {
     color: "var(--muted)",
-    fontSize: "0.9rem",
+    fontSize: "var(--text-body)",
     margin: "0.25rem 0 0",
   },
   headerPill: {
@@ -171,7 +183,7 @@ const styles = {
     border: "1px solid var(--border)",
     borderRadius: 999,
     padding: "0.45rem 0.7rem",
-    fontSize: "0.78rem",
+    fontSize: "var(--text-sub)",
     fontWeight: 600,
   },
   panel: {
@@ -179,25 +191,25 @@ const styles = {
     border: "1px solid var(--border)",
     borderRadius: "var(--radius)",
     padding: "1rem",
-    marginBottom: "1rem",
+    marginBottom: "var(--space-4)",
   },
   panelHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    gap: "1rem",
+    gap: "var(--space-4)",
     paddingBottom: "0.85rem",
     borderBottom: "1px solid color-mix(in srgb, var(--border) 70%, transparent)",
   },
   panelTitle: {
     color: "var(--text)",
-    fontSize: "1rem",
+    fontSize: "var(--text-h2)",
     fontWeight: 600,
     margin: 0,
   },
   panelSub: {
     color: "var(--muted)",
-    fontSize: "0.8rem",
+    fontSize: "var(--text-sub)",
     margin: "0.2rem 0 0",
   },
   countBadge: {
@@ -209,18 +221,18 @@ const styles = {
     color: "var(--on-accent)",
     background: "var(--warning)",
     fontVariantNumeric: "tabular-nums",
-    fontSize: "0.72rem",
+    fontSize: "var(--text-label)",
     fontWeight: 700,
   },
   list: {
     display: "grid",
-    gap: "0.65rem",
+    gap: "var(--space-3)",
     paddingTop: "0.85rem",
   },
   item: {
     display: "grid",
     gridTemplateColumns: "6px minmax(0, 1fr) auto",
-    gap: "0.8rem",
+    gap: "var(--space-3)",
     alignItems: "center",
     padding: "0.78rem",
     borderRadius: "var(--radius)",
@@ -239,24 +251,24 @@ const styles = {
   itemTop: {
     display: "flex",
     justifyContent: "space-between",
-    gap: "1rem",
-    marginBottom: "0.45rem",
+    gap: "var(--space-4)",
+    marginBottom: "var(--space-2)",
   },
   itemTitle: {
     color: "var(--text)",
-    fontSize: "0.9rem",
+    fontSize: "var(--text-body)",
     fontWeight: 600,
   },
   itemMessage: {
     color: "var(--muted)",
-    fontSize: "0.78rem",
+    fontSize: "var(--text-sub)",
     fontWeight: 600,
-    marginTop: "0.12rem",
+    marginTop: "var(--space-1)",
   },
   percent: {
     color: "var(--warning)",
     fontVariantNumeric: "tabular-nums",
-    fontSize: "0.86rem",
+    fontSize: "var(--text-body)",
     fontWeight: 700,
     whiteSpace: "nowrap",
   },
@@ -272,9 +284,9 @@ const styles = {
   },
   meta: {
     color: "var(--muted)",
-    fontSize: "0.74rem",
+    fontSize: "var(--text-label)",
     fontWeight: 600,
-    marginTop: "0.4rem",
+    marginTop: "var(--space-2)",
   },
   dismiss: {
     border: "1px solid var(--border)",
@@ -283,28 +295,24 @@ const styles = {
     borderRadius: "var(--radius-sm)",
     padding: "0.45rem 0.65rem",
     cursor: "pointer",
-    fontSize: "0.76rem",
+    fontSize: "var(--text-sub)",
     fontWeight: 600,
   },
   loading: {
     color: "var(--muted)",
     padding: "2rem 1rem",
     textAlign: "center",
-    fontSize: "0.88rem",
+    fontSize: "var(--text-body)",
   },
   empty: {
-    textAlign: "center",
-    padding: "2.5rem 1rem",
-  },
-  emptyTitle: {
-    color: "var(--text)",
-    fontSize: "0.98rem",
-    fontWeight: 600,
-    margin: "0 0 0.25rem",
+    display: "flex",
+    alignItems: "center",
+    gap: "var(--space-2)",
+    padding: "0.9rem 0.2rem",
   },
   emptyText: {
     color: "var(--muted)",
-    fontSize: "0.84rem",
+    fontSize: "var(--text-body)",
     margin: 0,
   },
 };

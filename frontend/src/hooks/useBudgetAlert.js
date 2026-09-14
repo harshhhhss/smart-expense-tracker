@@ -26,7 +26,7 @@ export const useBudgetAlert = (expenses, budgets) => {
         alerts.push({
           id: "monthly",
           category: "Monthly budget",
-          severity: percentUsed >= 90 ? "warning" : "notice",
+          severity: percentUsed >= 90 ? "critical" : "warning",
           spent: thisMonthTotal,
           limit: monthlyLimit,
           percent: Math.round(percentUsed),
@@ -51,7 +51,7 @@ export const useBudgetAlert = (expenses, budgets) => {
           alerts.push({
             id,
             category,
-            severity: spent > limit ? "warning" : "notice",
+            severity: spent > limit ? "critical" : "warning",
             spent,
             limit,
             percent: Math.round(percent),
